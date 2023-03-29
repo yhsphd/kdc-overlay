@@ -1,0 +1,72 @@
+.lobby-mapCompact {
+    display: flex;
+    flex-direction: row;
+    width: 360px;
+    height: 80px;
+    margin-top: 10px;
+}
+
+.lobby-mapCompact-pick {
+    width: 20px;
+    height: 100%;
+    background-color: var(--red);
+}
+
+.lobby-mapCompact-content {
+    width: auto;
+    height: 100%;
+    background-color: rgba(255, 255, 255, 0.2);
+}
+
+.lobby-mapCompact-map {
+    width: 50%;
+    font-size: 48px;
+    font-weight: 700;
+    font-style: italic;
+}
+
+.lobby-mapCompact-result {
+    width: 50%;
+    height: fit-content;
+    justify-content: flex-end;
+}
+
+.lobby-mapCompact-winText {
+    font-size: 24px;
+    font-weight: 700;
+}
+
+.lobby-mapCompact .contentBox {
+    width: 320px;
+    height: 60px;
+    margin: 10px;
+    justify-content: center;
+    align-items: center;
+}
+
+.lobby-mapCompact .circle {
+    margin-left: 10px;
+    width: 40px;
+    height: 40px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.lobby-mapCompact .arrow-up {
+    width: 0;
+    height: 0;
+    border-left: 5px solid transparent;
+    border-right: 5px solid transparent;
+
+    border-bottom: 5px solid black;
+}
+
+.lobby-mapCompact-play {
+    width: 0;
+    height: 0;
+    border-style: solid;
+    border-width: 8px 0 8px 15px;
+    border-color: transparent transparent transparent #ffffff;
+}

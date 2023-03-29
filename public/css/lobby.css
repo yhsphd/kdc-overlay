@@ -1,0 +1,177 @@
+body {
+    width: 1920px;
+    height: 1080px;
+}
+
+#logo {
+    width: 190px;
+    position: absolute;
+    top: 20px;
+    left: 50%;
+    transform: translate(-50%);
+}
+
+#frame {
+    position: absolute;
+    top: 135px;
+}
+
+#topbar {
+    position: absolute;
+    top: 25px;
+    left: 50%;
+    transform: translate(-50%);
+    width: 1824px;
+    height: 80px;
+    display: flex;
+    flex-direction: row;
+}
+
+.acronym {
+    width: 210px;
+    height: 80px;
+    line-height: 80px;
+    font-size: 48px;
+}
+
+.teamName {
+    max-width: 600px;
+    margin-left: 24px;
+    margin-right: 24px;
+    font-size: 40px;
+    font-weight: 700;
+}
+
+.metadata {
+    position: absolute;
+    top: 310px;
+    right: 0px;
+}
+
+#leftBox {
+    position: absolute;
+    left: 0px;
+    top: 200px;
+    width: 400px;
+    height: 650px;
+}
+
+
+.divider {
+    margin-left: 24px;
+    margin-right: 24px;
+    width: 2px;
+}
+
+#matchCodeBox {
+    position: absolute;
+    left: 0px;
+    bottom: 56px;
+    width: 420px;
+    height: 100px;
+
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+
+    font-size: 32px;
+    font-weight: 700;
+}
+
+#matchCode {
+    font-size: 96px;
+}
+
+#bottomBox {
+    width: 1040px;
+    height: 165px;
+
+    position: absolute;
+    z-index: -1;
+
+    bottom: 0px;
+    left: 50%;
+    transform: translate(-50%);
+}
+
+#scoreBox {
+    width: 100%;
+    height: 100%;
+}
+
+.scoreBox-teamBox {
+    width: 420px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.scoreBox-teamBox-scoreSum {
+    font-size: 64px;
+}
+
+.scoreBox-teamBox-accAvg {
+    font-size: 24px;
+}
+
+#scoreDiff {
+    position: relative;
+    top: 8px;
+    width: 200px;
+    height: 50px;
+    background-image: url("/img/scorediff.svg");
+    background-repeat: no-repeat;
+    text-align: center;
+    line-height: 50px;
+    color: black;
+    font-size: 40px;
+}
+
+#diffSpeedContainer {
+    position: relative;
+    width: 100%;
+    margin-top: 30px;
+}
+
+#diffSpeedRotator {
+    position: relative;
+    width: 100%;
+    height: 10px;
+    transform: rotate(180deg);
+}
+
+#diffSpeed {
+    position: absolute;
+    left: 50%;
+    transform: translate(-5px);
+
+    width: 40%;
+    height: 10px;
+    border-radius: 5px 0px 0px 5px;
+    background-color: white;
+}
+
+#diffSpeed::after {
+    content: "";
+    position: absolute;
+    right: -7px;
+    width: 0;
+    height: 0;
+    border-style: solid;
+    border-width: 5px 0 5px 7px;
+    border-color: transparent transparent transparent #ffffff;
+}
+
+#diffSpeedValueContainer {
+    position: relative;
+    /*left: 50%;*/
+    width: 50%;
+    margin-top: 10px;
+    text-align: right;
+    font-size: 24px;
+}
+
+#diffSpeedUnit {
+    font-size: 16px;
+}

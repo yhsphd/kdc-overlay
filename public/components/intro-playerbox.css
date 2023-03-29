@@ -1,0 +1,31 @@
+.intro-playerbox {
+    width: 380px;
+    height: 130px;
+
+    display: flex;
+    flex-direction: row;
+}
+
+.intro-player-pfp {
+    width: 96px;
+    margin: 17px;
+}
+
+.intro-player-nick {
+    font-size: 32px;
+    font-weight: 700;
+    line-height: 60px;
+}
+
+.intro-player-rank {
+    font-size: 24px;
+    line-height: 36px;
+    text-align: right;
+}
+
+.intro-player-divider {
+    background-color: white;
+    opacity: 0.2;
+    width: 233px;
+    height: 2px;
+}

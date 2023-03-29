@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>KDC23 Streaming Lobby Overlay</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="css/kdc23.css">
+    <link rel="stylesheet" href="css/lobby.css">
+    <link rel="stylesheet" href="/components/metadata.css">
+    <link rel="stylesheet" href="/components/lobby-mapCompact.css">
+    <link rel="stylesheet" href="/components/lobby-leaderboardBox.css">
+    <link rel="stylesheet" href="/components/chat.css">
+    <script src="js/kdc23.js"></script>
+</head>
+
+<body>
+<!--Logo & Lobby Frame-->
+<img id="logo" src="img/logo.png"></img>
+<img id="frame" src="img/lobby-frame.svg"></img>
+
+<!--Top Bar: Team Acronyms and Name-->
+<div id="topbar">
+    <div class="acronym acronym-red">NP</div>
+    <div class="verticalCenterFlexBox">
+        <div class="teamName">Never Gonna Give You Up</div>
+    </div>
+    <div style="flex-grow: 1;"></div>
+    <div class="verticalCenterFlexBox">
+        <div class="teamName">틀딱을위한오스는없다</div>
+    </div>
+    <div class="acronym acronym-blue">oldX</div>
+</div>
+
+<!--Left Box: Phase Progressions and Leaderboard When Playing-->
+<div id="leftBox" class="verticalCenterFlexBox">
+    <!--<script>HTMLImporter.import("/components/lobby-mapCompact.html");</script>
+    <script>HTMLImporter.import("/components/lobby-mapCompact.html");</script>
+    <script>HTMLImporter.import("/components/lobby-mapCompact.html");</script>
+    <script>HTMLImporter.import("/components/lobby-mapCompact.html");</script>
+    <script>HTMLImporter.import("/components/lobby-mapCompact.html");</script>
+    <script>HTMLImporter.import("/components/lobby-mapCompact.html");</script>-->
+
+    <script>HTMLImporter.import("/components/lobby-leaderboardBox.html");</script>
+    <script>HTMLImporter.import("/components/lobby-leaderboardBox.html");</script>
+    <script>HTMLImporter.import("/components/lobby-leaderboardBox.html");</script>
+    <script>HTMLImporter.import("/components/lobby-leaderboardBox.html");</script>
+</div>
+
+<!--Beatmap Metadata Stays at the Right Side-->
+<script>HTMLImporter.import("/components/metadata.html");</script>
+
+<!--Display Bracket Name and Match Code at the Left Bottom-->
+<div id="matchCodeBox">
+    <div style="text-align: end;">
+        <div id="bracket">Quarterfinals</div>
+        <div>Match</div>
+    </div>
+    <div class="divider"></div>
+    <div id="matchCode">16</div>
+</div>
+
+<!--Bottom Box: Lobby Chat and Score Comparison When Playing-->
+<div id="bottomBox">
+    <!--<div id="chatBox">
+        <script>HTMLImporter.import("/components/chat.html");</script>
+        <script>HTMLImporter.import("/components/chat.html");</script>
+        <script>HTMLImporter.import("/components/chat.html");</script>
+    </div>-->
+    <div id="scoreBox" class="horizontalFlexBox">
+        <div class="scoreBox-teamBox verticalCenterFlexBox">
+            <div class="scoreBox-teamBox-scoreSum monospace" style="font-weight: 300;">1,551,390</div>
+            <div class="scoreBox-teamBox-accAvg monospace">96.28%</div>
+        </div>
+        <div class="scoreBox-others">
+            <div id="scoreDiff" class="bold monospace">123,456</div>
+            <div id="diffSpeedContainer" class="verticalCenterFlexBox">
+                <div id="diffSpeedRotator">
+                    <div id="diffSpeed"></div>
+                </div>
+                <div id="diffSpeedValueContainer">
+                    <div id="diffSpeedValue" class="monospace bold">23,412</div>
+                    <div id="diffSpeedUnit" class="monospace bold">pt/s</div>
+                </div>
+            </div>
+        </div>
+        <div class="scoreBox-teamBox verticalCenterFlexBox">
+            <div class="scoreBox-teamBox-scoreSum monospace" style="font-weight: 900;">1,674,846</div>
+            <div class="scoreBox-teamBox-accAvg monospace">94.68%</div>
+        </div>
+    </div>
+</div>
+</body>
+
+</html>

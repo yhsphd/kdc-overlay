@@ -1,0 +1,43 @@
+#headerBox {
+    position: absolute;
+    height: 74px;
+    top: 30px;
+    right: 20px;
+    font-size: 32px;
+    font-weight: 700;
+}
+
+#logo {
+    height: 100%;
+}
+
+#tourneyTitle {
+    height: 100%;
+    margin-left: 24px;
+    line-height: 37px;
+}
+
+#frame {
+    position: absolute;
+    top: 70px;
+}
+
+.metadata {
+    position: absolute;
+    top: 440px;
+    right: 0px;
+}
+
+#streamTitleContainer {
+    position: absolute;
+    top: 192px;
+    right: 0px;
+    width: 370px;
+    height: 200px;
+}
+
+#streamTitle {
+    height: 100%;
+    font-weight: 700;
+    font-size: 48px;
+}

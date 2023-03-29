@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>KDC23 Mappool Overlay</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="css/kdc23.css">
+    <link rel="stylesheet" href="css/mappool.css">
+    <link rel="stylesheet" href="/components/chat.css">
+    <link rel="stylesheet" href="/components/mappool-pickedMap.css">
+    <link rel="stylesheet" href="/components/mappool-map.css">
+    <script src="js/kdc23.js"></script>
+</head>
+
+<body>
+<!--Scene Header & Mappool Scene Frame-->
+<div id="headerBox" class="horizontalFlexBox">
+    <img id="logo" src="img/logo.png"></img>
+    <div class="divider"></div>
+    <div style="margin-left: 24px;">
+        <div class="bold">Ban/Pick</div>
+        <div id="phase">Phase 1</div>
+    </div>
+</div>
+<img id="frame" src="img/mappool-frame.svg"></img>
+
+<!--Ban/Picks-->
+<div id="banpickBox" class="horizontalFlexBox">
+    <div>
+        <div class="panel-bg mappool-teamBG" style="background-color: var(--red);">
+            <div class="contentBox horizontalFlexBox">
+                <div class="acronym acronym-red">NP</div>
+                <div class="mappool-teamName bold">Never Gonna Give You Up</div>
+            </div>
+        </div>
+        <div style="height: 10px;"></div>
+        <div class="panel-bg mappool-teamBG" style="background-color: var(--blue);">
+            <!--<div class="contentBox horizontalFlexBox">
+                <div class="acronym acronym-blue">oldX</div>
+                <div class="mappool-teamName bold">틀딱을위한오스는없다</div>
+            </div>-->
+            <div class="contentBox" style="position: relative;">
+                <div class="horizontalFlexBox mappool-playerbox" style="position: absolute; left: 22px; top: 22px;">
+                    <img class="mappool-pfp" src="/samples/6665667.jpg"></img>
+                    <div class="mappool-nick">yhsphd</div>
+                </div>
+                <div class="horizontalFlexBox mappool-playerbox"
+                     style="position: absolute; left: 22px; bottom: 22px;">
+                    <img class="mappool-pfp" src="/samples/6665667.jpg"></img>
+                    <div class="mappool-nick">yhsphd</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="banBox" class="mappool-mapBox">
+        <div class="mappool-mapBoxDivider"></div>
+        <div class="mappool-pickedMapRow horizontalFlexBox">
+            <div class="mappool-pickedMapRowStartOffset"></div>
+            <script>HTMLImporter.import("/components/mappool-pickedMap.html");</script>
+            <script>HTMLImporter.import("/components/mappool-pickedMap.html");</script>
+        </div>
+        <div class="mappool-pickedMapRow horizontalFlexBox">
+            <!--<div class="mappool-pickedMapRowStartOffset"></div>-->
+            <script>HTMLImporter.import("/components/mappool-pickedMap.html");</script>
+            <script>HTMLImporter.import("/components/mappool-pickedMap.html");</script>
+        </div>
+    </div>
+    <div id="pickBox" class="mappool-mapBox">
+        <div class="mappool-mapBoxDivider"></div>
+        <div class="mappool-pickedMapRow horizontalFlexBox">
+            <!--<div class="mappool-pickedMapRowStartOffset"></div>-->
+            <script>HTMLImporter.import("/components/mappool-pickedMap.html");</script>
+            <script>HTMLImporter.import("/components/mappool-pickedMap.html");</script>
+            <script>HTMLImporter.import("/components/mappool-pickedMap.html");</script>
+            <script>HTMLImporter.import("/components/mappool-pickedMap.html");</script>
+        </div>
+        <div class="mappool-pickedMapRow horizontalFlexBox">
+            <div class="mappool-pickedMapRowStartOffset"></div>
+            <script>HTMLImporter.import("/components/mappool-pickedMap.html");</script>
+            <script>HTMLImporter.import("/components/mappool-pickedMap.html");</script>
+            <script>HTMLImporter.import("/components/mappool-pickedMap.html");</script>
+            <script>HTMLImporter.import("/components/mappool-pickedMap.html");</script>
+        </div>
+    </div>
+</div>
+
+<!--Banpick/Mappool Divider-->
+<div id="banpickMappoolDivider"></div>
+
+<!--Mappool-->
+<div id="mappoolColumns" class="horizontalFlexBox">
+    <div>
+        <script>HTMLImporter.import("/components/mappool-map.html");</script>
+        <script>HTMLImporter.import("/components/mappool-map.html");</script>
+        <script>HTMLImporter.import("/components/mappool-map.html");</script>
+        <script>HTMLImporter.import("/components/mappool-map.html");</script>
+        <script>HTMLImporter.import("/components/mappool-map.html");</script>
+        <script>HTMLImporter.import("/components/mappool-map.html");</script>
+    </div>
+    <div>
+        <script>HTMLImporter.import("/components/mappool-map.html");</script>
+        <script>HTMLImporter.import("/components/mappool-map.html");</script>
+        <script>HTMLImporter.import("/components/mappool-map.html");</script>
+        <script>HTMLImporter.import("/components/mappool-map.html");</script>
+        <script>HTMLImporter.import("/components/mappool-map.html");</script>
+        <script>HTMLImporter.import("/components/mappool-map.html");</script>
+    </div>
+    <div>
+        <script>HTMLImporter.import("/components/mappool-map.html");</script>
+        <script>HTMLImporter.import("/components/mappool-map.html");</script>
+        <script>HTMLImporter.import("/components/mappool-map.html");</script>
+        <script>HTMLImporter.import("/components/mappool-map.html");</script>
+    </div>
+    <div>
+        <script>HTMLImporter.import("/components/mappool-map.html");</script>
+        <script>HTMLImporter.import("/components/mappool-map.html");</script>
+        <script>HTMLImporter.import("/components/mappool-map.html");</script>
+        <script>HTMLImporter.import("/components/mappool-map.html");</script>
+        <script>HTMLImporter.import("/components/mappool-map.html");</script>
+        <script>HTMLImporter.import("/components/mappool-map.html");</script>
+    </div>
+</div>
+
+<!--Bottom Box: Bracket Name, Match Code, and Lobby Chat-->
+<div id="bottomBox" class="horizontalFlexBox">
+    <div id="matchCodeBox">
+        <div style="text-align: end;">
+            <div id="bracket">Quarterfinals</div>
+            <div>Match</div>
+        </div>
+        <div class="divider"></div>
+        <div id="matchCode">16</div>
+    </div>
+    <div id="chatBox">
+        <script>HTMLImporter.import("/components/chat.html");</script>
+        <script>HTMLImporter.import("/components/chat.html");</script>
+        <script>HTMLImporter.import("/components/chat.html");</script>
+    </div>
+</div>
+</body>
+
+</html>

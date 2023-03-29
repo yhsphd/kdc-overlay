@@ -1,0 +1,55 @@
+.lobby-leaderboardBox {
+    display: flex;
+    flex-direction: row;
+    width: 400px;
+    height: 100px;
+    margin-top: 10px;
+}
+
+.lobby-leaderboardBox-rank {
+    width: 40px;
+    font-size: 47px;
+    font-style: italic;
+    font-weight: 600;
+    color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.lobby-leaderboardBox-pfp {
+    width: 60px;
+    margin: 10px;
+}
+
+.lobby-leaderboardBox-nickNscore {
+    position: absolute;
+    left: 80px;
+    top: 10px;
+}
+
+.lobby-leaderboardBox-cmbNacc {
+    font-size: 20px;
+    font-weight: 500;
+    position: absolute;
+    right: 10px;
+    bottom: 10px;
+    text-align: right;
+}
+
+.lobby-leaderboardBox-nick {
+    font-weight: 700;
+    font-size: 16px;
+}
+
+.lobby-leaderboardBox-score {
+    font-weight: 500;
+    font-size: 36px;
+}
+
+.lobby-leaderboardBox .contentBox {
+    position: relative;
+    width: 350px;
+    height: 80px;
+    margin: 10px 10px 10px 0px;
+}

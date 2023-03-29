@@ -1,0 +1,45 @@
+.mappool-pickedMap {
+    position: relative;
+    width: 200px;
+    height: 150px;
+    margin-left: 10px;
+    background-image: url('/samples/1262466.jpg');
+    background-position: center;
+    background-size: cover;
+    text-align: center;
+    font-style: italic;
+    font-weight: 700;
+}
+
+.mappool-pickedMap-bgDim {
+    position: absolute;
+    left: 0px;
+    top: 0px;
+    width: 100%;
+    height: 100%;
+    background-color: black;
+    opacity: 0.5;
+}
+
+.mappool-pickedMap-slash {
+    position: absolute;
+    left: 0px;
+    top: 0px;
+    width: 100%;
+    height: 100%;
+    background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg"><line x1="0" y1="100%" x2="100%" y2="0" stroke="white" stroke-opacity="0.2" stroke-width="4px"/></svg>');
+}
+
+.mappool-pickedMap-code {
+    position: relative;
+    font-size: 36px;
+}
+
+.mappool-pickedMap-banpick {
+    position: relative;
+    font-size: 24px;
+}
+
+.mappool-pickedMap-loading {
+    position: relative;
+}
