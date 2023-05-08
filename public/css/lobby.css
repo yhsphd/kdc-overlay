@@ -4,9 +4,9 @@ body {
 }
 
 #logo {
-    width: 190px;
+    width: 180px;
     position: absolute;
-    top: 20px;
+    top: 10px;
     left: 50%;
     transform: translate(-50%);
 }
@@ -95,7 +95,13 @@ body {
     transform: translate(-50%);
 }
 
+#chatBox {
+    position: absolute;
+}
+
 #scoreBox {
+    position: absolute;
+    opacity: 0;
     width: 100%;
     height: 100%;
 }

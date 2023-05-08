@@ -1,49 +1,58 @@
-let musicplayer_coverElements = document.getElementsByClassName("intro-musicplayer-cover");
-let musicplayer_titleElements = document.getElementsByClassName("intro-musicplayer-title");
-let musicplayer_artistElements = document.getElementsByClassName("intro-musicplayer-artist");
-let musicplayer_progressbarElements = document.getElementsByClassName("intro-musicplayer-progressbar");
-let musicplayer_positionElements = document.getElementsByClassName("intro-musicplayer-position");
-let musicplayer_lengthElements = document.getElementsByClassName("intro-musicplayer-length");
+let musicplayer_coverElement;
+let musicplayer_titleElement;
+let musicplayer_artistElement;
+let musicplayer_progressbarElement;
+let musicplayer_positionElement;
+let musicplayer_lengthElement;
 
 let musicplayer_position = 0;
 let musicplayer_length = 0;
 
-function musicplayer_update(params) {
-    const cover = params.hasOwnProperty("cover") ? params.cover : "";
-    const title = params.hasOwnProperty("title") ? params.title : "";
-    const artist = params.hasOwnProperty("artist") ? params.artist : "";
-    if (params.hasOwnProperty("position")) {
-        musicplayer_position = params.position;
+function musicplayer_getDOM() {
+    try {
+        musicplayer_coverElement = document.getElementsByClassName("intro-musicplayer-cover")[0];
+        musicplayer_titleElement = document.getElementsByClassName("intro-musicplayer-title")[0];
+        musicplayer_artistElement = document.getElementsByClassName("intro-musicplayer-artist")[0];
+        musicplayer_progressbarElement = document.getElementsByClassName("intro-musicplayer-progressbar")[0];
+        musicplayer_positionElement = document.getElementsByClassName("intro-musicplayer-position")[0];
+        musicplayer_lengthElement = document.getElementsByClassName("intro-musicplayer-length")[0];
+    } catch (e) {
+        setTimeout(musicplayer_getDOM, 1000);
     }
-    if (params.hasOwnProperty("length")) {
-        musicplayer_length = params.length;
+}
+
+musicplayer_getDOM();
+
+
+//
+// UI Update Functions
+
+function updateMusicplayer(nowPlaying) {
+    musicplayer_positionElement.innerText = secondsToMMSS(nowPlaying.time.position);
+    musicplayer_lengthElement.innerText = secondsToMMSS(nowPlaying.time.length);
+    musicplayer_progressbarElement.style.width = nowPlaying.time.position / nowPlaying.time.length * 100 + "%";
+
+    if (nowPlaying.images.cover) {
+        musicplayer_coverElement.src = nowPlaying.images.cover + "?" + new Date().getTime();
+    } else if (nowPlaying.images.background) {
+        musicplayer_coverElement.src = nowPlaying.images.background;
     }
 
-    if (cover !== "") {
-        console.log("update cover!");
-        musicplayer_coverElements.forEach(function (element) {
-            element.src = cover;
-        });
+    if (nowPlaying.metadata.title) {
+        musicplayer_titleElement.innerText = nowPlaying.metadata.title;
     }
-    if (title !== "") {
-        console.log("update title!");
-        musicplayer_titleElements.forEach(function (element) {
-            element.innerText = title;
-        });
+    if (nowPlaying.metadata.artist) {
+        musicplayer_artistElement.innerText = nowPlaying.metadata.artist;
     }
-    if (artist !== "") {
-        console.log("update artist!");
-        musicplayer_artistElements.forEach(function (element) {
-            element.innerText = artist;
-        });
-    }
-    musicplayer_positionElements.forEach(function (element) {
-        element.innerText = secondsToMMSS(musicplayer_position);
-    });
-    musicplayer_lengthElements.forEach(function (element) {
-        element.innerText = secondsToMMSS(musicplayer_length)
-    });
-    musicplayer_progressbarElements.forEach(function (element) {
-        element.style.width = musicplayer_position / musicplayer_length * 100 + "%";
-    })
 }
+
+
+//
+// Update Function
+
+function musicplayer_update() {
+    updateMusicplayer(overlayData.now_playing);
+}
+
+setInterval(musicplayer_update, 100);
+setInterval(musicplayer_getDOM, 2000);

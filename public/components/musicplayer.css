@@ -19,6 +19,8 @@
 .intro-musicplayer-cover {
     margin: 17px;
     height: 96px;
+    width: 96px;
+    background-size: cover;
 }
 
 .intro-musicplayer-title {

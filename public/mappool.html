@@ -12,45 +12,62 @@
     <link rel="stylesheet" href="/components/chat.css">
     <link rel="stylesheet" href="/components/mappool-pickedMap.css">
     <link rel="stylesheet" href="/components/mappool-map.css">
+    <link rel="stylesheet" href="/components/chat.css">
+    <script src="/socket.io/socket.io.js"></script>
     <script src="js/kdc23.js"></script>
 </head>
 
 <body>
 <!--Scene Header & Mappool Scene Frame-->
 <div id="headerBox" class="horizontalFlexBox">
-    <img id="logo" src="img/logo.png"></img>
+    <img id="logo" src="img/logo.png">
     <div class="divider"></div>
-    <div style="margin-left: 24px;">
+    <div>
         <div class="bold">Ban/Pick</div>
         <div id="phase">Phase 1</div>
     </div>
 </div>
-<img id="frame" src="img/mappool-frame.svg"></img>
+<img id="frame" src="img/mappool-frame.svg">
 
 <!--Ban/Picks-->
 <div id="banpickBox" class="horizontalFlexBox">
     <div>
         <div class="panel-bg mappool-teamBG" style="background-color: var(--red);">
             <div class="contentBox horizontalFlexBox">
-                <div class="acronym acronym-red">NP</div>
-                <div class="mappool-teamName bold">Never Gonna Give You Up</div>
+                <div class="teamInfoBox horizontalFlexBox">
+                    <div class="acronym acronym-red">NP</div>
+                    <div class="mappool-teamName bold">Never Gonna Give You Up</div>
+                </div>
+                <div class="teamPlayersBox">
+                    <div class="horizontalFlexBox mappool-playerbox" style="position: absolute; left: 22px; top: 22px;">
+                        <img class="mappool-pfp" src="/samples/6665667.jpg">
+                        <div class="mappool-nick">yhsphd</div>
+                    </div>
+                    <div class="horizontalFlexBox mappool-playerbox"
+                         style="position: absolute; left: 22px; bottom: 22px;">
+                        <img class="mappool-pfp" src="/samples/6665667.jpg">
+                        <div class="mappool-nick">yhsphd</div>
+                    </div>
+                </div>
             </div>
         </div>
         <div style="height: 10px;"></div>
         <div class="panel-bg mappool-teamBG" style="background-color: var(--blue);">
-            <!--<div class="contentBox horizontalFlexBox">
-                <div class="acronym acronym-blue">oldX</div>
-                <div class="mappool-teamName bold">틀딱을위한오스는없다</div>
-            </div>-->
-            <div class="contentBox" style="position: relative;">
-                <div class="horizontalFlexBox mappool-playerbox" style="position: absolute; left: 22px; top: 22px;">
-                    <img class="mappool-pfp" src="/samples/6665667.jpg"></img>
-                    <div class="mappool-nick">yhsphd</div>
+            <div class="contentBox">
+                <div class="teamInfoBox horizontalFlexBox">
+                    <div class="acronym acronym-blue">oldX</div>
+                    <div class="mappool-teamName bold">틀딱을위한오스는없다</div>
                 </div>
-                <div class="horizontalFlexBox mappool-playerbox"
-                     style="position: absolute; left: 22px; bottom: 22px;">
-                    <img class="mappool-pfp" src="/samples/6665667.jpg"></img>
-                    <div class="mappool-nick">yhsphd</div>
+                <div class="teamPlayersBox">
+                    <div class="horizontalFlexBox mappool-playerbox" style="position: absolute; left: 22px; top: 22px;">
+                        <img class="mappool-pfp" src="/samples/6665667.jpg">
+                        <div class="mappool-nick">yhsphd</div>
+                    </div>
+                    <div class="horizontalFlexBox mappool-playerbox"
+                         style="position: absolute; left: 22px; bottom: 22px;">
+                        <img class="mappool-pfp" src="/samples/6665667.jpg">
+                        <div class="mappool-nick">yhsphd</div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -140,6 +157,9 @@
         <script>HTMLImporter.import("/components/chat.html");</script>
     </div>
 </div>
+
+<!--Scripts-->
+<script src="js/mappool.js"></script>
 </body>
 
 </html>

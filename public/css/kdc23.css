@@ -70,3 +70,24 @@ body {
 .circle {
     border-radius: 999px;
 }
+
+
+@keyframes fadeIn {
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+
+.fadeInAnimation,
+.fadeOutAnimation {
+    animation-name: fadeIn;
+    animation-iteration-count: 1;
+    animation-timing-function: linear;
+}
+
+.fadeOutAnimation {
+    animation-direction: reverse;
+}

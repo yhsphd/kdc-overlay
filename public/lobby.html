@@ -13,13 +13,14 @@
     <link rel="stylesheet" href="/components/lobby-mapCompact.css">
     <link rel="stylesheet" href="/components/lobby-leaderboardBox.css">
     <link rel="stylesheet" href="/components/chat.css">
+    <script src="/socket.io/socket.io.js"></script>
     <script src="js/kdc23.js"></script>
 </head>
 
 <body>
 <!--Logo & Lobby Frame-->
-<img id="logo" src="img/logo.png"></img>
-<img id="frame" src="img/lobby-frame.svg"></img>
+<img id="logo" src="img/logo.png">
+<img id="frame" src="img/lobby-frame.svg">
 
 <!--Top Bar: Team Acronyms and Name-->
 <div id="topbar">
@@ -36,20 +37,23 @@
 
 <!--Left Box: Phase Progressions and Leaderboard When Playing-->
 <div id="leftBox" class="verticalCenterFlexBox">
-    <!--<script>HTMLImporter.import("/components/lobby-mapCompact.html");</script>
-    <script>HTMLImporter.import("/components/lobby-mapCompact.html");</script>
-    <script>HTMLImporter.import("/components/lobby-mapCompact.html");</script>
-    <script>HTMLImporter.import("/components/lobby-mapCompact.html");</script>
-    <script>HTMLImporter.import("/components/lobby-mapCompact.html");</script>
-    <script>HTMLImporter.import("/components/lobby-mapCompact.html");</script>-->
-
-    <script>HTMLImporter.import("/components/lobby-leaderboardBox.html");</script>
-    <script>HTMLImporter.import("/components/lobby-leaderboardBox.html");</script>
-    <script>HTMLImporter.import("/components/lobby-leaderboardBox.html");</script>
-    <script>HTMLImporter.import("/components/lobby-leaderboardBox.html");</script>
+    <div style="width: 100%; position: absolute;">
+        <script>HTMLImporter.import("/components/lobby-mapCompact.html");</script>
+        <script>HTMLImporter.import("/components/lobby-mapCompact.html");</script>
+        <script>HTMLImporter.import("/components/lobby-mapCompact.html");</script>
+        <script>HTMLImporter.import("/components/lobby-mapCompact.html");</script>
+        <script>HTMLImporter.import("/components/lobby-mapCompact.html");</script>
+        <script>HTMLImporter.import("/components/lobby-mapCompact.html");</script>
+    </div>
+    <div style="width: 100%; position: absolute;">
+        <script>HTMLImporter.import("/components/lobby-leaderboardBox.html");</script>
+        <script>HTMLImporter.import("/components/lobby-leaderboardBox.html");</script>
+        <script>HTMLImporter.import("/components/lobby-leaderboardBox.html");</script>
+        <script>HTMLImporter.import("/components/lobby-leaderboardBox.html");</script>
+    </div>
 </div>
 
-<!--Beatmap Metadata Stays at the Right Side-->
+<!--Beatmap Metadata Stays on the Right Side-->
 <script>HTMLImporter.import("/components/metadata.html");</script>
 
 <!--Display Bracket Name and Match Code at the Left Bottom-->
@@ -64,11 +68,11 @@
 
 <!--Bottom Box: Lobby Chat and Score Comparison When Playing-->
 <div id="bottomBox">
-    <!--<div id="chatBox">
+    <div id="chatBox">
         <script>HTMLImporter.import("/components/chat.html");</script>
         <script>HTMLImporter.import("/components/chat.html");</script>
         <script>HTMLImporter.import("/components/chat.html");</script>
-    </div>-->
+    </div>
     <div id="scoreBox" class="horizontalFlexBox">
         <div class="scoreBox-teamBox verticalCenterFlexBox">
             <div class="scoreBox-teamBox-scoreSum monospace" style="font-weight: 300;">1,551,390</div>
@@ -92,6 +96,12 @@
         </div>
     </div>
 </div>
+
+<!--Scripts-->
+<script src="components/metadata.js"></script>
+<script src="components/lobby-leaderboardBox.js"></script>
+<script src="components/lobby-mapCompact.js"></script>
+<script src="js/lobby.js"></script>
 </body>
 
 </html>

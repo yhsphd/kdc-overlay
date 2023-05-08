@@ -15,12 +15,15 @@
     top: 128px;
 }
 
+.intro-topbar > .divider {
+    margin: 0px 50px 0px 50px;
+}
+
 .intro-topbar-info {
     display: flex;
     flex-direction: column;
     justify-content: center;
     text-align: left;
-    margin-left: 50px;
 }
 
 .intro-topbar-info > div {
@@ -48,6 +51,7 @@
     text-align: center;
     width: 400px;
     height: 100%;
+    line-height: 128px;
 }
 
 .intro-streamTitle {

@@ -2,9 +2,13 @@
     position: absolute;
     height: 74px;
     top: 30px;
-    left: 10px;
+    left: 30px;
     font-size: 36px;
     line-height: 37px;
+}
+
+#headerBox > .divider {
+    margin: 0px 24px 0px 24px;
 }
 
 #logo {
@@ -24,15 +28,29 @@
 }
 
 .mappool-teamBG {
+    position: relative;
     width: 400px;
     height: 180px;
 }
 
 .mappool-teamBG > .contentBox {
+    position: relative;
     width: calc(100% - 30px);
     height: calc(100% - 20px);
     margin: 10px 10px 10px 20px;
+}
+
+.teamInfoBox {
+    position: absolute;
+    width: 100%;
+    height: 100%;
     align-items: center;
+}
+
+.teamPlayersBox {
+    position: absolute;
+    width: 100%;
+    height: 100%;
 }
 
 .acronym {
@@ -164,8 +182,7 @@
 }
 
 #matchCodeBox > .divider {
-    margin-left: 24px;
-    margin-right: 24px;
+    margin: 0px 24px 0px 24px;
     height: 100px;
 }
 

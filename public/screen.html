@@ -10,17 +10,18 @@
     <link rel="stylesheet" href="css/kdc23.css">
     <link rel="stylesheet" href="css/screen.css">
     <link rel="stylesheet" href="/components/metadata.css">
+    <script src="/socket.io/socket.io.js"></script>
     <script src="js/kdc23.js"></script>
 </head>
 
 <body>
 <!--Scene Header & Screen Scene Frame-->
 <div id="headerBox" class="horizontalFlexBox">
-    <img id="logo" src="img/logo.png"></img>
+    <img id="logo" src="img/logo.png">
     <div class="divider"></div>
     <div id="tourneyTitle">Duo Cup: Korea<br>2023</div>
 </div>
-<img id="frame" src="img/screen-frame.svg"></img>
+<img id="frame" src="img/screen-frame.svg">
 
 <!--Stream Title-->
 <div id="streamTitleContainer">
@@ -31,6 +32,10 @@
 
 <!--Beatmap Metadata-->
 <script>HTMLImporter.import("/components/metadata.html");</script>
+
+<!--Scripts-->
+<script src="components/metadata.js"></script>
+<script src="js/screen.js"></script>
 </body>
 
 </html>

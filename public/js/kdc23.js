@@ -1,15 +1,21 @@
+//
+// Make forEach available for getElementsByClassName
 NodeList.prototype.forEach = HTMLCollection.prototype.forEach = Array.prototype.forEach;
+
+
+//
+// Utils
 
 function HTMLImporter() {
 }
 
 HTMLImporter.import = function (url) {
-    var error, http_request, load, script;
+    let error, http_request, load, script;
 
     script = document.currentScript || document.scripts[document.scripts.length - 1];
 
     load = function (event) {
-        var attribute, index, index1, new_script, old_script, scripts, wrapper;
+        let attribute, index, index1, new_script, old_script, scripts, wrapper;
 
         wrapper = document.createElement("div");
         wrapper.innerHTML = this.responseText;
@@ -54,31 +60,44 @@ HTMLImporter.import = function (url) {
     http_request.send();
 };
 
-String.prototype.format = function () {
-    let formatted = this;
-    for (let arg in arguments) {
-        formatted = formatted.replace("{" + arg + "}", arguments[arg]);
-    }
-    return formatted;
-};
-
 function secondsToMMSS(seconds) {
     return new Date(seconds * 1000).toISOString().substring(14, 19);
 }
 
-function getTeams(team1, team2) {
-    return [getTeam(team1), getTeam(team2)];
+function numberWithCommas(x) {
+    return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 }
 
-function getTeam(teamName) {
-    return {
-        teamName: "asdf",
-        acronym: "a",
-        players: [6665667, 344234],
-        seed: 3
+const clampNumber = (num, a, b) =>
+    Math.max(Math.min(num, Math.max(a, b)), Math.min(a, b));
+
+function transitionCrossfadeElements(element2hide, element2show, duration) {
+    let element2hide_opacity = window.getComputedStyle(element2hide).getPropertyValue("opacity");
+    let element2show_opacity = window.getComputedStyle(element2show).getPropertyValue("opacity");
+
+    if (element2hide_opacity === "1" && element2show_opacity === "0") {
+        element2hide.style.animationDuration = `${duration}ms`;
+        element2hide.classList.add("fadeOutAnimation");
+        element2hide.addEventListener("animationend", () => {
+            element2hide.style.opacity = 0;
+            element2hide.classList.remove("fadeOutAnimation");
+            element2show.style.animationDuration = `${duration}ms`;
+            element2show.classList.add("fadeInAnimation");
+            element2show.addEventListener("animationend", () => {
+                element2show.style.opacity = 1;
+                element2show.classList.remove("fadeInAnimation");
+            }, {once: true});
+        }, {once: true});
     }
 }
 
-function getPlayerInfo(uid) {
 
-}
+//
+// Overlay Data
+
+let overlayData = {}
+let overlayDataUpdate = io("/update");
+overlayDataUpdate.on("update", function (data) {
+    overlayData = data;
+});
+overlayDataUpdate.emit(location.href.split("/").slice(-1));     // Report which page was loaded
