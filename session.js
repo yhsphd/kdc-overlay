@@ -2,6 +2,7 @@ exports = module.exports = {
     type: "match",
     match_code: 24,
     bracket: "본선 2주차",
+    bo: 9,
     stream_title: "KDC Streamkit 큰거온다",
     schedule: "2023-04-09T16:00:00+09:00",
     teams: [{
@@ -99,6 +100,7 @@ exports = module.exports = {
     progress: {
         phase: 1,
         phases: [{
+            first_pick: "Team 쩌리들",
             ban: [{
                 code: "NM1",
                 team: "Team 쩌리들"

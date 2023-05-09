@@ -2,6 +2,7 @@ exports = module.exports = {
     type: "match",
     match_code: 16,
     bracket: "Quarterfinals",
+    bo: 9,
     stream_title: "KDC Streamkit 큰거온다",
     schedule: "2023-04-05T16:00:00+09:00",
     teams: [{

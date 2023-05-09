@@ -91,6 +91,22 @@ function transitionCrossfadeElements(element2hide, element2show, duration) {
     }
 }
 
+function teamName2color(overlayData, mode, name) {
+    let names;
+
+    if (mode === 0) {           // Team Name
+        names = [overlayData.teams[0].name, overlayData.teams[1].name];
+    } else if (mode === 1) {    // Team Acronym
+        names = [overlayData.teams[0].acronym, overlayData.teams[1].acronym];
+    }
+
+    if (name === names[0]) {
+        return "red"
+    } else if (name === names[1]) {
+        return "blue"
+    }
+}
+
 
 //
 // Overlay Data

@@ -35,6 +35,33 @@ let mappool_chatBoxElement = document.getElementById("chatBox");
 //
 // Utils
 
+function mappool_alterPickedMapVisibility(index, mode) {
+    const element = mappool_pickedMapElements[index];
+
+    if (mode === 0) {           // pick/ban able
+        element.style.opacity = 1;
+        element.getElementsByClassName("mappool-pickedMap-slash")[0].style.opacity = 0;
+    } else if (mode === 1) {    // disable
+        element.style.opacity = 1;
+        element.getElementsByClassName("mappool-pickedMap-code")[0].innerText = "";
+        element.getElementsByClassName("mappool-pickedMap-banpick")[0].innerText = "";
+        element.getElementsByClassName("mappool-pickedMap-slash")[0].style.opacity = 1;
+    } else if (mode === 2) {    // hide
+        element.style.opacity = 0;
+    }
+}
+
+function mappool_editPickedMapContent(index, mode, code, pick) {
+    const element = mappool_pickedMapElements[index];
+
+    if (mode === 0) {           // picking a map
+
+    } else if (mode === 1) {    // picked a map
+        element.getElementsByClassName("mappool-pickedMap-code")[0].innerText = code;
+        element.getElementsByClassName("mappool-pickedMap-banpick")[0].innerText = pick ? "PICK" : "BAN";
+    }
+}
+
 
 //
 // UI Update Functions
@@ -63,6 +90,116 @@ function mappool_updateTeams(teams) {
     }
 }
 
+function mappool_arrangePickedMapBoxes(overlayData) {
+    let hide, crossOut, ban, pick;
+    const firstPick = teamName2color(overlayData, 0, overlayData.progress.phases[overlayData.progress.phase - 1].first_pick);
+
+    if (firstPick === "red") {
+        mappool_offsetElements[0].style.width = "105px";
+        mappool_offsetElements[1].style.width = "0px";
+        mappool_offsetElements[2].style.width = "0px";
+        mappool_offsetElements[3].style.width = "105px";
+    } else if (firstPick === "blue") {
+        mappool_offsetElements[0].style.width = "0px";
+        mappool_offsetElements[1].style.width = "105px";
+        mappool_offsetElements[2].style.width = "105px";
+        mappool_offsetElements[3].style.width = "0px";
+    }
+
+    if (firstPick === "red") {
+        if (overlayData.bo === 9) {
+            if (overlayData.progress.phase === 1) {
+                hide = [5, 10];
+                crossOut = [0, 2, 7, 11];
+                ban = [3, 1];
+                pick = [4, 8, 9, 6];
+            } else if (overlayData.progress.phase === 2) {
+                hide = [5, 10];
+                crossOut = [0, 2, 7, 11];
+                ban = [3, 1];
+                pick = [4, 8, 9, 6];
+            }
+        } else if (overlayData.bo === 11) {
+            if (overlayData.progress.phase === 1) {
+                hide = [5, 10];
+                crossOut = [0, 2, 7, 11];
+                ban = [3, 1];
+                pick = [4, 8, 9, 6];
+            } else if (overlayData.progress.phase === 2) {
+                hide = [5, 10];
+                crossOut = [0, 2];
+                ban = [3, 1];
+                pick = [4, 8, 9, 6, 7, 11];
+            }
+        } else if (overlayData.bo === 13) {
+            if (overlayData.progress.phase === 1) {
+                hide = [5, 10];
+                crossOut = [];
+                ban = [2, 0, 3, 1];
+                pick = [4, 8, 9, 6, 7, 11];
+            } else if (overlayData.progress.phase === 2) {
+                hide = [5, 10];
+                crossOut = [0, 2];
+                ban = [3, 1];
+                pick = [4, 8, 9, 6, 7, 11];
+            }
+        }
+    } else if (firstPick === "blue") {
+        if (overlayData.bo === 9) {
+            if (overlayData.progress.phase === 1) {
+                hide = [6, 9];
+                crossOut = [0, 2, 7, 11];
+                ban = [1, 3];
+                pick = [8, 4, 5, 10];
+            } else if (overlayData.progress.phase === 2) {
+                hide = [6, 9];
+                crossOut = [0, 2, 7, 11];
+                ban = [1, 3];
+                pick = [8, 4, 5, 10];
+            }
+        } else if (overlayData.bo === 11) {
+            if (overlayData.progress.phase === 1) {
+                hide = [6, 9];
+                crossOut = [0, 2, 7, 11];
+                ban = [1, 3];
+                pick = [8, 4, 5, 10];
+            } else if (overlayData.progress.phase === 2) {
+                hide = [6, 9];
+                crossOut = [0, 2];
+                ban = [1, 3];
+                pick = [8, 4, 5, 10, 11, 7];
+            }
+        } else if (overlayData.bo === 13) {
+            if (overlayData.progress.phase === 1) {
+                hide = [6, 9];
+                crossOut = [];
+                ban = [0, 2, 1, 3];
+                pick = [8, 4, 5, 10, 11, 7];
+            } else if (overlayData.progress.phase === 2) {
+                hide = [6, 9];
+                crossOut = [0, 2];
+                ban = [1, 3];
+                pick = [8, 4, 5, 10, 11, 7];
+            }
+        }
+    }
+
+    hide.forEach((index) => {
+        mappool_alterPickedMapVisibility(index, 2);
+    });
+    crossOut.forEach((index) => {
+        mappool_alterPickedMapVisibility(index, 1);
+    });
+    pick.forEach((index) => {
+        mappool_alterPickedMapVisibility(index, 0);
+    });
+    ban.forEach((index) => {
+        mappool_alterPickedMapVisibility(index, 0);
+    });
+
+    return {ban: ban, pick: pick};
+}
+
 function mappool_switchTeamBox() {
     if (window.getComputedStyle(mappool_teamInfoElements[0]).opacity === "0") {
         for (let i = 0; i < 2; i++) {
@@ -72,22 +209,6 @@ function mappool_switchTeamBox() {
         for (let i = 0; i < 2; i++) {
             transitionCrossfadeElements(mappool_teamInfoElements[i], mappool_teamPlayersElements[i], 500);
         }
-    }
-}
-
-function mappool_alterPickedMap(index, mode, map, pick) {
-    const element = mappool_pickedMapElements[index];
-
-    if (mode === 0) {           // pick/ban
-        element.style.opacity = 1;
-        element.getElementsByClassName("mappool-pickedMap-slash")[0].style.opacity = 0;
-    } else if (mode === 1) {    // disable
-        element.style.opacity = 1;
-        element.getElementsByClassName("mappool-pickedMap-code")[0].innerText = "";
-        element.getElementsByClassName("mappool-pickedMap-banpick")[0].innerText = "";
-        element.getElementsByClassName("mappool-pickedMap-slash")[0].style.opacity = 1;
-    } else if (mode === 2) {    // hide
-        element.style.opacity = 0;
     }
 }
 
@@ -104,6 +225,7 @@ function mappool_update() {
     mappool_updatePhase(overlayData.progress);
     mappool_updateMatchInfo(overlayData);
     mappool_updateTeams(overlayData.teams);
+    mappool_arrangePickedMapBoxes(overlayData);
 }
 
 setInterval(mappool_update, 100);
