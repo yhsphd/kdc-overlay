@@ -8,13 +8,13 @@ const fs = require("fs");
 const path = require("path");
 
 if (!fs.existsSync("./config.js")) {
-    fs.copyFile(path.join(__dirname + "/defaults/config.default.js"), "./config.js", (err) => {
+    fs.copyFile(path.join(__dirname + "/templates/config.default.js"), "./config.js", (err) => {
         if (err) throw err;
         console.log("Default config file created! Please re-run the program after you complete!");
         process.exit();
     });
 } else {
-    const config = require("./config.js");
+    const config = require("./config");
     const port = config.port;
 
     // Static Folder

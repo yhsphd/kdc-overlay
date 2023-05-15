@@ -2,12 +2,12 @@ let mappool_phaseElement = document.getElementById("phase");
 let mappool_teamInfoElements = document.getElementsByClassName("teamInfoBox");
 let mappool_teamPlayersElements = document.getElementsByClassName("teamPlayersBox");
 
-let mappool_offsetElements = document.getElementsByClassName("mappool-pickedMapRowStartOffset");
-let mappool_pickedMapElements;
+let mappool_offsetElements = document.getElementsByClassName("mappool-pickBoxRowStartOffset");
+let mappool_pickBoxElements;
 
 function mappool_pickedMaps_getDOM() {
     try {
-        mappool_pickedMapElements = document.getElementsByClassName("mappool-pickedMap");
+        mappool_pickBoxElements = document.getElementsByClassName("mappool-pickBox");
     } catch (e) {
         setTimeout(mappool_pickedMaps_getDOM, 1000);
     }
@@ -31,34 +31,56 @@ let mappool_bracketElement = document.getElementById("bracket");
 let mappool_matchCodeElement = document.getElementById("matchCode");
 let mappool_chatBoxElement = document.getElementById("chatBox");
 
+let order, pickOrder, banOrder;
+
 
 //
 // Utils
 
-function mappool_alterPickedMapVisibility(index, mode) {
-    const element = mappool_pickedMapElements[index];
+function mappool_alterPickBoxVisibility(index, mode, reset) {
+    const element = mappool_pickBoxElements[index];
 
     if (mode === 0) {           // pick/ban able
         element.style.opacity = 1;
-        element.getElementsByClassName("mappool-pickedMap-slash")[0].style.opacity = 0;
-    } else if (mode === 1) {    // disable
+        element.getElementsByClassName("mappool-pickBox-slash")[0].style.opacity = 0;
+        if (reset) {
+            mappool_resetPickBox(element);
+        }
+    } else if (mode === 1) {    // disable, slash out
         element.style.opacity = 1;
-        element.getElementsByClassName("mappool-pickedMap-code")[0].innerText = "";
-        element.getElementsByClassName("mappool-pickedMap-banpick")[0].innerText = "";
-        element.getElementsByClassName("mappool-pickedMap-slash")[0].style.opacity = 1;
+        element.getElementsByClassName("mappool-pickBox-slash")[0].style.opacity = 1;
+        mappool_resetPickBox(element);
     } else if (mode === 2) {    // hide
         element.style.opacity = 0;
     }
 }
 
-function mappool_editPickedMapContent(index, mode, code, pick) {
-    const element = mappool_pickedMapElements[index];
+function mappool_resetPickBox(element) {
+    element.style.backgroundImage = "none";
+    element.getElementsByClassName("mappool-pickBox-loading")[0].style.opacity = 0;
+    element.getElementsByClassName("mappool-pickBox-code")[0].innerText = "";
+    element.getElementsByClassName("mappool-pickBox-banpick")[0].innerText = "";
+}
 
-    if (mode === 0) {           // picking a map
+/**
+ * @param {number} index - index of the pickBox
+ * @param {number} mode - 0:blank the pickBox, 1:show loading, 2:picked, 3:banned
+ * @param {string} image - url to the background image of the map
+ */
+function mappool_editPickBoxContent(index, mode, code, image) {
+    const element = mappool_pickBoxElements[index];
 
-    } else if (mode === 1) {    // picked a map
-        element.getElementsByClassName("mappool-pickedMap-code")[0].innerText = code;
-        element.getElementsByClassName("mappool-pickedMap-banpick")[0].innerText = pick ? "PICK" : "BAN";
+    if (mode === 0) {                       // blank state
+
+    } else if (mode === 1) {                // picking a map
+        element.getElementsByClassName("mappool-pickBox-loading")[0].style.opacity = 1;
+        element.getElementsByClassName("mappool-pickBox-code")[0].innerText = "";
+        element.getElementsByClassName("mappool-pickBox-banpick")[0].innerText = "";
+    } else if (mode === 2 || mode === 3) {  // picked or banned a map
+        element.getElementsByClassName("mappool-pickBox-loading")[0].style.opacity = 0;
+        element.getElementsByClassName("mappool-pickBox-code")[0].innerText = code;
+        element.getElementsByClassName("mappool-pickBox-banpick")[0].innerText = mode === 1 ? "PICK" : "BAN";
+        element.style.backgroundImage = mode === 1 ? `url('${image}')` : "none";
     }
 }
 
@@ -90,7 +112,7 @@ function mappool_updateTeams(teams) {
     }
 }
 
-function mappool_arrangePickedMapBoxes(overlayData) {
+function mappool_arrangePickBoxes(overlayData) {
     let hide, crossOut, ban, pick;
     const firstPick = teamName2color(overlayData, 0, overlayData.progress.phases[overlayData.progress.phase - 1].first_pick);
 
@@ -185,20 +207,55 @@ function mappool_arrangePickedMapBoxes(overlayData) {
     }
 
     hide.forEach((index) => {
-        mappool_alterPickedMapVisibility(index, 2);
+        mappool_alterPickBoxVisibility(index, 2, true);
     });
     crossOut.forEach((index) => {
-        mappool_alterPickedMapVisibility(index, 1);
+        mappool_alterPickBoxVisibility(index, 1, true);
     });
     pick.forEach((index) => {
-        mappool_alterPickedMapVisibility(index, 0);
+        mappool_alterPickBoxVisibility(index, 0, true);
     });
     ban.forEach((index) => {
-        mappool_alterPickedMapVisibility(index, 0);
+        mappool_alterPickBoxVisibility(index, 0, true);
     });
 
-    return {ban: ban, pick: pick};
+    pickOrder = pick;
+    banOrder = ban;
+    order = pick.concat(ban);
 }
+
+function mappool_updatePick(overlayData) {
+    const currentPhrase = overlayData.progress.phrases[overlayData.progress.phase - 1];
+
+    for (let i = 0; i < currentPhrase.length; i++) {
+        mappool_editPickBoxContent(order[i], currentPhrase.order[i].pick ? 2 : 3, currentPhrase.order[i].code, currentPhrase.order[i].background);
+    }
+
+    if(mappool_pickBoxElements.length !== currentPhrase)
+
+    mappool_editPickBoxContent(order[c], currentPhrase.order[i].pick ? 2 : 3, currentPhrase.order[i].code, currentPhrase.order[i].background);
+}
+
+
+//
+// Update Function
+
+let phase, bo, firstPick;
+
+function mappool_update() {
+    mappool_updatePhase(overlayData.progress);
+    mappool_updateMatchInfo(overlayData);
+    mappool_updateTeams(overlayData.teams);
+    if (phase !== overlayData.progress.phase || bo !== overlayData.bo || firstPick !== overlayData.progress.phases[overlayData.progress.phase - 1].first_pick) {
+        phase = overlayData.progress.phase;
+        bo = overlayData.bo;
+        firstPick = overlayData.progress.phases[overlayData.progress.phase - 1].first_pick;
+        mappool_arrangePickBoxes(overlayData);
+    }
+    mappool_updatePick(overlayData);
+}
+
+setInterval(mappool_update, 100);
 
 function mappool_switchTeamBox() {
     if (window.getComputedStyle(mappool_teamInfoElements[0]).opacity === "0") {
@@ -216,16 +273,3 @@ for (let i = 0; i < 2; i++) {
     mappool_teamPlayersElements[i].style.opacity = 0;
 }
 setInterval(mappool_switchTeamBox, 10000);
-
-
-//
-// Update Function
-
-function mappool_update() {
-    mappool_updatePhase(overlayData.progress);
-    mappool_updateMatchInfo(overlayData);
-    mappool_updateTeams(overlayData.teams);
-    mappool_arrangePickedMapBoxes(overlayData);
-}
-
-setInterval(mappool_update, 100);

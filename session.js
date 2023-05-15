@@ -1,3 +1,7 @@
+const path = require("path");
+
+path = require("path");
+
 exports = module.exports = {
     type: "match",
     match_code: 24,
@@ -34,39 +38,9 @@ exports = module.exports = {
     }],
     now_playing: {
         mode: "fb2k",
-        metadata: {
-            mapId: 0,
-            setId: 0,
-            code: "NM1",
-            title: "signal flare",
-            artist: "森羅万象",
-            mapper: "",
-            difficulty: ""
-        },
-        time: {
-            position: 100,
-            length: 270
-        },
-        stats: {
-            cs: 0,
-            ar: 0,
-            od: 0,
-            hp: 0,
-            sr: 0,
-            bpm: "",
-            modified: {
-                cs: 0,
-                ar: 0,
-                od: 0,
-                hp: 0,
-                sr: 0,
-                bpm: ""
-            }
-        },
-        images: {
-            cover: "/api/fb2k/albumart",
-            background: ""
-        }
+        time: 0,
+        osu: require(path.join(__dirname, "templates/map")),
+        fb2k: require(path.join(__dirname, "templates/fb2k")),
     },
     intro: {},
     lobby: [{
@@ -95,46 +69,28 @@ exports = module.exports = {
         acc: 96.72
     }],
     mappool: {
-        maps: {}
+        maps: []
     },
     progress: {
         phase: 1,
         phases: [{
             first_pick: "Team 쩌리들",
-            ban: [{
-                code: "NM1",
-                team: "Team 쩌리들"
-            }, {
-                code: "DT1",
-                team: "네타바레"
-            }, {
-                code: "FM2",
-                team: "Team 쩌리들"
-            }, {
-                code: "NM2",
-                team: "네타바레"
-            }],
-            pick: [{
-                current: false,
-                code: "NM3",
-                team: "Team 쩌리들",
-                win: "Team 쩌리들"
-            }, {
-                current: true,
-                code: "DT2",
-                team: "네타바레",
-                win: ""
-            }, {
-                current: false,
-                code: "DT3",
-                team: "네타바레",
-                win: ""
-            }, {
-                current: false,
-                code: "HD2",
-                team: "Team 쩌리들",
-                win: ""
-            }]
-        }, {}]
+            order: [
+                {
+                    code: "",
+                    team: "",
+                    pick: true,    // false: ban
+                    map: require(path.join(__dirname, "map"))
+                },
+                require(path.join(__dirname, "templates/banpick")),
+                require(path.join(__dirname, "templates/banpick")),
+                require(path.join(__dirname, "templates/banpick")),
+                require(path.join(__dirname, "templates/banpick")),
+                require(path.join(__dirname, "templates/banpick"))
+            ]
+        }, {
+            first_pick: "네타바레",
+            order: []
+        }]
     }
 }

@@ -126,12 +126,12 @@
     background-color: #000000;
 }
 
-.mappool-pickedMapRow {
+.mappool-pickBoxRow {
     height: 50%;
     align-items: center;
 }
 
-.mappool-pickedMapRowStartOffset {
+.mappool-pickBoxRowStartOffset {
     width: 105px;
 }
 

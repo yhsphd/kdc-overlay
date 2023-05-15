@@ -1,8 +1,10 @@
 const express = require("express");
 const router = express.Router();
+
+const path = require('path');
 const net = require("net");
 
-const config = require("../config");
+const config = require(path.join(process.cwd(), "config"));
 
 const client = new net.Socket();
 let intervalConnect = false;

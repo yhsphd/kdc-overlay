@@ -1,10 +1,10 @@
 const express = require("express");
 const router = express.Router();
+
+const path = require('path');
 const {v2, auth} = require('osu-api-extended');
 
-const config = require("../config");
-
-let bearer = "";
+const config = require(path.join(process.cwd(), "config"));
 
 let players = {};
 let beatmaps = {};

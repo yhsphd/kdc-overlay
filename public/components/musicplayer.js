@@ -28,21 +28,25 @@ musicplayer_getDOM();
 // UI Update Functions
 
 function updateMusicplayer(nowPlaying) {
-    musicplayer_positionElement.innerText = secondsToMMSS(nowPlaying.time.position);
-    musicplayer_lengthElement.innerText = secondsToMMSS(nowPlaying.time.length);
-    musicplayer_progressbarElement.style.width = nowPlaying.time.position / nowPlaying.time.length * 100 + "%";
+    const npInfo = nowPlaying[nowPlaying.mode];
 
-    if (nowPlaying.images.cover) {
-        musicplayer_coverElement.src = nowPlaying.images.cover + "?" + new Date().getTime();
-    } else if (nowPlaying.images.background) {
-        musicplayer_coverElement.src = nowPlaying.images.background;
+    musicplayer_positionElement.innerText = secondsToMMSS(nowPlaying.time);
+    musicplayer_lengthElement.innerText = secondsToMMSS(npInfo.length);
+    musicplayer_progressbarElement.style.width = nowPlaying.time / npInfo.length * 100 + "%";
+
+    if (nowPlaying.mode === "fb2k") {
+        musicplayer_coverElement.src = npInfo.cover + "?" + new Date().getTime();
+    } else if (npInfo.background) {
+        musicplayer_coverElement.src = npInfo.background;
+    } else {
+        musicplayer_coverElement.src = "none";
     }
 
-    if (nowPlaying.metadata.title) {
-        musicplayer_titleElement.innerText = nowPlaying.metadata.title;
+    if (npInfo.title) {
+        musicplayer_titleElement.innerText = npInfo.title;
     }
-    if (nowPlaying.metadata.artist) {
-        musicplayer_artistElement.innerText = nowPlaying.metadata.artist;
+    if (npInfo.artist) {
+        musicplayer_artistElement.innerText = npInfo.artist;
     }
 }
 

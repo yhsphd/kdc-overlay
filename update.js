@@ -1,5 +1,5 @@
 exports = module.exports = function (io) {
-    let defaultSession = require("./defaults/session.default");
+    let defaultSession = require("./templates/session");
     let session = defaultSession;
 
     session = require("./session");      // debug
@@ -21,10 +21,10 @@ exports = module.exports = function (io) {
                     // getOsuNp = false;
                     session.now_playing = defaultSession.now_playing;
                     session.now_playing.mode = "fb2k";
-                    session.now_playing.metadata.title = data.player.activeItem.columns[1];
-                    session.now_playing.metadata.artist = data.player.activeItem.columns[0];
-                    session.now_playing.time.position = data.player.activeItem.position;
-                    session.now_playing.time.length = data.player.activeItem.duration;
+                    session.now_playing.fb2k.title = data.player.activeItem.columns[1];
+                    session.now_playing.fb2k.artist = data.player.activeItem.columns[0];
+                    session.now_playing.time = data.player.activeItem.position;
+                    session.now_playing.fb2k.length = data.player.activeItem.duration;
                 } else {
                     // getOsuNp = true;
                 }

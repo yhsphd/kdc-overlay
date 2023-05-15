@@ -42,23 +42,23 @@ function getMapIndex(progress) {
 //
 // UI Update Functions
 
-function updateMetadata(nowPlaying, progress) {
-    metadata_phaseElement.innerText = `Phase ${progress.phase}`;
-    metadata_indexElement.innerText = `map ${getMapIndex(progress).join(" of ")}`;
-    metadata_mapCodeElement.innerText = nowPlaying.metadata.code;
-    metadata_bgElement.style.backgroundImage = `url("${nowPlaying.images.background}")`;
+function updateMetadata(overlayData) {
+    metadata_phaseElement.innerText = `Phase ${overlayData.progress.phase}`;
+    metadata_indexElement.innerText = `map ${getMapIndex(overlayData.progress).join(" of ")}`;
+    metadata_mapCodeElement.innerText = overlayData.now_playing.osu.code;
+    metadata_bgElement.style.backgroundImage = `url("${overlayData.now_playing.osu.background}")`;
     const values = [
-        nowPlaying.metadata.title,
-        nowPlaying.metadata.artist,
-        nowPlaying.metadata.mapper,
-        nowPlaying.metadata.difficulty,
-        nowPlaying.stats.cs,
-        nowPlaying.stats.ar,
-        nowPlaying.stats.od,
-        nowPlaying.stats.hp,
-        nowPlaying.stats.sr,
-        secondsToMMSS(nowPlaying.time.length),
-        nowPlaying.stats.bpm
+        overlayData.now_playing.osu.title,
+        overlayData.now_playing.osu.artist,
+        overlayData.now_playing.osu.mapper,
+        overlayData.now_playing.osu.difficulty,
+        overlayData.now_playing.osu.stats.modified.cs,
+        overlayData.now_playing.osu.stats.modified.ar,
+        overlayData.now_playing.osu.stats.modified.od,
+        overlayData.now_playing.osu.stats.modified.hp,
+        overlayData.now_playing.osu.stats.modified.sr,
+        secondsToMMSS(overlayData.now_playing.osu.stats.modified.length),
+        overlayData.now_playing.osu.stats.modified.bpm
     ];
     for (let i = 0; i < metadata_valueElements.length; i++) {
         metadata_valueElements[i].innerText = values[i];
@@ -70,7 +70,7 @@ function updateMetadata(nowPlaying, progress) {
 // Update Function
 
 function metadata_update() {
-    updateMetadata(overlayData.now_playing, overlayData.progress);
+    updateMetadata(overlayData);
 }
 
 setInterval(metadata_update, 500);

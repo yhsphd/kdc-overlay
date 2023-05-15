@@ -71,23 +71,42 @@ function numberWithCommas(x) {
 const clampNumber = (num, a, b) =>
     Math.max(Math.min(num, Math.max(a, b)), Math.min(a, b));
 
-function transitionCrossfadeElements(element2hide, element2show, duration) {
-    let element2hide_opacity = window.getComputedStyle(element2hide).getPropertyValue("opacity");
-    let element2show_opacity = window.getComputedStyle(element2show).getPropertyValue("opacity");
-
-    if (element2hide_opacity === "1" && element2show_opacity === "0") {
+function transitionCrossfadeElements(element2hide, element2show, duration, force) {
+    if (!element2hide) {            // no element to hide
+        element2show.style.animationDuration = `${duration}ms`;
+        element2show.classList.add("fadeInAnimation");
+        element2show.addEventListener("animationend", () => {
+            element2show.style.opacity = 1;
+            element2show.classList.remove("fadeInAnimation");
+        }, {once: true});
+    } else if (!element2show) {     // no element to show
         element2hide.style.animationDuration = `${duration}ms`;
         element2hide.classList.add("fadeOutAnimation");
         element2hide.addEventListener("animationend", () => {
             element2hide.style.opacity = 0;
             element2hide.classList.remove("fadeOutAnimation");
-            element2show.style.animationDuration = `${duration}ms`;
-            element2show.classList.add("fadeInAnimation");
-            element2show.addEventListener("animationend", () => {
-                element2show.style.opacity = 1;
-                element2show.classList.remove("fadeInAnimation");
-            }, {once: true});
         }, {once: true});
+    } else {                        // there are both element to hide and element to show
+        let element2hide_opacity = window.getComputedStyle(element2hide).getPropertyValue("opacity");
+        let element2show_opacity = window.getComputedStyle(element2show).getPropertyValue("opacity");
+
+        if ((element2hide_opacity === "1" && element2show_opacity === "0") || force) {
+            element2hide.style.animationDuration = `${duration}ms`;
+            element2hide.classList.add("fadeOutAnimation");
+            element2hide.addEventListener("animationend", () => {
+                element2hide.style.opacity = 0;
+                element2hide.classList.remove("fadeOutAnimation");
+                element2show.style.animationDuration = `${duration}ms`;
+                element2show.classList.add("fadeInAnimation");
+                element2show.addEventListener("animationend", () => {
+                    element2show.style.opacity = 1;
+                    element2show.classList.remove("fadeInAnimation");
+                }, {once: true});
+            }, {once: true});
+        } else {
+            element2hide.style.opacity = 0;
+            element2show.style.opacity = 1;
+        }
     }
 }
 
@@ -105,6 +124,10 @@ function teamName2color(overlayData, mode, name) {
     } else if (name === names[1]) {
         return "blue"
     }
+}
+
+function code2mapId(overlayData, code) {
+
 }
 
 
