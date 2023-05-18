@@ -23,7 +23,7 @@ exports = module.exports = {
     }, {
         name: "네타바레",
         acronym: "적폐",
-        seed: "1",
+        seed: 1,
         players: [{
             id: 6537257,
             nick: "KitaShia",
@@ -40,31 +40,35 @@ exports = module.exports = {
         fb2k: require(path.join(__dirname, "templates/fb2k")),
     },
     intro: {},
-    lobby: [{
-        id: 6665667,
-        nick: "yhsphd",
-        score: 589332,
-        combo: 133,
-        acc: 96.72
-    }, {
-        id: 1076236,
-        nick: "ToGlette",
-        score: 755235,
-        combo: 133,
-        acc: 96.72
-    }, {
-        id: 6537257,
-        nick: "KitaShia",
-        score: 433423,
-        combo: 133,
-        acc: 96.72
-    }, {
-        id: 4585186,
-        nick: "Nopekjk",
-        score: 955543,
-        combo: 133,
-        acc: 96.72
-    }],
+    lobby: {
+        players: [{
+            id: 6665667,
+            nick: "yhsphd",
+            score: 589332,
+            combo: 133,
+            acc: 96.72
+        }, {
+            id: 8991722,
+            nick: "Atipir",
+            score: 755235,
+            combo: 133,
+            acc: 96.72
+        }, {
+            id: 6537257,
+            nick: "KitaShia",
+            score: 433423,
+            combo: 133,
+            acc: 96.72
+        }, {
+            id: 4585186,
+            nick: "Nopekjk",
+            score: 955543,
+            combo: 133,
+            acc: 96.72
+        }],
+        scores: [0, 0],
+        set_scores: [0, 0]
+    },
     mappool: {
         NM1: {
             map_id: 4003023,
@@ -385,6 +389,7 @@ exports = module.exports = {
     },
     progress: {
         phase: 1,
+        state: 0,
         phases: [{
             first_pick: "Team 쩌리들",
             order: [
@@ -409,7 +414,8 @@ exports = module.exports = {
     chat: [
         [new Date("2023-05-17T15:30:00+09:00"), "yhsphd", "공구리"],
         [new Date("2023-05-17T15:31:00+09:00"), "Nopekjk", "말도안되죠"],
-        [new Date("2023-05-17T15:31:20+09:00"), "Atipir", "asdfasdf"],
-        [new Date("2023-05-17T15:32:10+09:00"), "KitaShia", "asdfasdf"]
+        [new Date("2023-05-17T15:31:20+09:00"), "Atipir", "저도 플레이어분들을 최대한 만족시키기 위해 재밌는 맵풀을 만들도록 노력하겠습니다."],
+        [new Date("2023-05-17T15:32:10+09:00"), "KitaShia", "220bpm? 느려"],
+        [new Date("2023-05-17T15:32:10+09:00"), "ToGlette", "저는 저주를 내릴 줄 모릅니다"]
     ]
 }

@@ -36,18 +36,20 @@ exports = module.exports = function (io) {
         console.log("Socket Error: ", error);
     };
 
+    let chatCount = 0;
     // Update osu! data when receiving websocket messaage
     gosuWebSocket.onmessage = event => {
         const data = JSON.parse(event.data);
-        const dt = (data.menu.mods.num >> 4) % 2 === 1;
+        const dt = (data.menu.mods.num >> 6) % 2 === 1;
         let code;
 
-        for (let key in session.mappool) {
+        for (let key in session.mappool) {      // Check if current map is mappool
             if (session.mappool[key].map_id === data.menu.bm.id) {
                 code = key;
             }
         }
 
+        // Update now playing data in session
         session.now_playing.osu = {
             map_id: data.menu.bm.id,
             mapset_id: data.menu.bm.set,
@@ -78,6 +80,44 @@ exports = module.exports = function (io) {
                 }
             }
         }
+
+        // Receive new chat messages
+        if (data.tourney.manager.chat.length > chatCount) {
+            let chats2addCount = data.tourney.manager.chat.length - chatCount;
+            chatCount = chat.length;
+
+            for (let i = 0; i < chats2addCount; i++) {
+                session.chat.append([new Date(), data.tourney.manager.chat[chatCount - i].name, data.tourney.manager.chat[chatCount - i].messageBody]);
+            }
+        } else if (data.tourney.manager.chat.length < chatCount) {      // If chat count has decreased, reset the chat
+            session.chat = [];
+            chatCount = 0;
+        }
+
+        // Get players in lobby
+        for (let i = 0; i < 2; i++) {
+            for (let j = 0; j < 2; j++) {
+                session.teams[i].players[j].id = data.ipcClients[2 * i + j].spectating.userID;
+                session.teams[i].players[j].nick = data.ipcClients[2 * i + j].spectating.name;
+                session.teams[i].players[j].rank = data.ipcClients[2 * i + j].spectating.globalRank;
+            }
+            session.teams[i].set_score = data.tourney.manager.stars[["left", "right"][i]];
+            session.teams[i].score = data.tourney.manager.gameplay.score[["left", "right"][i]];
+        }
+
+        // Get players' live playdata
+        for (let i = 0; i < 4; i++) {
+            session.lobby[i] = {
+                id: data.ipcClients[i].spectating.userID,
+                nick: data.ipcClients[i].spectating.name,
+                score: data.ipcClients[i].gameplay.score,
+                combo: data.ipcClients[i].gameplay.combo.current,
+                acc: data.ipcClients[i].gameplay.accuracy
+            }
+        }
+
+        // Get IPCstate
+        session.progress.state = data.tourney.manager.ipcState;
     };
 
     // Updating fb2k data

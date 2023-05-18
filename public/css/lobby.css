@@ -97,6 +97,7 @@ body {
 
 #chatBox {
     position: absolute;
+    width: 100%;
 }
 
 .chat {

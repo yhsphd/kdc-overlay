@@ -37,24 +37,26 @@ function lobby_updateTeams(teams) {
 
 function lobby_showChat(hide = false) {
     transitionCrossfadeElements(lobby_scoreBoxElement, lobby_chatBoxElement, 300);
+    chatVisible = true;
 }
 
 function lobby_showScores(hide = false) {
     transitionCrossfadeElements(lobby_chatBoxElement, lobby_scoreBoxElement, 300);
+    chatVisible = false;
 }
 
 
 let scoreDiffLog = [];
 
 function lobby_updateScores(lobby) {
-    lobby_scoreElements[0].innerText = numberWithCommas(lobby[0].score + lobby[1].score);
-    lobby_scoreElements[1].innerText = numberWithCommas(lobby[2].score + lobby[3].score);
+    lobby_scoreElements[0].innerText = numberWithCommas(lobby.scores[0]);
+    lobby_scoreElements[1].innerText = numberWithCommas(lobby.scores[1]);
 
-    let diff = lobby[0].score + lobby[1].score - lobby[2].score - lobby[3].score;
+    let diff = lobby.scores[0] - lobby.scores[1];
     lobby_scoreDiffElement.innerText = numberWithCommas(Math.abs(diff));
 
-    lobby_accElements[0].innerText = ((lobby[0].acc + lobby[1].acc) / 2).toFixed(2) + "%";
-    lobby_accElements[1].innerText = ((lobby[2].acc + lobby[3].acc) / 2).toFixed(2) + "%";
+    lobby_accElements[0].innerText = ((lobby.players[0].acc + lobby.players[1].acc) / 2).toFixed(2) + "%";
+    lobby_accElements[1].innerText = ((lobby.players[2].acc + lobby.players[3].acc) / 2).toFixed(2) + "%";
 
     //Add diffspeed
     scoreDiffLog.push(diff);
@@ -73,6 +75,23 @@ function lobby_updateScores(lobby) {
     }
 }
 
+let chatVisible = true;
+let tempState = -1;
+// Updates visibilities of chat/scores, leaderboard/mapcompacts
+function lobby_updateVisibilities(overlayData) {
+    if (tempState !== overlayData.progress.state) {
+        tempState = overlayData.progress.state;
+        if (tempState === 1) {
+            lobby_showChat();
+        } else {
+            lobby_showScores();
+        }
+    }
+    if (tempState === 4 && overlayData.teams[0].score === 0 && !chatVisible) {
+        lobby_showChat();
+    }
+}
+
 
 //
 // Update Function
@@ -81,6 +100,7 @@ function lobby_update() {
     lobby_updateMatchInfo(overlayData);
     lobby_updateTeams(overlayData.teams);
     chat_updateChat(overlayData.chat, lobby_chatBoxElement);
+    lobby_updateVisibilities(overlayData);
 }
 
 setInterval(lobby_update, lobby_update_interval);
