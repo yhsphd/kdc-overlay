@@ -11,9 +11,12 @@
     height: 100%;
 }
 
+.divider{
+    margin: 0px 10px 0px 10px;
+}
+
 #tourneyTitle {
     height: 100%;
-    margin-left: 24px;
     line-height: 37px;
 }
 
@@ -40,4 +43,5 @@
     height: 100%;
     font-weight: 700;
     font-size: 48px;
+    word-break: keep-all;
 }

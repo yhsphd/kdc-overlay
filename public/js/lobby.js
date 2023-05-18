@@ -13,8 +13,6 @@ let lobby_diffSpeedRotatorElement = document.getElementById("diffSpeedRotator");
 let lobby_diffSpeedValueContainerElement = document.getElementById("diffSpeedValueContainer");
 let lobby_diffSpeedValueElement = document.getElementById("diffSpeedValue");
 
-let scoreDiffLog = [];
-
 const lobby_update_interval = 100;
 
 
@@ -44,6 +42,9 @@ function lobby_showChat(hide = false) {
 function lobby_showScores(hide = false) {
     transitionCrossfadeElements(lobby_chatBoxElement, lobby_scoreBoxElement, 300);
 }
+
+
+let scoreDiffLog = [];
 
 function lobby_updateScores(lobby) {
     lobby_scoreElements[0].innerText = numberWithCommas(lobby[0].score + lobby[1].score);
@@ -77,7 +78,9 @@ function lobby_updateScores(lobby) {
 // Update Function
 
 function lobby_update() {
-
+    lobby_updateMatchInfo(overlayData);
+    lobby_updateTeams(overlayData.teams);
+    chat_updateChat(overlayData.chat, lobby_chatBoxElement);
 }
 
 setInterval(lobby_update, lobby_update_interval);

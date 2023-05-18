@@ -1,11 +1,14 @@
 exports = module.exports = {
     map_id: 0,
     mapset_id: 0,
+    code: "",
     background: "",
+    cover: "",
     title: "",
     artist: "",
     mapper: "",
     difficulty: "",
+    /*time: 0,*/    // when used for now_playing
     stats: {
         cs: 0,
         ar: 0,
@@ -14,7 +17,7 @@ exports = module.exports = {
         sr: 0,
         bpm: "",
         length: 0,
-        modified: {
+        /*modified: {
             cs: 0,
             ar: 0,
             od: 0,
@@ -22,6 +25,6 @@ exports = module.exports = {
             sr: 0,
             bpm: "",
             length: 0,
-        }
-    },
+        }*/         // when used for now_playing
+    }
 }

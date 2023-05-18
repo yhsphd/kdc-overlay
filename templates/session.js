@@ -36,19 +36,16 @@ exports = module.exports = {
     }],
     now_playing: {
         mode: "",
-        time: 0,
         osu: require(path.join(__dirname, "map")),
         fb2k: require(path.join(__dirname, "fb2k")),
     },
     intro: {},
     lobby: {},
-    mappool: {
-        maps: []
-    },
+    mappool: {},
     progress: {
         phase: 1,
         phases: [{
-            first_pick:"",
+            first_pick: "",
             order: [
                 // require(path.join(__dirname, "banpick"))
             ]
@@ -56,5 +53,6 @@ exports = module.exports = {
             first_pick: "",
             order: []
         }]
-    }
+    },
+    chat: {}
 }

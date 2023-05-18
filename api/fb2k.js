@@ -114,11 +114,13 @@ router.get("/nowplaying", (req, res) => {
 });
 
 router.get("/albumart", (req, res) => {
-    let img = Buffer.from(albumart, "base64")
-    res.writeHead(200, {
-        'Content-Type': 'image/png', 'Content-Length': img.length
-    });
-    res.end(img);
+    if (albumart) {
+        let img = Buffer.from(albumart, "base64")
+        res.writeHead(200, {
+            'Content-Type': 'image/png', 'Content-Length': img.length
+        });
+        res.end(img);
+    }
 });
 
 module.exports = router;

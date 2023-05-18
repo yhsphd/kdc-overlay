@@ -65,6 +65,7 @@ function mappool_resetPickBox(element) {
 /**
  * @param {number} index - index of the pickBox
  * @param {number} mode - 0:blank the pickBox, 1:show loading, 2:picked, 3:banned
+ * @param {string} code - code of the mappool
  * @param {string} image - url to the background image of the map
  */
 function mappool_editPickBoxContent(index, mode, code, image) {

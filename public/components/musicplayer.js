@@ -19,6 +19,10 @@ function musicplayer_getDOM() {
     } catch (e) {
         setTimeout(musicplayer_getDOM, 1000);
     }
+
+    if (!musicplayer_coverElement || !musicplayer_titleElement || !musicplayer_artistElement || !musicplayer_progressbarElement || !musicplayer_positionElement || !musicplayer_lengthElement) {
+        setTimeout(musicplayer_getDOM, 1000);
+    }
 }
 
 musicplayer_getDOM();
@@ -27,26 +31,34 @@ musicplayer_getDOM();
 //
 // UI Update Functions
 
+let tempTitle, tempArtist;
+
 function updateMusicplayer(nowPlaying) {
     const npInfo = nowPlaying[nowPlaying.mode];
-
-    musicplayer_positionElement.innerText = secondsToMMSS(nowPlaying.time);
-    musicplayer_lengthElement.innerText = secondsToMMSS(npInfo.length);
-    musicplayer_progressbarElement.style.width = nowPlaying.time / npInfo.length * 100 + "%";
-
-    if (nowPlaying.mode === "fb2k") {
-        musicplayer_coverElement.src = npInfo.cover + "?" + new Date().getTime();
-    } else if (npInfo.background) {
-        musicplayer_coverElement.src = npInfo.background;
-    } else {
-        musicplayer_coverElement.src = "none";
-    }
 
     if (npInfo.title) {
         musicplayer_titleElement.innerText = npInfo.title;
     }
     if (npInfo.artist) {
         musicplayer_artistElement.innerText = npInfo.artist;
+    }
+
+    if (nowPlaying.mode === "fb2k") {
+        musicplayer_positionElement.innerText = secondsToMMSS(npInfo.time / 1000);
+        musicplayer_lengthElement.innerText = secondsToMMSS(npInfo.length / 1000);
+        musicplayer_progressbarElement.style.width = npInfo.time / npInfo.length * 100 + "%";
+        if (tempTitle !== npInfo.title || tempArtist !== npInfo.artist) {
+            musicplayer_coverElement.style.backgroundImage = `url("${npInfo.cover + "?" + new Date().getTime()}")`;
+            tempTitle = npInfo.title;
+            tempArtist = npInfo.artist;
+        }
+    } else {
+        musicplayer_positionElement.innerText = secondsToMMSS(npInfo.time / 1000);
+        musicplayer_lengthElement.innerText = secondsToMMSS(npInfo.stats.length / 1000);
+        musicplayer_progressbarElement.style.width = npInfo.time / npInfo.stats.length * 100 + "%";
+        musicplayer_coverElement.style.backgroundImage = `url("${npInfo.background}")`;
+        tempTitle = npInfo.title;
+        tempArtist = npInfo.artist;
     }
 }
 

@@ -20,7 +20,10 @@
     margin: 17px;
     height: 96px;
     width: 96px;
+    min-width: 96px;
     background-size: cover;
+    background-position: center;
+    background-image: url("/samples/albumCover.png");
 }
 
 .intro-musicplayer-title {

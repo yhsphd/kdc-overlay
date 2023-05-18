@@ -50,6 +50,8 @@
 
 .metadata-value {
     font-size: 24px;
+    overflow: hidden;
+    white-space: nowrap;
 }
 
 .metadata .horizontalDivider {
