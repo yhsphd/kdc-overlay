@@ -56,6 +56,16 @@ function lobby_updateScores(lobby) {
     let diff = lobby.scores[0] - lobby.scores[1];
     lobby_scoreDiffElement.innerText = numberWithCommas(Math.abs(diff));
 
+    if (diff > 0) {
+        lobby_scoreDiffElement.style.backgroundImage = `url("/img/scorediff_red.svg")`;
+        lobby_scoreElements[0].style.fontWeight = 900;
+        lobby_scoreElements[1].style.fontWeight = 300;
+    } else {
+        lobby_scoreDiffElement.style.backgroundImage = `url("/img/scorediff_blue.svg")`;
+        lobby_scoreElements[0].style.fontWeight = 300;
+        lobby_scoreElements[1].style.fontWeight = 900;
+    }
+
     lobby_accElements[0].innerText = ((lobby.players[0].acc + lobby.players[1].acc) / 2).toFixed(2) + "%";
     lobby_accElements[1].innerText = ((lobby.players[2].acc + lobby.players[3].acc) / 2).toFixed(2) + "%";
 
