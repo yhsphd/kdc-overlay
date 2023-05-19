@@ -9,10 +9,10 @@ let lobby_scoreBoxElement = document.getElementById("scoreBox");
 let lobby_scoreElements = document.getElementsByClassName("scoreBox-teamBox-scoreSum");
 let lobby_accElements = document.getElementsByClassName("scoreBox-teamBox-accAvg");
 let lobby_scoreDiffElement = document.getElementById("scoreDiff");
-let lobby_diffSpeedArrowElement = document.getElementById("diffSpeed");
+/*let lobby_diffSpeedArrowElement = document.getElementById("diffSpeed");
 let lobby_diffSpeedRotatorElement = document.getElementById("diffSpeedRotator");
 let lobby_diffSpeedValueContainerElement = document.getElementById("diffSpeedValueContainer");
-let lobby_diffSpeedValueElement = document.getElementById("diffSpeedValue");
+let lobby_diffSpeedValueElement = document.getElementById("diffSpeedValue");*/
 
 const lobby_update_interval = 100;
 
@@ -70,7 +70,7 @@ function lobby_updateScores(lobby) {
     lobby_accElements[1].innerText = ((lobby.players[2].acc + lobby.players[3].acc) / 2).toFixed(2) + "%";
 
     //Add diffspeed
-    scoreDiffLog.push(diff);
+    /*scoreDiffLog.push(diff);
     let diffSpeed = (diff - scoreDiffLog[0]) * (1000 / (lobby_update_interval * (scoreDiffLog.length - 1)));
     if (scoreDiffLog.length === 11) {
         scoreDiffLog.shift();
@@ -83,7 +83,7 @@ function lobby_updateScores(lobby) {
     } else {
         lobby_diffSpeedRotatorElement.style.transform = "";
         lobby_diffSpeedValueContainerElement.style.textAlign = "left";
-    }
+    }*/
 }
 
 let bo = 0;
