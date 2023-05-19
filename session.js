@@ -66,6 +66,7 @@ exports = module.exports = {
             combo: 133,
             acc: 96.72
         }],
+        bo: 9,
         scores: [0, 0],
         set_scores: [0, 0]
     },

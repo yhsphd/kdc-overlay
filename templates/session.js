@@ -44,7 +44,12 @@ exports = module.exports = {
         fb2k: require(path.join(__dirname, "fb2k")),
     },
     intro: {},
-    lobby: {},
+    lobby: {
+        players: [],
+        bo: 0,
+        scores: [0, 0],
+        set_scores: [0, 0]
+    },
     mappool: {},
     progress: {
         phase: 1,

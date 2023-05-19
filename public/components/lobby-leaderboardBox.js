@@ -72,24 +72,24 @@ function lobby_showLeaderboard(hide = false) {
     }
 }
 
-function updateLeaderboardValue(lobby) {
+function updateLeaderboardValue(players) {
     for (let i = 0; i < lobby_leaderboardBoxElements.length; i++) {
-        lobby_leaderboardBox_pfpElements[i].src = `https://a.ppy.sh/${lobby[i].id}`;
-        lobby_leaderboardBox_nickElements[i].innerText = lobby[i].nick;
-        lobby_leaderboardBox_scoreElements[i].innerText = numberWithCommas(lobby[i].score);
-        lobby_leaderboardBox_comboElements[i].innerText = `${lobby[i].combo}x`;
-        lobby_leaderboardBox_accElements[i].innerText = `${lobby[i].acc}%`;
+        lobby_leaderboardBox_pfpElements[i].src = `https://a.ppy.sh/${players[i].id}`;
+        lobby_leaderboardBox_nickElements[i].innerText = players[i].nick;
+        lobby_leaderboardBox_scoreElements[i].innerText = numberWithCommas(players[i].score);
+        lobby_leaderboardBox_comboElements[i].innerText = `${players[i].combo}x`;
+        lobby_leaderboardBox_accElements[i].innerText = `${players[i].acc}%`;
     }
 }
 
 let playerOrder = [0, 1, 2, 3];     // top to bottom
 let transformsY = [0, 0, 0, 0];
 
-function updateLeaderboardOrder(lobby) {
+function updateLeaderboardOrder(players) {
     const height = 110;
 
     for (let i = 0; i < playerOrder.length - 1; i++) {
-        if (lobby[playerOrder[i]].score < lobby[playerOrder[i + 1]].score) {
+        if (players[playerOrder[i]].score < players[playerOrder[i + 1]].score) {
             transformsY[playerOrder[i]] += height;
             transformsY[playerOrder[i + 1]] -= height;
             let num = playerOrder[i];
@@ -110,8 +110,8 @@ function updateLeaderboardOrder(lobby) {
 
 function lobby_leaderboard_update() {
     if (lobby_leaderboardEnabled) {
-        updateLeaderboardValue(overlayData.lobby);
-        updateLeaderboardOrder(overlayData.lobby);
+        updateLeaderboardValue(overlayData.lobby.players);
+        updateLeaderboardOrder(overlayData.lobby.players);
     }
 }
 setInterval(lobby_leaderboard_update, 100);

@@ -42,6 +42,38 @@ body {
     font-weight: 700;
 }
 
+.setScoreBox {
+    position: absolute;
+    width: 390px;
+    height: 30px;
+    display: flex;
+    flex-direction: row;
+}
+
+.setScorePoint {
+    width: 45px;
+    height: 30px;
+    transform: skewX(45deg);
+    margin-right: 10px;
+    transition: background-color 0.3s ease-in-out;
+}
+
+#blueSetScore > .setScorePoint,
+#redSetScore > .setScorePoint {
+    background-color: white;
+}
+
+#redSetScore{
+    top: 155px;
+    left: 0px;
+    transform: scaleX(-1);
+}
+
+#blueSetScore{
+    top: 155px;
+    right: 0px;
+}
+
 .metadata {
     position: absolute;
     top: 310px;
@@ -98,38 +130,6 @@ body {
 #chatBox {
     position: absolute;
     width: 100%;
-}
-
-.chat {
-    width: 100%;
-    color: white;
-
-    --nick-yellow: #FFE604;
-    --nick-red: #EE534F;
-    --nick-blue: #41A4F5;
-}
-
-.chat > div {
-    margin: 0px 10px 0px 10px;
-}
-
-.chat-timestamp {
-    width: 7%;
-    font-size: 16px;
-    text-align: right;
-    padding-top: 6px;
-}
-
-.chat-nick {
-    width: 13%;
-    font-size: 20px;
-    font-weight: 700;
-    color: var(--nick-yellow);
-}
-
-.chat-msg {
-    width: 80%;
-    font-size: 20px;
 }
 
 #scoreBox {

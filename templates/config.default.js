@@ -11,6 +11,9 @@ config.channel = 0;
 config.clientID = 0;
 config.clientSecret = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx";
 
+// Gosumemory
+config.gosumemoryPort = 24050;
+
 // foobar2000
 config.fb2k = {beefweb: {}, controlserver: {}};
 config.fb2k.beefweb.host = "127.0.0.1";

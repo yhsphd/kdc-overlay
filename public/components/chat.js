@@ -11,7 +11,6 @@ function chat_addChat(chatArray, teams, chatBoxElement) {
     let team = -1;
     for (let i = 0; i < teams.length; i++) {
         for (let j = 0; j < teams[0].players.length; j++) {
-            console.log(`${chatArray[1]} === ${teams[i].players[j].nick}`);
             if (chatArray[1] === teams[i].players[j].nick) {
                 team = i;
             }
@@ -27,7 +26,7 @@ function chat_addChat(chatArray, teams, chatBoxElement) {
 
     element2add.querySelector(".chat-msg").innerText = chatArray[2];
 
-    chatBoxElement.appendChild(element2add);
+    chatBoxElement.insertBefore(element2add, chatBoxElement.firstChild);
 }
 
 function chat_clearChat(chatBoxElement) {

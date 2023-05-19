@@ -1,3 +1,8 @@
+#chatBox {
+    display: flex;
+    flex-direction: column-reverse;
+}
+
 .chat {
     width: 100%;
     color: white;

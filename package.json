@@ -17,7 +17,7 @@
     "osu-api-extended": "^2.5.30",
     "patch-package": "^7.0.0",
     "socket.io": "^4.6.1",
-    "reconnecting-websocket": "^4.4.0"
+    "websocket": "^1.0.34"
   },
   "devDependencies": {
     "ncp": "^2.0.0",

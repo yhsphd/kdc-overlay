@@ -1,39 +1,44 @@
 const path = require("path");
 const fs = require("fs");
+const config = require("./config");
 exports = module.exports = function (io) {
     const path = require("path");
     const fs = require("fs");
-    const ReconnectingWebSocket = require("./ReconnectingWebSocket");
+    const WebSocket = require("websocket").w3cwebsocket;
 
     const config = require("./config");
-
-    const gosuWebSocket = new ReconnectingWebSocket("ws://127.0.0.1:24050/ws");
     const defaultSession = require("./templates/session");
     let session = defaultSession;
 
+    // Load debug values
     fs.access(path.join(process.cwd(), "session"), () => {
-        session = require(path.join(process.cwd(), "session"));      // debug
+        session = require(path.join(process.cwd(), "session"));
     });
 
     let getOsuNp = false;
 
+    // socket.io setup
     io.on("connection", function (socket) {
         socket.on("file1Event", function () {
             console.log("file1Event triggered");
         });
     });
 
+    // Gosumemory websocket setup
+    let gosuWebSocket = new WebSocket(`ws://127.0.0.1:${config.gosumemoryPort}/ws`);
     gosuWebSocket.onopen = () => {
         console.log("Successfully Connected to Gosumemory!");
     };
 
     gosuWebSocket.onclose = event => {
-        console.log("Socket Closed Connection: ", event);
-        gosuWebSocket.send("Client Closed!");
+        console.log("Gosumemory WebSocket Connection closed.");
+        setTimeout(() => {
+            gosuWebSocket = new WebSocket(`ws://127.0.0.1:${config.gosumemoryPort}/ws`);
+        }, 1000);
     };
 
     gosuWebSocket.onerror = error => {
-        console.log("Socket Error: ", error);
+        console.log("Gosumemory WebSocket Connection error.");
     };
 
     let chatCount = 0;
@@ -81,43 +86,41 @@ exports = module.exports = function (io) {
             }
         }
 
-        // Receive new chat messages
-        if (data.tourney.manager.chat.length > chatCount) {
-            let chats2addCount = data.tourney.manager.chat.length - chatCount;
-            chatCount = chat.length;
+        // If Tourney Mode
+        let tourney = data.menu.state === 22;
+        if (tourney) {
+            // If not null, receive new chat messages
+            if (data.tourney.manager.chat != null) {
+                if (data.tourney.manager.chat.length > chatCount) {
+                    let chats2addCount = data.tourney.manager.chat.length - chatCount;
+                    chatCount = chat.length;
 
-            for (let i = 0; i < chats2addCount; i++) {
-                session.chat.append([new Date(), data.tourney.manager.chat[chatCount - i].name, data.tourney.manager.chat[chatCount - i].messageBody]);
+                    for (let i = 0; i < chats2addCount; i++) {
+                        session.chat.append([new Date(), data.tourney.manager.chat[chatCount - i].name, data.tourney.manager.chat[chatCount - i].messageBody]);
+                    }
+                } else if (data.tourney.manager.chat.length < chatCount) {      // If chat count has decreased, reset the chat
+                    session.chat = [];
+                    chatCount = 0;
+                }
             }
-        } else if (data.tourney.manager.chat.length < chatCount) {      // If chat count has decreased, reset the chat
-            session.chat = [];
-            chatCount = 0;
-        }
 
-        // Get players in lobby
-        for (let i = 0; i < 2; i++) {
-            for (let j = 0; j < 2; j++) {
-                session.teams[i].players[j].id = data.ipcClients[2 * i + j].spectating.userID;
-                session.teams[i].players[j].nick = data.ipcClients[2 * i + j].spectating.name;
-                session.teams[i].players[j].rank = data.ipcClients[2 * i + j].spectating.globalRank;
+            // Get players' live playdata
+            for (let i = 0; i < 4; i++) {
+                session.lobby.players[i] = {
+                    id: data.tourney.ipcClients[i].spectating.userID,
+                    nick: data.tourney.ipcClients[i].spectating.name,
+                    score: data.tourney.ipcClients[i].gameplay.score,
+                    combo: data.tourney.ipcClients[i].gameplay.combo.current,
+                    acc: data.tourney.ipcClients[i].gameplay.accuracy
+                }
+                session.lobby.bo = data.tourney.manager.bestOF;
+                session.lobby.set_scores = [data.tourney.manager.stars.left, data.tourney.manager.stars.right];
+                session.lobby.scores = [data.tourney.manager.gameplay.score.left, data.tourney.manager.gameplay.score.right];
             }
-            session.teams[i].set_score = data.tourney.manager.stars[["left", "right"][i]];
-            session.teams[i].score = data.tourney.manager.gameplay.score[["left", "right"][i]];
-        }
 
-        // Get players' live playdata
-        for (let i = 0; i < 4; i++) {
-            session.lobby[i] = {
-                id: data.ipcClients[i].spectating.userID,
-                nick: data.ipcClients[i].spectating.name,
-                score: data.ipcClients[i].gameplay.score,
-                combo: data.ipcClients[i].gameplay.combo.current,
-                acc: data.ipcClients[i].gameplay.accuracy
-            }
+            // Get IPCstate
+            session.progress.state = data.tourney.manager.ipcState;
         }
-
-        // Get IPCstate
-        session.progress.state = data.tourney.manager.ipcState;
     };
 
     // Updating fb2k data

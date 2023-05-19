@@ -1,5 +1,6 @@
 let lobby_acronymElements = document.getElementById("topbar").querySelector(".acronym");
 let lobby_teamNameElements = document.getElementsByClassName("teamName");
+let lobby_setScoreBoxElements = document.getElementsByClassName("setScoreBox");
 let lobby_leftBoxElement = document.getElementById("leftBox");
 let lobby_bracketElement = document.getElementById("bracket");
 let lobby_matchCodeElement = document.getElementById("matchCode");
@@ -75,8 +76,40 @@ function lobby_updateScores(lobby) {
     }
 }
 
+let bo = 0;
+let setScores = [0, 0];
+let setScorePointBaseElement = document.createElement("div")
+setScorePointBaseElement.classList.add("setScorePoint");
+
+function lobby_updateSetScores(lobby) {
+    if (bo !== lobby.bo) {
+        console.log("bo changed")
+        setScores = [0, 0];
+        bo = lobby.bo;
+        lobby_setScoreBoxElements[0].innerHTML = "";
+        lobby_setScoreBoxElements[1].innerHTML = "";
+        for (let i = 0; i < (bo + 1) / 2; i++) {
+            lobby_setScoreBoxElements[0].appendChild(setScorePointBaseElement.cloneNode(true));
+            lobby_setScoreBoxElements[1].appendChild(setScorePointBaseElement.cloneNode(true));
+        }
+    } else {
+        for (let i = 0; i < 2; i++) {
+            if (setScores[i] < lobby.set_scores[i]) {
+                console.log("add star")
+                setScores[i]++;
+                lobby_setScoreBoxElements[i].getElementsByClassName("setScorePoint")[setScores[i] - 1].style.backgroundColor = "#E7B942";
+            } else if (setScores[i] > lobby.set_scores[i]) {
+                console.log("remove star")
+                setScores[i]--;
+                lobby_setScoreBoxElements[i].getElementsByClassName("setScorePoint")[setScores[i]].style.backgroundColor = "white";
+            }
+        }
+    }
+}
+
 let chatVisible = true;
 let tempState = -1;
+
 // Updates visibilities of chat/scores, leaderboard/mapcompacts
 function lobby_updateVisibilities(overlayData) {
     if (tempState !== overlayData.progress.state) {
@@ -99,7 +132,9 @@ function lobby_updateVisibilities(overlayData) {
 function lobby_update() {
     lobby_updateMatchInfo(overlayData);
     lobby_updateTeams(overlayData.teams);
+    lobby_updateSetScores(overlayData.lobby);
     chat_updateChat(overlayData.chat, lobby_chatBoxElement);
+    lobby_updateScores(overlayData.lobby);
     lobby_updateVisibilities(overlayData);
 }
 
