@@ -93,10 +93,10 @@ exports = module.exports = function (io) {
             if (data.tourney.manager.chat != null) {
                 if (data.tourney.manager.chat.length > chatCount) {
                     let chats2addCount = data.tourney.manager.chat.length - chatCount;
-                    chatCount = chat.length;
+                    chatCount = data.tourney.manager.chat.length;
 
                     for (let i = 0; i < chats2addCount; i++) {
-                        session.chat.append([new Date(), data.tourney.manager.chat[chatCount - i].name, data.tourney.manager.chat[chatCount - i].messageBody]);
+                        session.chat.push([new Date(), data.tourney.manager.chat[(chatCount - 1) - i].name, data.tourney.manager.chat[(chatCount - 1) - i].messageBody]);
                     }
                 } else if (data.tourney.manager.chat.length < chatCount) {      // If chat count has decreased, reset the chat
                     session.chat = [];
