@@ -1,6 +1,8 @@
 #chatBox {
     display: flex;
     flex-direction: column-reverse;
+    overflow: hidden;
+    height: 100%;
 }
 
 .chat {
