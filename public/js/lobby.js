@@ -1,4 +1,4 @@
-let lobby_acronymElements = document.getElementById("topbar").querySelector(".acronym");
+let lobby_acronymElements = document.getElementById("topbar").getElementsByClassName("acronym");
 let lobby_teamNameElements = document.getElementsByClassName("teamName");
 let lobby_setScoreBoxElements = document.getElementsByClassName("setScoreBox");
 let lobby_leftBoxElement = document.getElementById("leftBox");
@@ -30,9 +30,9 @@ function lobby_updateMatchInfo(overlayData) {
 }
 
 function lobby_updateTeams(teams) {
-    for (let i = 0; i > 2; i++) {
-        lobby_acronymElements.innerText = teams[i].acronym;
-        lobby_teamNameElements.innerText = teams[i].name;
+    for (let i = 0; i < 2; i++) {
+        lobby_acronymElements[i].innerText = teams[i].acronym;
+        lobby_teamNameElements[i].innerText = teams[i].name;
     }
 }
 
