@@ -78,7 +78,7 @@ function updateLeaderboardValue(players) {
         lobby_leaderboardBox_nickElements[i].innerText = players[i].nick;
         lobby_leaderboardBox_scoreElements[i].innerText = numberWithCommas(players[i].score);
         lobby_leaderboardBox_comboElements[i].innerText = `${players[i].combo}x`;
-        lobby_leaderboardBox_accElements[i].innerText = `${players[i].acc}%`;
+        lobby_leaderboardBox_accElements[i].innerText = `${players[i].acc.toFixed(2)}%`;
     }
 }
 
