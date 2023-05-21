@@ -74,7 +74,7 @@ function lobby_showLeaderboard(hide = false) {
 
 function updateLeaderboardValue(players) {
     for (let i = 0; i < lobby_leaderboardBoxElements.length; i++) {
-        lobby_leaderboardBox_pfpElements[i].src = `https://a.ppy.sh/${players[i].id}`;
+        lobby_leaderboardBox_pfpElements[i].src = `https://a.ppy.sh/${players[i].id === 0 ? 1 : players[i].id}`;
         lobby_leaderboardBox_nickElements[i].innerText = players[i].nick;
         lobby_leaderboardBox_scoreElements[i].innerText = numberWithCommas(players[i].score);
         lobby_leaderboardBox_comboElements[i].innerText = `${players[i].combo}x`;
