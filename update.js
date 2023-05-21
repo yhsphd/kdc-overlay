@@ -128,7 +128,7 @@ exports = module.exports = function (io) {
         fetch(`http://127.0.0.1:${config.port}/api/fb2k/nowplaying`)
             .then((response) => response.json())
             .then((data) => {
-                if (data.fb2k_running && data.player.activeItem.index !== -1) {
+                if (data.fb2k_running && data.player.activeItem.index !== -1 && data.player.playbackState !== "stopped") {
                     getOsuNp = false;
                     session.now_playing = defaultSession.now_playing;
                     session.now_playing.mode = "fb2k";
@@ -138,6 +138,7 @@ exports = module.exports = function (io) {
                     session.now_playing.fb2k.length = data.player.activeItem.duration * 1000;
                 } else {
                     getOsuNp = true;
+                    session.now_playing.mode = "osu";
                 }
             });
     }
