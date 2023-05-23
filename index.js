@@ -22,11 +22,11 @@ if (!fs.existsSync("./config.js")) {
     app.use("/", publicBase);
 
     // API
-    const api = require("./api");
+    const api = require("./api")(config);
     app.use("/api", api);
 
     // Info fetching and sending to browser
-    require("./update")(io.of("/update"));
+    require("./update")(config, io.of("/update"));
 
 
     // Run Server

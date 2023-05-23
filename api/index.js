@@ -1,13 +1,9 @@
 const express = require('express');
 const router = express.Router();
 
-const osuapi = require("./osuapi");
-router.use("/osuapi", osuapi);
+exports = module.exports = function (config) {
+    const fb2k = require("./fb2k")(config);
+    router.use("/fb2k", fb2k);
 
-const fb2k = require("./fb2k");
-router.use("/fb2k", fb2k);
-
-const drive = require("./spreadsheets");
-router.use("/drive", drive);
-
-module.exports = router;
+    return router;
+};
