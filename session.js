@@ -2,36 +2,36 @@ const path = require("path");
 
 exports = module.exports = {
     type: "match",
-    match_code: 24,
-    bracket: "본선 2주차",
+    match_code: 2,
+    bracket: "예선 1주차",
     bo: 9,
     stream_title: "예선 맵풀 쇼케이스",
-    schedule: "2023-05-15T21:30:00+09:00",
+    schedule: "2023-05-21T01:00:00+09:00",
     teams: [{
-        name: "Team 쩌리들",
-        acronym: "쩌리들",
-        seed: 2,
+        name: "100% 오렌지쥬스",
+        acronym: "노르마",
+        seed: 6,
         players: [{
-            id: 6665667,
-            nick: "yhsphd",
-            rank: 13287
+            id: 7429772,
+            nick: "Megii",
+            rank: 1314
         }, {
-            id: 8991722,
-            nick: "Atipir",
-            rank: 3418
+            id: 4637369,
+            nick: "Petit",
+            rank: 525
         }]
     }, {
-        name: "네타바레",
-        acronym: "적폐",
-        seed: 1,
+        name: "Pain의 오스 교실",
+        acronym: "THX",
+        seed: 25,
         players: [{
-            id: 6537257,
-            nick: "KitaShia",
-            rank: 15562
+            id: 10776788,
+            nick: "[ Momoring ]",
+            rank: 51707
         }, {
-            id: 4585186,
-            nick: "Nopekjk",
-            rank: 1002
+            id: 1460263,
+            nick: "Pain",
+            rank: 362
         }]
     }],
     now_playing: {

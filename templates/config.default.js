@@ -12,7 +12,12 @@ config.clientID = 0;
 config.clientSecret = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx";
 
 // Gosumemory
+config.gosumemoryHost = "127.0.0.1"
 config.gosumemoryPort = 24050;
+
+// StreamCompanion
+config.SChost = "localhost";
+config.SCport = 20727;
 
 // foobar2000
 config.fb2k = {beefweb: {}, controlserver: {}};
