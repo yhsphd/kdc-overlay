@@ -1,40 +1,50 @@
-const express = require("express");
-const router = express.Router();
-
-const path = require('path');
-const {google} = require('googleapis');
-
-const config = require(path.join(process.cwd(), "config"));
+const path = require("path");
+const {google} = require("googleapis");
+const {match} = require("osu-api-extended/dist/api/v1");
 
 const auth = new google.auth.GoogleAuth({
-    keyFile: path.join(__dirname, "credentials.json"),
+    keyFile: path.join(process.cwd(), "credentials.json"),
     scopes: ["https://www.googleapis.com/auth/spreadsheets.readonly"]
 });
+const sheets = google.sheets({version: "v4", auth});
 
+exports = module.exports = function (config, session) {
 
-/**
- * Prints the names and majors of students in a sample spreadsheet:
- * @see https://docs.google.com/spreadsheets/d/1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs74OgvE2upms/edit
- * @param {google.auth.OAuth2} auth The authenticated Google OAuth client.
- */
-async function listMajors(auth) {
-    const sheets = google.sheets({version: 'v4', auth});
-    const res = await sheets.spreadsheets.values.get({
-        spreadsheetId: '1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs74OgvE2upms',
-        range: 'Class Data!A2:E',
-    });
-    const rows = res.data.values;
-    if (!rows || rows.length === 0) {
-        console.log('No data found.');
-        return;
+    //
+    // Team Info Update
+
+    // Rows: matchCode, bracket, bo, streamTitle, schedule, team1, team2
+    const range_updateTeams = "export!A4:AV10";
+    let matchCode = 0;
+
+    async function updateTeams() {
+        const res = await sheets.spreadsheets.values.get({
+            spreadsheetId: config.sheet,
+            range: range_updateTeams,
+        });
+        const rows = res.data.values;
+
+        let col;
+
+        for (let i = 0; i < rows[0].length; i++) {
+            if (rows[0][i] === matchCode.toString()) {
+                console.log(`\nFound <Match ${rows[0][i]}> on sheet!`);
+                col = i;
+            }
+        }
+        session.bracket = rows[1][col];
+        session.bo = parseInt(rows[2][col]);
+        console.log("\n==================== Stream Title ====================");
+        console.log(rows[3][col]);
+        console.log("======================================================\n");
+        session.schedule = rows[4][col];
+        session.teams = [JSON.parse(rows[5][col]), JSON.parse(rows[6][col])];
     }
-    console.log('Name, Major:');
-    rows.forEach((row) => {
-        // Print columns A and E, which correspond to indices 0 and 4.
-        console.log(`${row[0]}, ${row[4]}`);
-    });
+
+    setInterval( () => {
+        if (matchCode !== session.match_code) {
+            matchCode = session.match_code;
+            updateTeams();
+        }
+    }, 1000);
 }
-
-//listMajors(auth).catch(console.error);
-
-module.exports = router;

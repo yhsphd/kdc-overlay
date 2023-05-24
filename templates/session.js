@@ -4,6 +4,7 @@ exports = module.exports = {
     type: "",
     match_code: 0,
     bracket: "0",
+    mappool_name: "",
     bo: 0,
     stream_title: "",
     schedule: "2023-04-05T16:00:00+09:00",

@@ -3,15 +3,15 @@ const router = express.Router();
 
 const net = require("net");
 
+const consolePrefix = "[fb2k] ";
+
 exports = module.exports = function (config) {
     const client = new net.Socket();
     let intervalConnect = false;
 
     let albumart;
 
-    /**
-     * foo_controlserver socket connection
-     */
+    // foo_controlserver socket connection
     function connect() {
         client.connect({
             port: config.fb2k.controlserver.port,
@@ -32,7 +32,7 @@ exports = module.exports = function (config) {
 
     client.on("connect", () => {
         clearIntervalConnect();
-        console.log("Connected to foobar2000 control server!");
+        console.log("Successfully Connected to foobar2000 control server!");
         updateAlbumArt();
     });
 
@@ -47,25 +47,25 @@ exports = module.exports = function (config) {
             albumart += dataString.split("|")[0];
             if (dataString.endsWith("|")) {
                 receivingAlbumArt = false;
-                console.log("Done fetching album art!");
+                console.log(consolePrefix + "Done fetching album art!");
             }
         } else {
             let lines = data.toString().replace(/^\s+|\s+$/g, '').split(/\r?\n/);
             lines.forEach((line) => {
                 if (line.startsWith("701")) {
-                    console.log("Downloading new album art!");
+                    console.log(consolePrefix + "Downloading new album art!");
                     albumart = line.split("|")[2];
                     if (!line.endsWith("|")) {
                         receivingAlbumArt = true;
                     } else {
-                        console.log("Done fetching album art!");
+                        console.log(consolePrefix + "Done fetching album art!");
                     }
                 } else if (line.startsWith("111")) {
                     console.log("Song Changed!");
-                    console.log(line);
+                    console.log(consolePrefix + line);
                     updateAlbumArt();
                 } else {
-                    console.log(line);
+                    console.log(consolePrefix + line);
                 }
             });
         }

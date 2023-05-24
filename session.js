@@ -4,6 +4,7 @@ exports = module.exports = {
     type: "match",
     match_code: 2,
     bracket: "예선 1주차",
+    mappool_name: "",
     bo: 9,
     stream_title: "예선 맵풀 쇼케이스",
     schedule: "2023-05-21T01:00:00+09:00",
