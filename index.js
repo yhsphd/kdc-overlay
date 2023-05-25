@@ -6,8 +6,6 @@ const {Server} = require("socket.io");
 const io = new Server(server);
 const fs = require("fs");
 const path = require("path");
-const config = require("./config");
-const publicBase = require("./public");
 
 async function Init() {
     const configFileExists = fs.existsSync(path.join(process.cwd(), "./config.js"));
