@@ -1,4 +1,3 @@
-const session = require("../templates/session");
 let getOsuNp = false;
 
 exports = module.exports = function (config, session) {

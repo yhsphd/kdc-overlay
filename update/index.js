@@ -1,16 +1,32 @@
 const path = require("path");
 const fs = require("fs");
 
-exports = module.exports = function (config, io) {
-    const session = require("../templates/session");
+// Initialize session object structure
+const session = require("../templates/session");
 
+function loadStreamConfig() {
+    console.log("streamConfig file updated!");
+    delete require.cache[path.join(process.cwd(), "streamConfig.js")];
+    const streamConfig = require(path.join(process.cwd(), "streamConfig.js"));
+    session.type = streamConfig.type;
+    session.match_code = streamConfig.match_code;
+    session.mappool_name = streamConfig.mappool_name;
+    session.schedule = streamConfig.schedule;
+}
+
+exports = module.exports = function (config, io) {
     // Load debug values
-    fs.access(path.join(process.cwd(), "session"), () => {
-        const manualSession = require(path.join(process.cwd(), "session"));
-        for (key in session){
+    if (fs.existsSync(path.join(process.cwd(), "session.js"))) {
+        const manualSession = require(path.join(process.cwd(), "session.js"));
+        for (key in manualSession) {
             session[key] = manualSession[key];
         }
-    });
+    }
+
+    // Load streamConfig values
+    loadStreamConfig();
+    // Update value whenever the config file is changed
+    fs.watch(path.join(process.cwd(), "streamConfig.js"), loadStreamConfig);
 
     // socket.io setup
     io.on("connection", function (socket) {
@@ -26,7 +42,10 @@ exports = module.exports = function (config, io) {
     require("./streamcompanion")(config, session);
 
     // Updating fb2k data
-    require("./foobar2000")(config, session);
+    require("./fb2k")(config, session);
+
+    // Information from Google sheets
+    require("./spreadsheets")(config, session);
 
     // Session data broadcasting
     function broadcastUpdate() {
@@ -35,11 +54,3 @@ exports = module.exports = function (config, io) {
 
     setInterval(broadcastUpdate, 100);
 }
-
-
-/*
-setTimeout(() => {
-        osuapi.getPlayers([6665667, 4585186, 1076236, 6537257]);
-    }, 1000
-);
-*/

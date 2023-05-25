@@ -4,8 +4,7 @@ let config = {};
 config.port = 3000;
 
 // Stream Data Sheet
-config.sheet = "1OHttMy7yWG43IcIzimNgzLsOxJGEVNP0jrFf8DSz10M";
-config.channel = 0;
+config.sheet = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx";
 
 // osu!api v2
 config.clientID = 0;

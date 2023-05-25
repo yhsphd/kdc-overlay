@@ -131,5 +131,6 @@ dist
 
 public/samples/
 config.js
+streamConfig.js
 
 credentials.json
