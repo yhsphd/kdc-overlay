@@ -1,7 +1,6 @@
 const path = require("path");
 const {google} = require("googleapis");
-const {match} = require("osu-api-extended/dist/api/v1");
-const {total_objects} = require("osu-api-extended/dist/utility/tools");
+const {v2} = require('osu-api-extended');
 
 const auth = new google.auth.GoogleAuth({
     keyFile: path.join(process.cwd(), "credentials.json"),
@@ -41,10 +40,10 @@ exports = module.exports = function (config, session) {
         session.schedule = rows[4][col];
         session.teams = [JSON.parse(rows[5][col]), JSON.parse(rows[6][col])];
 
-        const playerIds = [];
         for (let i = 0; i < 2; i++) {
             for (let j = 0; j < 2; j++) {
-                playerIds.push(session.teams[i].players[j].id);
+                const playerdata = await v2.user.details(session.teams[i].players[j].id);
+                session.teams[i].players[j].rank = playerdata.statistics.global_rank;
             }
         }
     }

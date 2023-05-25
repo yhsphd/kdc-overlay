@@ -25,6 +25,9 @@ async function Init() {
     } else {
         const config = require(path.join(process.cwd(), "./config.js"));
 
+        // osu!api (v2) init
+        require("./osuApi")(config);
+
         // Static Folder
         const publicBase = require("./public");
         app.use("/", publicBase);
