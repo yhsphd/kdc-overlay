@@ -46,7 +46,8 @@ exports = module.exports = {
     },
     intro: {},
     lobby: {
-        players: [],
+        players: [{id: 0, nick: "", acc: 0, combo: 0, score: 0},{id: 0, nick: "", acc: 0, combo: 0, score: 0},
+        {id: 0, nick: "", acc: 0, combo: 0, score: 0},{id: 0, nick: "", acc: 0, combo: 0, score: 0}],
         bo: 0,
         scores: [0, 0],
         set_scores: [0, 0]
