@@ -29,6 +29,7 @@
     width: 13%;
     font-size: 20px;
     font-weight: 700;
+    white-space: nowrap;
     color: var(--nick-yellow);
 }
 

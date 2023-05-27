@@ -61,7 +61,7 @@ exports = module.exports = function (config) {
                         console.log(consolePrefix + "Done fetching album art!");
                     }
                 } else if (line.startsWith("111")) {
-                    console.log("Song Changed!");
+                    console.log(consolePrefix + "Song Changed!");
                     console.log(consolePrefix + line);
                     updateAlbumArt();
                 } else {

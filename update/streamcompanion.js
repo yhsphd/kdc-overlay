@@ -74,9 +74,9 @@ exports = module.exports = function(config, session){
                 session.now_playing.osu.mapper = data;
             } else if (key === "diffName") {
                 session.now_playing.osu.difficulty = data;
-            } else if (key === "time") {
+            }/* else if (key === "time") {
                 session.now_playing.osu.time = (data * 1000).toFixed();
-            } else if (key === "modsEnum") {
+            }*/ else if (key === "modsEnum") {
                 dt = (data >> 6) % 2 === 1;
             } else if (key === "cs") {
                 session.now_playing.osu.stats.cs = data;

@@ -1,9 +1,9 @@
-const {w3cwebsocket: WebSocket} = require("websocket");
+const { w3cwebsocket: WebSocket } = require("websocket");
 
 let gosuWs;
 
 exports = module.exports = function (config, session) {
-    function setupGosuWs(){
+    function setupGosuWs() {
         gosuWs = new WebSocket(`ws://${config.gosumemoryHost}:${config.gosumemoryPort}/ws`);
 
         gosuWs.onopen = () => {
@@ -24,9 +24,21 @@ exports = module.exports = function (config, session) {
         gosuWs.onmessage = event => {
             const data = JSON.parse(event.data);
 
+            // SC time not working
+            session.now_playing.osu.time = data.menu.bm.time.current;
+
             // If Tourney Mode
             let tourney = data.menu.state === 22;
             if (tourney) {
+                // Match gosumemory and overlay's slot count
+                if (session.lobby.players.length !== data.tourney.ipcClients.length) {
+                    console.log("slot mismatch");
+                    session.lobby.players = [];
+                    for (let i = 0; i < data.tourney.ipcClients.length; i++) {
+                        session.lobby.players.push({});
+                    }
+                }
+
                 // If not null, receive new chat messages
                 if (data.tourney.manager.chat != null) {
                     if (data.tourney.manager.chat.length > chatCount) {
