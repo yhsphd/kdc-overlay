@@ -132,5 +132,6 @@ dist
 public/samples/
 config.js
 streamConfig.js
+mappool.json
 
 credentials.json
