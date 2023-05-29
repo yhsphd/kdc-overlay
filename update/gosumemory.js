@@ -57,7 +57,7 @@ exports = module.exports = function (config, session) {
                 // Get players' live playdata
                 for (let i = 0; i < 4; i++) {
                     session.lobby.players[i].id = data.tourney.ipcClients[i].spectating.userID;
-                    session.lobby.players[i].score = data.tourney.ipcClients[i].gameplay.score;
+                    //session.lobby.players[i].score = data.tourney.ipcClients[i].gameplay.score;
                 }
 
                 // Get manager data

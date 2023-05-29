@@ -50,9 +50,9 @@ exports = module.exports = function(config, session){
                     session.lobby.players[clientNum].acc = data;
                 } else if (key === "combo") {
                     session.lobby.players[clientNum].combo = data;
-                } /*else if (key === "score") {
+                } else if (key === "score") {
                     session.lobby.players[clientNum].score = data;
-                }*/
+                }
             }
 
             if (key === "mapid") {
