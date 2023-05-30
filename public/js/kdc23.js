@@ -171,7 +171,6 @@ function updateOverflowScroll() {
 
     overflowScrollElements.forEach((element) => {
         const innerSpanElement = element.getElementsByTagName("span")[0];
-        console.log(`${innerSpanElement.clientWidth} - ${element.clientWidth} = ${innerSpanElement.clientWidth - element.clientWidth}`);
         if (element.clientWidth < innerSpanElement.clientWidth) {
             if (!innerSpanElement.classList.contains("overflowScrollAnimation")) {
                 const widthToMove = innerSpanElement.clientWidth - element.clientWidth;
