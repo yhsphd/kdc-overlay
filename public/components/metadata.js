@@ -80,8 +80,9 @@ function updateMetadata(overlayData) {
         }
 
         metadata_mapCodeElement.style.opacity = 1;
-        if (showcase) {
+        /*if (showcase) {
             metadata_phaseElement.style.opacity = 1;
+            metadata_phaseElement.innerText = `map ${getMapIndex(overlayData.progress).join(" of ")}`;
             metadata_phaseElement.innerText = `map ${getMapIndex(overlayData.progress).join(" of ")}`;
             metadata_indexElement.style.opacity = 0;
         } else {
@@ -89,7 +90,7 @@ function updateMetadata(overlayData) {
             metadata_phaseElement.innerText = `Phase ${overlayData.progress.phase}`;
             metadata_indexElement.style.opacity = 1;
             metadata_indexElement.innerText = `map ${getMapIndex(overlayData.progress).join(" of ")}`;
-        }
+        }*/
     } else {
         metadata_phaseElement.style.opacity = 0;
         metadata_indexElement.style.opacity = 0;
