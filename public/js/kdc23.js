@@ -132,6 +132,63 @@ function code2mapId(overlayData, code) {
 
 
 //
+// overflowScroll
+function overflowScroll_reset(element) {
+    element.style.transitionDuration = `0s, 0s`;
+    element.style.transform = "translateX(0%)";
+    element.style.left = `0%`;
+    element.style.transition = "none";
+}
+
+function overflowScroll_move(element, widthToMove, intro) {
+    if (!element.classList.contains("overflowScrollAnimation")) {   // stop animation if the element has lost the class
+        return;
+    }
+    element.style.transition = "none";
+    element.style.transitionProperty = "transform, left";
+    element.style.transitionTimingFunction = "linear";
+    if (intro) {    // start moving
+        const animationDuration = Math.round(widthToMove / 5);
+        element.style.transitionDuration = `${animationDuration}s, ${animationDuration}s`;
+        element.style.transform = `translateX(-100%)`;
+        element.style.left = `100%`;
+        setTimeout(() => {
+            overflowScroll_move(element, widthToMove, false);
+        }, animationDuration * 1000 + 5000);
+    } else {        // return
+        const animationDuration = Math.round(widthToMove / 10);
+        element.style.transitionDuration = `${animationDuration}s, ${animationDuration}s`;
+        element.style.transform = `translateX(0%)`;
+        element.style.left = `0%`;
+        setTimeout(() => {
+            overflowScroll_move(element, widthToMove, true);
+        }, animationDuration * 1000 + 5000);
+    }
+}
+
+function updateOverflowScroll() {
+    const overflowScrollElements = document.getElementsByClassName("overflowScroll");
+
+    overflowScrollElements.forEach((element) => {
+        const innerSpanElement = element.getElementsByTagName("span")[0];
+        console.log(`${innerSpanElement.clientWidth} - ${element.clientWidth} = ${innerSpanElement.clientWidth - element.clientWidth}`);
+        if (element.clientWidth < innerSpanElement.clientWidth) {
+            if (!innerSpanElement.classList.contains("overflowScrollAnimation")) {
+                const widthToMove = innerSpanElement.clientWidth - element.clientWidth;
+                innerSpanElement.classList.add("overflowScrollAnimation");
+                overflowScroll_move(innerSpanElement, widthToMove, true);
+            }
+        } else {
+            element.classList.remove("overflowScrollAnimation");
+            overflowScroll_reset(innerSpanElement);
+        }
+    });
+}
+
+setInterval(updateOverflowScroll, 100);
+
+
+//
 // Overlay Data
 
 let overlayData = {}

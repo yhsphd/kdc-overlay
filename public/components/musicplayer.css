@@ -27,11 +27,13 @@
 }
 
 .intro-musicplayer-title {
+    width: 250px;
     font-size: 24px;
     font-weight: 700;
 }
 
 .intro-musicplayer-artist {
+    width: 250px;
     font-size: 20px;
 }
 

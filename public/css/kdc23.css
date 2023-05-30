@@ -92,3 +92,14 @@ body {
 .fadeOutAnimation {
     animation-direction: reverse;
 }
+
+.overflowScroll {
+    position: relative;
+    overflow: hidden;
+}
+
+.overflowScroll > span {
+    position: relative;
+    display: inline-block;
+    white-space: nowrap;
+}

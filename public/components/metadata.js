@@ -18,7 +18,10 @@ function metadata_getDOM() {
         metadata_indexElement = document.getElementsByClassName("metadata-index")[0];
         metadata_mapCodeElement = document.getElementsByClassName("metadata-map")[0];
         metadata_bgElement = document.getElementsByClassName("metadata-bg")[0];
-        metadata_valueElements = document.getElementsByClassName("metadata-value");
+        metadata_valueElements = Array.from(document.getElementsByClassName("metadata-value"));
+        [0, 1, 2, 3].forEach((i) => {       // overflowScroll values are nested
+            metadata_valueElements[i] = metadata_valueElements[i].getElementsByTagName("span")[0];
+        })
     } catch (e) {
         setTimeout(metadata_getDOM, 1000);
     }
