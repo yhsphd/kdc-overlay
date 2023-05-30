@@ -2,6 +2,7 @@ const path = require("path");
 const fs = require("fs");
 const {google} = require("googleapis");
 const {v2} = require('osu-api-extended');
+const session = require("../templates/session");
 
 const auth = new google.auth.GoogleAuth({
     keyFile: path.join(process.cwd(), "credentials.json"),
@@ -69,7 +70,13 @@ exports = module.exports = function (config, session) {
     let mappoolName = "";
 
     async function updateMappool() {
-        if (session.type === "match") {
+        if (fs.existsSync(path.join(process.cwd(), "mappool.json"))) {
+            fs.readFile(path.join(process.cwd(), "mappool.json"), "utf8", (err, data) => {
+                if (err) throw err;
+                
+                session.mappool = JSON.parse(data.toString()).mappool;
+            });
+        } else {
             const res = await sheets.spreadsheets.values.get({
                 spreadsheetId: config.sheet,
                 range: range_updateMappool,
@@ -93,14 +100,7 @@ exports = module.exports = function (config, session) {
             }
 
             session.mappool = mappool;
-        } else if (session.type === "showcase") {
-            fs.readFile(path.join(process.cwd(), "mappool.json"), "utf8", (err, data) => {
-                if (err) throw err;
-                session.mappool = JSON.parse(data.toString()).mappool;
-            });
         }
-
-
     }
 
     setInterval(() => {
