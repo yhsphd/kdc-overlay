@@ -55,14 +55,14 @@ exports = module.exports = function(config, session){
                 }
             }
 
-            if (key === "mapid") {
+            /*if (key === "mapid") {
                 session.now_playing.osu.map_id = data;
                 for (let key in session.mappool) {      // Check if current map is mappool
                     if (session.mappool[key].map_id === data) {
                         session.now_playing.osu.code = key
                     }
                 }
-            } else if (key === "mapsetid") {
+            } else*/ if (key === "mapsetid") {
                 session.now_playing.osu.mapset_id = data;
                 session.now_playing.osu.background = `https://assets.ppy.sh/beatmaps/${data}/covers/raw.jpg`;
                 session.now_playing.osu.cover = `https://assets.ppy.sh/beatmaps/${data}/covers/cover@2x.jpg`;

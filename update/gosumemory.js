@@ -1,4 +1,4 @@
-const { w3cwebsocket: WebSocket } = require("websocket");
+const {w3cwebsocket: WebSocket} = require("websocket");
 
 let gosuWs;
 
@@ -26,6 +26,14 @@ exports = module.exports = function (config, session) {
 
             // SC time not working
             session.now_playing.osu.time = data.menu.bm.time.current;
+
+            // SC map_id not working
+            session.now_playing.osu.map_id = data.menu.bm.id;
+            for (let key in session.mappool) {      // Check if current map is mappool
+                if (session.mappool[key].map_id === data.menu.bm.id) {
+                    session.now_playing.osu.code = key;
+                }
+            }
 
             // If Tourney Mode
             let tourney = data.menu.state === 22;
