@@ -32,7 +32,9 @@ exports = module.exports = function (config, session) {
             for (let key in session.mappool) {      // Check if current map is mappool
                 if (session.mappool[key].map_id === data.menu.bm.id) {
                     session.now_playing.osu.code = key;
+                    break;
                 }
+                session.now_playing.osu.code = "";
             }
 
             // If Tourney Mode
