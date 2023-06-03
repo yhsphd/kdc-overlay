@@ -40,7 +40,7 @@ exports = module.exports = function(config, session){
 
         function handleToken(key, data) {
             let clientNum = -1;
-            if (key.startsWith("client_")) {
+            /*if (key.startsWith("client_")) {
                 clientNum = parseInt(key.split("_")[1]);
                 key = key.split("_").slice(2).join("_");
 
@@ -53,7 +53,7 @@ exports = module.exports = function(config, session){
                 } else if (key === "score") {
                     session.lobby.players[clientNum].score = data;
                 }
-            }
+            }*/
 
             /*if (key === "mapid") {
                 session.now_playing.osu.map_id = data;
