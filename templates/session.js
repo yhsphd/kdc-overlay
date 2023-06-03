@@ -64,5 +64,5 @@ exports = module.exports = {
             order: []
         }]
     },
-    chat: {}
+    chat: []
 }
