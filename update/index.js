@@ -39,9 +39,6 @@ exports = module.exports = function (config, io) {
     // Gosumemory websocket setup
     require("./gosumemory")(config, session);
 
-    // StreamCompanion websocket setup
-    require("./streamcompanion")(config, session);
-
     // Updating fb2k data
     require("./fb2k")(config, session);
 

@@ -1,7 +1,7 @@
 const path = require("path");
 const fs = require("fs");
 const {google} = require("googleapis");
-const {v2} = require('osu-api-extended');
+const {v2} = require("osu-api-extended");
 const session = require("../templates/session");
 
 const auth = new google.auth.GoogleAuth({

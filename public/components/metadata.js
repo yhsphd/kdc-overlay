@@ -97,18 +97,44 @@ function updateMetadata(overlayData) {
         metadata_mapCodeElement.style.opacity = 0;
     }
 
+    const useModified = !(overlayData.now_playing.osu.code.startsWith("FM") ||
+        overlayData.now_playing.osu.code.startsWith("FcM") || overlayData.now_playing.osu.code.startsWith("TB"));
+
+    let stats;
+    if (useModified) {
+        stats = {
+            cs: overlayData.now_playing.osu.stats.modified.cs,
+            ar: overlayData.now_playing.osu.stats.modified.ar,
+            od: overlayData.now_playing.osu.stats.modified.od,
+            hp: overlayData.now_playing.osu.stats.modified.hp,
+            sr: overlayData.now_playing.osu.stats.modified.sr,
+            length: overlayData.now_playing.osu.stats.modified.length,
+            bpm: overlayData.now_playing.osu.stats.modified.bpm
+        }
+    } else {
+        stats = {
+            cs: overlayData.now_playing.osu.stats.cs,
+            ar: overlayData.now_playing.osu.stats.ar,
+            od: overlayData.now_playing.osu.stats.od,
+            hp: overlayData.now_playing.osu.stats.hp,
+            sr: overlayData.now_playing.osu.stats.sr,
+            length: overlayData.now_playing.osu.stats.length,
+            bpm: overlayData.now_playing.osu.stats.bpm
+        }
+    }
+
     const values = [
         overlayData.now_playing.osu.title,
         overlayData.now_playing.osu.artist,
         overlayData.now_playing.osu.mapper,
         overlayData.now_playing.osu.difficulty,
-        overlayData.now_playing.osu.stats.modified.cs.toFixed(1),
-        overlayData.now_playing.osu.stats.modified.ar.toFixed(1),
-        overlayData.now_playing.osu.stats.modified.od.toFixed(1),
-        overlayData.now_playing.osu.stats.modified.hp.toFixed(1),
-        overlayData.now_playing.osu.stats.modified.sr.toFixed(1),
-        secondsToMMSS(overlayData.now_playing.osu.stats.modified.length / 1000),
-        overlayData.now_playing.osu.stats.modified.bpm
+        stats.cs.toFixed(1),
+        stats.ar.toFixed(1),
+        stats.od.toFixed(1),
+        stats.hp.toFixed(1),
+        stats.sr.toFixed(1),
+        secondsToMMSS(stats.length / 1000),
+        stats.bpm
     ];
     for (let i = 0; i < metadata_valueElements.length; i++) {
         metadata_valueElements[i].innerText = values[i];
