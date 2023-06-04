@@ -1,6 +1,6 @@
-const {w3cwebsocket: WebSocket} = require("websocket");
-const {v2} = require("osu-api-extended");
-const {response} = require("express");
+const { w3cwebsocket: WebSocket } = require("websocket");
+const { v2 } = require("osu-api-extended");
+const { response } = require("express");
 const difficultyCalculator = require("./difficultyCalculator");
 
 let gosuWs;
@@ -27,7 +27,13 @@ exports = module.exports = function (config, session) {
         let modsTemp = -1;
         // Update osu! data when receiving websocket messaage
         gosuWs.onmessage = event => {
-            const data = JSON.parse(event.data);
+            let data;
+
+            try {
+                data = JSON.parse(event.data);
+            } catch (exception) {
+                return;
+            }
 
             let code = "";
             for (let key in session.mappool) {      // Check if current map is mappool
