@@ -68,20 +68,33 @@ function mappool_resetPickBox(element) {
  * @param {string} code - code of the mappool
  * @param {string} image - url to the background image of the map
  */
-function mappool_editPickBoxContent(index, mode, code, image) {
+function mappool_editPickBoxContent(index, mode, code = "", image = "") {
     const element = mappool_pickBoxElements[index];
+    const originalCode = element.getElementsByClassName("mappool-pickBox-code")[0].innerText;
 
     if (mode === 0) {                       // blank state
-
+        element.getElementsByClassName("mappool-pickBox-loading")[0].style.opacity = 0;
+        element.getElementsByClassName("mappool-pickBox-code")[0].innerText = "";
+        element.getElementsByClassName("mappool-pickBox-banpick")[0].innerText = "";
+        element.style.backgroundImage = "none";
     } else if (mode === 1) {                // picking a map
         element.getElementsByClassName("mappool-pickBox-loading")[0].style.opacity = 1;
         element.getElementsByClassName("mappool-pickBox-code")[0].innerText = "";
         element.getElementsByClassName("mappool-pickBox-banpick")[0].innerText = "";
+        element.style.backgroundImage = "none";
     } else if (mode === 2 || mode === 3) {  // picked or banned a map
         element.getElementsByClassName("mappool-pickBox-loading")[0].style.opacity = 0;
         element.getElementsByClassName("mappool-pickBox-code")[0].innerText = code;
-        element.getElementsByClassName("mappool-pickBox-banpick")[0].innerText = mode === 1 ? "PICK" : "BAN";
-        element.style.backgroundImage = mode === 1 ? `url('${image}')` : "none";
+        element.getElementsByClassName("mappool-pickBox-banpick")[0].innerText = mode === 2 ? "PICK" : "BAN";
+        element.style.backgroundImage = `url('${image}')`;
+    }
+
+    if (originalCode !== element.getElementsByClassName("mappool-pickBox-code")[0].innerText) {
+        element.style.animation = "mapPicked 0.5s ease";
+        element.addEventListener("animationend", () => {
+            element.style.opacity = 1;
+            element.style.animation = "none";
+        }, {once: true});
     }
 }
 
@@ -114,7 +127,10 @@ function mappool_updateTeams(teams) {
 }
 
 function mappool_arrangePickBoxes(overlayData) {
-    let hide, crossOut, ban, pick;
+    let hide = [];
+    let crossOut = [];
+    let ban = [];
+    let pick = [];
     const firstPick = teamName2color(overlayData, 0, overlayData.progress.phases[overlayData.progress.phase - 1].first_pick);
 
     if (firstPick === "red") {
@@ -222,19 +238,26 @@ function mappool_arrangePickBoxes(overlayData) {
 
     pickOrder = pick;
     banOrder = ban;
-    order = pick.concat(ban);
+    order = ban.concat(pick);
 }
 
 function mappool_updatePick(overlayData) {
-    const currentPhrase = overlayData.progress.phrases[overlayData.progress.phase - 1];
+    const currentPhrase = overlayData.progress.phases[overlayData.progress.phase - 1];
 
-    for (let i = 0; i < currentPhrase.length; i++) {
-        mappool_editPickBoxContent(order[i], currentPhrase.order[i].pick ? 2 : 3, currentPhrase.order[i].code, currentPhrase.order[i].background);
+    let end = false;
+    for (let i = 0; i < currentPhrase.order.length; i++) {
+        //console.log(i, order[i])//
+        if (end) {
+            mappool_editPickBoxContent(order[i], 0);
+        } else {
+            if (currentPhrase.order[i].pick === -1) {
+                mappool_editPickBoxContent(order[i], 1);
+                end = true;
+            } else {
+                mappool_editPickBoxContent(order[i], currentPhrase.order[i].pick === 1 ? 2 : 3, currentPhrase.order[i].code, overlayData.mappool[currentPhrase.order[i].code].cover);
+            }
+        }
     }
-
-    if(mappool_pickBoxElements.length !== currentPhrase)
-
-    mappool_editPickBoxContent(order[c], currentPhrase.order[i].pick ? 2 : 3, currentPhrase.order[i].code, currentPhrase.order[i].background);
 }
 
 
@@ -254,9 +277,11 @@ function mappool_update() {
         mappool_arrangePickBoxes(overlayData);
     }
     mappool_updatePick(overlayData);
+    mappool_updateMaps(overlayData);
+    chat_updateChat(overlayData.chat, mappool_chatBoxElement);
 }
 
-setInterval(mappool_update, 100);
+setInterval(mappool_update, 1000);
 
 function mappool_switchTeamBox() {
     if (window.getComputedStyle(mappool_teamInfoElements[0]).opacity === "0") {
