@@ -15,18 +15,7 @@ function mappool_pickedMaps_getDOM() {
 
 mappool_pickedMaps_getDOM();
 
-let mappool_mapElements;
-
-function mappool_maps_getDOM() {
-    try {
-        mappool_mapElements = document.getElementsByClassName("mappool-map");
-    } catch (e) {
-        setTimeout(mappool_maps_getDOM, 1000);
-    }
-}
-
-mappool_maps_getDOM();
-
+let mappool_mappoolColumnElements = document.getElementById("mappoolColumns").querySelectorAll("div");
 let mappool_bracketElement = document.getElementById("bracket");
 let mappool_matchCodeElement = document.getElementById("matchCode");
 let mappool_chatBoxElement = document.getElementById("chatBox");
@@ -242,19 +231,18 @@ function mappool_arrangePickBoxes(overlayData) {
 }
 
 function mappool_updatePick(overlayData) {
-    const currentPhrase = overlayData.progress.phases[overlayData.progress.phase - 1];
+    const currentPhase = overlayData.progress.phases[overlayData.progress.phase - 1];
 
     let end = false;
-    for (let i = 0; i < currentPhrase.order.length; i++) {
-        //console.log(i, order[i])//
+    for (let i = 0; i < currentPhase.order.length; i++) {
         if (end) {
             mappool_editPickBoxContent(order[i], 0);
         } else {
-            if (currentPhrase.order[i].pick === -1) {
+            if (currentPhase.order[i].pick === -1) {
                 mappool_editPickBoxContent(order[i], 1);
                 end = true;
             } else {
-                mappool_editPickBoxContent(order[i], currentPhrase.order[i].pick === 1 ? 2 : 3, currentPhrase.order[i].code, overlayData.mappool[currentPhrase.order[i].code].cover);
+                mappool_editPickBoxContent(order[i], currentPhase.order[i].pick === 1 ? 2 : 3, currentPhase.order[i].code, overlayData.mappool[currentPhase.order[i].code].cover);
             }
         }
     }
@@ -265,6 +253,7 @@ function mappool_updatePick(overlayData) {
 // Update Function
 
 let phase, bo, firstPick;
+let mappool_name = "";
 
 function mappool_update() {
     mappool_updatePhase(overlayData.progress);
@@ -276,8 +265,16 @@ function mappool_update() {
         firstPick = overlayData.progress.phases[overlayData.progress.phase - 1].first_pick;
         mappool_arrangePickBoxes(overlayData);
     }
+
     mappool_updatePick(overlayData);
-    mappool_updateMaps(overlayData);
+
+    if (mappool_name !== overlayData.mappool_name) {    // Mappool changed
+        if (mappool_map_updateMaps(overlayData, mappool_mappoolColumnElements) === 0) {
+            mappool_name = overlayData.mappool_name;
+        }
+    }
+    mappool_map_updateStatus(overlayData);
+
     chat_updateChat(overlayData.chat, mappool_chatBoxElement);
 }
 

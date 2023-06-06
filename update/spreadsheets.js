@@ -142,6 +142,8 @@ exports = module.exports = function (config, session) {
             }
         }
 
+        order[order.length-1].pop();        // last map is TB
+
         for (let i = 0; i < order.length; i++) {                // apply to session
             session.progress.phases[i].order = order[i];
         }
