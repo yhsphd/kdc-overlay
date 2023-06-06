@@ -16,7 +16,7 @@ exports = module.exports = function (config, session) {
     // Team Info Update
 
     // Rows: matchCode, bracket, bo, streamTitle, schedule, team1, team2
-    const range_updateTeams = "export!A4:AV10";
+    const range_updateTeams = "export!A4:AX10";
     let matchCode = 0;
 
     async function updateTeams() {
