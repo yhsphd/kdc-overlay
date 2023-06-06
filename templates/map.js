@@ -26,6 +26,6 @@ exports = module.exports = {
             sr: 0,
             bpm: "",
             length: 0,
-        }       // used for now_playing
+        }
     }
 }

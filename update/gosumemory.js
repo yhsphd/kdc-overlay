@@ -64,7 +64,7 @@ exports = module.exports = function (config, session) {
             session.now_playing.osu.mods = mods;
             session.now_playing.osu.code = code;
             session.now_playing.osu.background = `https://assets.ppy.sh/beatmaps/${data.menu.bm.set}/covers/raw.jpg`;
-            session.now_playing.osu.cover = `https://assets.ppy.sh/beatmaps/${data.menu.bm.set}/covers/cover@2x.jpg`;
+            session.now_playing.osu.cover = `https://assets.ppy.sh/beatmaps/${data.menu.bm.set}/covers/cover.jpg`;
             session.now_playing.osu.title = data.menu.bm.metadata.title;
             session.now_playing.osu.artist = data.menu.bm.metadata.artist;
             session.now_playing.osu.mapper = data.menu.bm.metadata.mapper;

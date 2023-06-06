@@ -1,3 +1,4 @@
+let metadata_element;
 let metadata_phaseElement;
 let metadata_indexElement;
 let metadata_mapCodeElement;
@@ -14,6 +15,7 @@ let metadata_valueElements;
 
 function metadata_getDOM() {
     try {
+        metadata_element = document.getElementsByClassName("metadata")[0];
         metadata_phaseElement = document.getElementsByClassName("metadata-phase")[0];
         metadata_indexElement = document.getElementsByClassName("metadata-index")[0];
         metadata_mapCodeElement = document.getElementsByClassName("metadata-map")[0];
@@ -26,7 +28,7 @@ function metadata_getDOM() {
         setTimeout(metadata_getDOM, 1000);
     }
 
-    if (!metadata_phaseElement || !metadata_indexElement || !metadata_mapCodeElement || !metadata_bgElement || !metadata_valueElements) {
+    if (!metadata_element || !metadata_phaseElement || !metadata_indexElement || !metadata_mapCodeElement || !metadata_bgElement || !metadata_valueElements) {
         setTimeout(metadata_getDOM, 1000);
     }
 }
@@ -37,24 +39,48 @@ metadata_getDOM();
 //
 // Utils
 
-function getMapIndex(progress) {
-    let currentPhrasePicks = progress.phases[progress.phase - 1].order;
-    for (let i = 0; i < currentPhrasePicks.length; i++) {
-        if (currentPhrasePicks[i].current) {
-            return [i + 1, currentPhrasePicks.length];
+function getMapIndex(overlayData) {
+    const currentPhaseOrder = overlayData.progress.phases[overlayData.progress.phase - 1].order;
+
+    if (overlayData.type === "showcase") {
+        const mappoolCount = Object.keys(overlayData.mappool).length;
+
+        if (overlayData.now_playing.osu.code === "TB") {
+            return [mappoolCount, mappoolCount];
+        } else {
+            const mods = ["NM", "HD", "HR", "DT", "FM", "FcM"];
+            let index = 0;
+
+            for (let i = 0; i < mods.length; i++) {
+                for (let j = 1; overlayData.mappool.hasOwnProperty(mods[i] + j); j++) {
+                    index++;
+                    if (overlayData.now_playing.osu.code === mods[i] + j) {
+                        return [index, mappoolCount];
+                    }
+                }
+            }
+        }
+    } else if (overlayData.type === "match") {
+        let banCount = 0;
+        for (let i = 0; i < currentPhaseOrder.length; i++) {
+            if (currentPhaseOrder[i].pick === 0) {      // don't count bans
+                banCount++;
+            } else if (currentPhaseOrder[i].code === overlayData.now_playing.osu.code) {
+                return [i + 1 - banCount, currentPhaseOrder.length - banCount];
+            }
         }
     }
+    return false;
 }
 
 
 //
 // UI Update Functions
 function updateMetadata(overlayData) {
-    const showcase = overlayData.type === "showcase";
-
     metadata_bgElement.style.backgroundImage = `url("${overlayData.now_playing.osu.cover}")`;
 
-    if (overlayData.now_playing.osu.code) {
+    if (overlayData.now_playing.osu.code) {     // Current map is a mappool
+        metadata_mapCodeElement.style.opacity = 1;
         metadata_mapCodeElement.innerText = overlayData.now_playing.osu.code;
         if (overlayData.now_playing.osu.code.startsWith("NM")) {
             metadata_mapCodeElement.style.backgroundColor = "var(--green)";
@@ -79,19 +105,44 @@ function updateMetadata(overlayData) {
             metadata_mapCodeElement.style.color = "white";
         }
 
-        metadata_mapCodeElement.style.opacity = 1;
-        /*if (showcase) {
+        const mapIndex = getMapIndex(overlayData);
+        if (overlayData.type === "match") {
+            // phase
             metadata_phaseElement.style.opacity = 1;
-            metadata_phaseElement.innerText = `map ${getMapIndex(overlayData.progress).join(" of ")}`;
-            metadata_phaseElement.innerText = `map ${getMapIndex(overlayData.progress).join(" of ")}`;
-            metadata_indexElement.style.opacity = 0;
-        } else {
-            metadata_phaseElement.style.opacity = 1;
-            metadata_phaseElement.innerText = `Phase ${overlayData.progress.phase}`;
-            metadata_indexElement.style.opacity = 1;
-            metadata_indexElement.innerText = `map ${getMapIndex(overlayData.progress).join(" of ")}`;
-        }*/
-    } else {
+            metadata_phaseElement.innerText = "Phase " + overlayData.progress.phase;
+
+            // map index
+            if (mapIndex) {     // index found
+                metadata_indexElement.style.opacity = 1;
+                metadata_indexElement.innerText = `Map ${mapIndex[0]} of ${mapIndex[1]}`;
+            } else {
+                metadata_element.style.backgroundColor = "var(--white)";
+                metadata_indexElement.style.opacity = 0;
+            }
+
+            // picked team metadata background
+            metadata_element.style.backgroundColor = "var(--white)";
+            if (overlayData.now_playing.osu.code !== "TB") {
+                overlayData.progress.phases[overlayData.progress.phase - 1].order.forEach((pick) => {
+                    if (overlayData.now_playing.osu.code === pick.code && pick.pick === 1) {
+                        metadata_element.style.backgroundColor = pick.team === overlayData.teams[0].name ? "var(--red)" : "var(--blue)";
+                    }
+                });
+            }
+        } else if (overlayData.type === "showcase") {
+            metadata_indexElement.style.opacity = 0;                    // not using index element
+            metadata_element.style.backgroundColor = "var(--white)";    // always grey metadata background
+
+            // map index
+            if (mapIndex) {
+                metadata_phaseElement.style.opacity = 1;        // show map index on phaseElement when showcasing
+                metadata_phaseElement.innerText = `Map ${mapIndex[0]} of ${mapIndex[1]}`;
+            } else {
+                metadata_phaseElement.style.opacity = 0;
+            }
+        }
+    } else {        // playing non-mappool
+        metadata_element.style.backgroundColor = "var(--white)";
         metadata_phaseElement.style.opacity = 0;
         metadata_indexElement.style.opacity = 0;
         metadata_mapCodeElement.style.opacity = 0;
