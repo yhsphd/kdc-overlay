@@ -1,6 +1,6 @@
-const { w3cwebsocket: WebSocket } = require("websocket");
-const { v2 } = require("osu-api-extended");
-const { response } = require("express");
+const {w3cwebsocket: WebSocket} = require("websocket");
+const {v2} = require("osu-api-extended");
+const {response} = require("express");
 const difficultyCalculator = require("./difficultyCalculator");
 
 let gosuWs;
@@ -91,8 +91,7 @@ exports = module.exports = function (config, session) {
 
             // Using osu!Api as gosumemory cannot pull metadata
             if (mapIdTemp !== data.menu.bm.id) {        // Beatmap changed
-                mapIdTemp = data.menu.bm.id;
-                v2.beatmap.diff(mapIdTemp).then((response) => {
+                v2.beatmap.diff(data.menu.bm.id).then((response) => {
                     session.now_playing.osu.stats.cs = response.cs;
                     session.now_playing.osu.stats.ar = response.ar;
                     session.now_playing.osu.stats.od = response.accuracy;
@@ -101,7 +100,10 @@ exports = module.exports = function (config, session) {
                     session.now_playing.osu.stats.bpm = response.bpm;
                     session.now_playing.osu.stats.length = response.total_length * 1000;
 
-                    modsTemp = -1;
+                    if (response.id === data.menu.bm.id) {      // api call success
+                        mapIdTemp = data.menu.bm.id;
+                        modsTemp = -1;
+                    }
                 });
             }
 
