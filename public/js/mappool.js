@@ -15,7 +15,7 @@ function mappool_pickedMaps_getDOM() {
 
 mappool_pickedMaps_getDOM();
 
-let mappool_mappoolColumnElements = document.getElementById("mappoolColumns").querySelectorAll("div");
+let mappool_mappoolColumnElements = document.querySelectorAll("#mappoolColumns > div");
 let mappool_bracketElement = document.getElementById("bracket");
 let mappool_matchCodeElement = document.getElementById("matchCode");
 let mappool_chatBoxElement = document.getElementById("chatBox");
