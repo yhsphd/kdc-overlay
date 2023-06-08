@@ -146,6 +146,7 @@ function lobby_update() {
     chat_updateChat(overlayData.chat, lobby_chatBoxElement);
     lobby_updateScores(overlayData.lobby);
     lobby_updateVisibilities(overlayData);
+    mapCompact_updateMapCompact(overlayData, lobby_leftBoxElement)
 }
 
 setInterval(lobby_update, lobby_update_interval);

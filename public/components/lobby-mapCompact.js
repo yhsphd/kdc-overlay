@@ -1,94 +1,103 @@
-let lobby_mapCompactElements;
-let lobby_mapCompact_pickElements;
-let lobby_mapCompact_codeElements;
-let lobby_mapCompact_winTextElements;
-let lobby_mapCompact_circleElements;
-let lobby_mapCompact_playIcon;
+let mapCompactElements;
+let mapCompact_pickElements;
+let mapCompact_codeElements;
+let mapCompact_winTextElements;
+let mapCompact_circleElements;
+let mapCompact_playIcon;
 
-function lobby_mapCompact_getDOM() {
+function mapCompact_getDOM() {
     try {
-        lobby_mapCompactElements = document.getElementsByClassName("lobby-mapCompact");
-        lobby_mapCompact_pickElements = document.getElementsByClassName("lobby-mapCompact-pick");
-        lobby_mapCompact_codeElements = document.getElementsByClassName("lobby-mapCompact-map");
-        lobby_mapCompact_winTextElements = document.getElementsByClassName("lobby-mapCompact-winText");
-        lobby_mapCompact_circleElements = document.querySelector(".lobby-mapCompact>.circle");
-        lobby_mapCompact_playIcon = document.getElementsByClassName("lobby-mapCompact-play");
+        mapCompactElements = document.getElementsByClassName("lobby-mapCompact");
+        mapCompact_pickElements = document.getElementsByClassName("lobby-mapCompact-pick");
+        mapCompact_codeElements = document.getElementsByClassName("lobby-mapCompact-map");
+        mapCompact_winTextElements = document.getElementsByClassName("lobby-mapCompact-winText");
+        mapCompact_circleElements = document.querySelector(".lobby-mapCompact>.circle");
+        mapCompact_playIcon = document.getElementsByClassName("lobby-mapCompact-play");
     } catch (e) {
-        setTimeout(lobby_mapCompact_getDOM, 1000);
+        setTimeout(mapCompact_getDOM, 1000);
     }
 }
-lobby_mapCompact_getDOM();
+
+mapCompact_getDOM();
 
 
 //
 // UI Update Functions
 
-function lobby_showMapCompacts(hide = false) {
+function mapCompact_showMapCompacts(hide = false) {
     if (!hide) {    // show mapCompact
         lobby_showLeaderboard(true);
         setTimeout(() => {
-            for (let i = 0; i < lobby_mapCompactElements.length; i++) {
+            for (let i = 0; i < mapCompactElements.length; i++) {
                 setTimeout(() => {
-                    lobby_mapCompactElements[i].style.transform = "";
+                    mapCompactElements[i].style.transform = "";
                 }, 100 * i);
             }
         }, 1000);
     } else {    // hide mapCompact
-        for (let i = 0; i < lobby_mapCompactElements.length; i++) {
+        for (let i = 0; i < mapCompactElements.length; i++) {
             setTimeout(() => {
-                lobby_mapCompactElements[i].style.transform = "translateX(-100%)";
+                mapCompactElements[i].style.transform = "translateX(-100%)";
             }, 100 * i);
         }
     }
 }
 
+function mapCompact_clearMapCompact() {
+    for (; mapCompactElements.length > 0;) {
+        mapCompactElements[0].remove();
+    }
+    mapCompact_getDOM();
+}
 
-function lobby_addMapCompact(element2add2) {
+function mapCompact_regenMapCompacts(currentPhaseOrder, element2add2) {
+    mapCompact_clearMapCompact();
     fetch("/components/lobby-mapcompact.html")
         .then((response) => response.text())
-        .then((text) => element2add2.innerHTML += text);
-    lobby_mapCompact_getDOM();
+        .then((text) => {
+            for (let i = 0; i < currentPhaseOrder.length; i++) {
+                element2add2.innerHTML += text;
+            }
+        });
+    mapCompact_getDOM();
 }
 
-function lobby_removeMapCompact(clear = false, index = -1) {
-    if (clear) {
-        for (; lobby_mapCompactElements.length > 0;) {
-            lobby_mapCompactElements[0].remove();
-        }
-    } else {
-        lobby_mapCompactElements[index].remove();
-    }
-    lobby_mapCompact_getDOM();
-}
+function mapCompact_updateInfo(teams, currentPhaseOrder) {
+    let ban = 0;
+    for (let i = 0; i < currentPhaseOrder.length; i++) {
+        if (currentPhaseOrder[i].pick === 0) {
+            ban++;
+        } else if (currentPhaseOrder[i].pick === -1) {
+        } else {
+            if (currentPhaseOrder[i].team === teams[0].name) {
+                mapCompact_pickElements[i - ban].style.backgroundColor = "var(--red)"
+            } else if (currentPhaseOrder[i - ban].team === teams[1].name) {
+                mapCompact_pickElements[i - ban].style.backgroundColor = "var(--blue)"
+            } else {
+                mapCompact_pickElements[i - ban].style.backgroundColor = "var(--white)";
+            }
 
-function lobby_updateMapCompact(index, pick) {
-    if (pick[i].team === overlayData.teams[0].name) {
-        lobby_mapCompact_pickElements[i].style.backgroundColor = "var(--red)"
-    } else if (pick[i].team === overlayData.teams[1].name) {
-        lobby_mapCompact_pickElements[i].style.backgroundColor = "var(--blue)"
-    } else {
-        lobby_mapCompact_pickElements[i].style.backgroundColor = "var(--white)";
-    }
+            mapCompact_codeElements[i - ban].innerText = currentPhaseOrder[i].code;
 
-    lobby_mapCompact_codeElements[i].innerText = pick[i].code;
-
-    if (pick[i].current) {  // now playing
-        lobby_mapCompact_winTextElements[i].style.opacity = 0;
-        lobby_mapCompact_circleElements[i].style.backgroundColor = "var(--white)";
-        lobby_mapCompact_playIcon[i].style.opacity = 1;
-    } else {
-        if (pick[i].win === overlayData.teams[0].name) {    // red win
-            lobby_mapCompact_winTextElements[i].style.opacity = 1;
-            lobby_mapCompact_circleElements[i].style.backgroundColor = "var(--red)";
-            lobby_mapCompact_playIcon[i].style.opacity = 0;
-        } else if (pick[i].win === overlayData.teams[1].name) { // blue win
-            lobby_mapCompact_winTextElements[i].style.opacity = 1;
-            lobby_mapCompact_circleElements[i].style.backgroundColor = "var(--blue)";
-            lobby_mapCompact_playIcon[i].style.opacity = 0;
-        } else {    // yet to be played
-            lobby_mapCompact_winTextElements[i].style.opacity = 0;
-            lobby_mapCompact_circleElements[i].style.opacity = 0;
-            lobby_mapCompact_playIcon[i].style.opacity = 0;
+            if ((currentPhaseOrder[i - 1].win || i === 0) && !currentPhaseOrder[i].win) {   // now playing
+                mapCompact_winTextElements[i - ban].style.opacity = 0;
+                mapCompact_circleElements[i - ban].style.backgroundColor = "var(--white)";
+                mapCompact_playIcon[i - ban].style.opacity = 1;
+            } else {
+                if (currentPhaseOrder[i].win === teams[0].name) {           // red win
+                    mapCompact_winTextElements[i - ban].style.opacity = 1;
+                    mapCompact_circleElements[i - ban].style.backgroundColor = "var(--red)";
+                    mapCompact_playIcon[i - ban].style.opacity = 0;
+                } else if (currentPhaseOrder[i].win === teams[1].name) {    // blue win
+                    mapCompact_winTextElements[i - ban].style.opacity = 1;
+                    mapCompact_circleElements[i - ban].style.backgroundColor = "var(--blue)";
+                    mapCompact_playIcon[i - ban].style.opacity = 0;
+                } else {                                                    // yet to be played
+                    mapCompact_winTextElements[i - ban].style.opacity = 0;
+                    mapCompact_circleElements[i - ban].style.opacity = 0;
+                    mapCompact_playIcon[i - ban].style.opacity = 0;
+                }
+            }
         }
     }
 }
@@ -97,9 +106,21 @@ function lobby_updateMapCompact(index, pick) {
 //
 // Update Function
 
-function lobby_mapCompact_update() {
+let currentPhaseOrder;
+let phase, matchCode, mappoolName;
+
+function mapCompact_updateMapCompact(overlayData, leftBoxElement) {
+    currentPhaseOrder = overlayData.progress.phases[overlayData.progress.phase - 1].order;
+
+    if (phase !== overlayData.progress.phase || matchCode !== overlayData.match_code || mappoolName !== overlayData.mappool_name) {
+        phase = overlayData.progress.phase;
+        matchCode = overlayData.match_code;
+        mappoolName = overlayData.mappool_name;
+
+        mapCompact_regenMapCompacts(currentPhaseOrder, leftBoxElement);
+    } else {
+        mapCompact_updateInfo(overlayData.teams, currentPhaseOrder);
+    }
 }
 
-setInterval(lobby_mapCompact_update, 100);
-
-setTimeout(() => lobby_showMapCompacts(true), 2000);
+mapCompact_showMapCompacts(true);
