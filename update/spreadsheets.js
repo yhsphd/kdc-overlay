@@ -16,7 +16,7 @@ exports = module.exports = function (config, session) {
     // Team Info Update
 
     // Rows: matchCode, bracket, bo, streamTitle, schedule, team1, team2
-    const range_updateTeams = "export!A4:AV10";
+    const range_updateTeams = "export!A4:AX10";
     let matchCode = 0;
 
     async function updateTeams() {
@@ -73,7 +73,7 @@ exports = module.exports = function (config, session) {
         if (fs.existsSync(path.join(process.cwd(), "mappool.json"))) {
             fs.readFile(path.join(process.cwd(), "mappool.json"), "utf8", (err, data) => {
                 if (err) throw err;
-                
+
                 session.mappool = JSON.parse(data.toString()).mappool;
             });
         } else {
@@ -109,4 +109,51 @@ exports = module.exports = function (config, session) {
             updateMappool();
         }
     }, 1000);
+
+
+    //
+    // BanPick Update
+
+    let range_updateBanPick;
+
+    async function updateBanPick() {
+        const res = await sheets.spreadsheets.values.get({
+            spreadsheetId: config.sheet,
+            range: range_updateBanPick,
+        });
+        const rows = res.data.values;
+
+        session.progress.phase = parseInt(rows[0][1]);
+        session.progress.phases[0].first_pick = rows[2][1];
+        session.progress.phases[1].first_pick = rows[3][1];
+
+        let order = [];
+        let phase = 0;
+        for (let i = 4; i < rows.length; i++) {
+            const pick = JSON.parse(rows[i][1]);
+
+            if (rows[i][0].startsWith("phase_")) {                  // change phase
+                phase = parseInt(rows[i][0].substring(6)) - 1;
+                order.push([]);
+            }
+
+            if (!(pick.pick === -1 && pick.team === "")) {          // pass if invalid pick
+                order[phase].push(pick);
+            }
+        }
+
+        order[order.length-1].pop();        // last map is TB
+
+        for (let i = 0; i < order.length; i++) {                // apply to session
+            session.progress.phases[i].order = order[i];
+        }
+    }
+
+    setInterval(() => {
+        range_updateBanPick = session.match_code + "!B2:C";
+        if (session.type === "match") {
+            updateBanPick();
+        }
+    }, 5000);
+
 }

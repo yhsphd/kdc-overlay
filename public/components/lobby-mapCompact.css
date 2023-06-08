@@ -36,7 +36,7 @@
 .lobby-mapCompact-winText {
     font-size: 24px;
     font-weight: 700;
-    transition: opacity 500ms linear;
+    transition: opacity 500ms ease;
 }
 
 .lobby-mapCompact .contentBox {
@@ -49,12 +49,15 @@
 
 .lobby-mapCompact .circle {
     margin-left: 10px;
+    margin-right: 10px;
     width: 40px;
     height: 40px;
 
     display: flex;
     align-items: center;
     justify-content: center;
+    
+    transition: background-color 500ms ease;
 }
 
 .lobby-mapCompact .arrow-up {
@@ -72,5 +75,5 @@
     border-style: solid;
     border-width: 8px 0 8px 15px;
     border-color: transparent transparent transparent #ffffff;
-    transition: opacity 500ms linear;
+    transition: opacity 500ms ease;
 }

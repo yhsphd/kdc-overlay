@@ -3,12 +3,12 @@
     width: 200px;
     height: 150px;
     margin-left: 10px;
-    background-image: url('/samples/1262466.jpg');
     background-position: center;
     background-size: cover;
     text-align: center;
     font-style: italic;
     font-weight: 700;
+    transition: opacity 1s ease;
 }
 
 .mappool-pickBox-bgDim {
@@ -45,4 +45,13 @@
     left: 50%;
     top: 50%;
     transform: translate(-50%, -50%);
+}
+
+@keyframes mapPicked {
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
 }

@@ -133,6 +133,7 @@
 
 .mappool-pickBoxRowStartOffset {
     width: 105px;
+    transition: width 1s ease;
 }
 
 #banpickMappoolDivider {

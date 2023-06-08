@@ -39,8 +39,6 @@ function chat_updateChat(chat, chatBoxElement) {
     if (!chat_baseElement) return;
 
     if (chat.length > chatCount) {
-        console.log("going to add a new chat!");
-
         let chats2addCount;
         chats2addCount = chat.length - chatCount;
         chatCount = chat.length;

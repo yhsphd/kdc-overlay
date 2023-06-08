@@ -2,13 +2,19 @@
 
 :root {
     --red: rgba(238, 83, 79, 0.5);
+    --redOpaque: rgba(238, 83, 79, 1);
     --blue: rgba(65, 164, 245, 0.5);
+    --blueOpaque: rgba(65, 164, 245, 1);
     --green: rgba(63, 241, 124, 0.5);
+    --greenOpaque: rgba(63, 241, 124, 1);
     --yellow: rgba(218, 213, 106, 0.6);
+    --yellowOpaque: rgba(218, 213, 106, 1);
     --purple: rgba(153, 127, 255, 0.5);
+    --purpleOpaque: rgba(153, 127, 255, 1);
     --white: rgba(255, 255, 255, 0.5);
     --black: rgba(0, 0, 0, 0.5);
     --orange: rgba(252, 171, 112, 0.5);
+    --orangeOpaque: rgba(252, 171, 112, 1);
 }
 
 body {

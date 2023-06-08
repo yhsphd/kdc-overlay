@@ -44,7 +44,6 @@ exports = module.exports = {
         osu: require(path.join(__dirname, "map")),
         fb2k: require(path.join(__dirname, "fb2k")),
     },
-    intro: {},
     lobby: {
         players: [],
         bo: 0,

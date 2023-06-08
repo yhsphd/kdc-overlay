@@ -37,7 +37,7 @@ let lobby_leaderboardEnabled = true;
 
 function lobby_showLeaderboard(hide = false) {
     if (!hide) {    // show leaderboard
-        lobby_showMapCompacts(true);
+        mapCompact_showMapCompacts(true);
         playerOrder = [0, 1, 2, 3];
         transformsY = [0, 0, 0, 0];
         for (let i = 0; i < lobby_leaderboardBoxElements.length; i++) {
