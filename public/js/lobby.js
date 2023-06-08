@@ -36,12 +36,14 @@ function lobby_updateTeams(teams) {
     }
 }
 
-function lobby_showChat(hide = false) {
+let chatVisible = true;
+
+function lobby_showChat() {
     transitionCrossfadeElements(lobby_scoreBoxElement, lobby_chatBoxElement, 300);
     chatVisible = true;
 }
 
-function lobby_showScores(hide = false) {
+function lobby_showScores() {
     transitionCrossfadeElements(lobby_chatBoxElement, lobby_scoreBoxElement, 300);
     chatVisible = false;
 }
@@ -117,7 +119,6 @@ function lobby_updateSetScores(lobby) {
     }
 }
 
-let chatVisible = true;
 let tempState = -1;
 
 // Updates visibilities of chat/scores, leaderboard/mapcompacts
@@ -126,11 +127,13 @@ function lobby_updateVisibilities(overlayData) {
         tempState = overlayData.progress.state;
         if (tempState === 1) {
             lobby_showChat();
+            mapCompact_showMapCompacts();
         } else {
             lobby_showScores();
+            lobby_showLeaderboard();
         }
     }
-    if (tempState === 4 && overlayData.teams[0].score === 0 && !chatVisible) {
+    if (overlayData.progress.state === 4 && !overlayData.teams[0].score && !chatVisible) {
         lobby_showChat();
     }
 }
