@@ -50,8 +50,13 @@ function lobby_showScores() {
 
 
 let scoreDiffLog = [];
+let scoreUpdateFreeze = false;
 
 function lobby_updateScores(lobby) {
+    if (scoreUpdateFreeze) {
+        return;
+    }
+
     lobby_scoreElements[0].innerText = numberWithCommas(lobby.scores[0]);
     lobby_scoreElements[1].innerText = numberWithCommas(lobby.scores[1]);
 
@@ -124,17 +129,26 @@ let tempState = -1;
 // Updates visibilities of chat/scores, leaderboard/mapcompacts
 function lobby_updateVisibilities(overlayData) {
     if (tempState !== overlayData.progress.state) {
-        tempState = overlayData.progress.state;
-        if (tempState === 1) {
+        if (overlayData.progress.state === 1) {                         // idle
             lobby_showChat();
             mapCompact_showMapCompacts();
-        } else {
+        }
+
+        if (overlayData.progress.state === 3) {                         // playing
             lobby_showScores();
             lobby_showLeaderboard();
         }
-    }
-    if (overlayData.progress.state === 4 && !overlayData.teams[0].score && !chatVisible) {
-        lobby_showChat();
+
+        if (overlayData.progress.state === 4 && tempState === 3) {      // playing -> result
+            scoreUpdateFreeze = true;           // freeze score
+            setTimeout(() => {
+                scoreUpdateFreeze = false;
+                lobby_showChat();
+                mapCompact_showMapCompacts();
+            }, 10000);
+        }
+
+        tempState = overlayData.progress.state;
     }
 }
 
