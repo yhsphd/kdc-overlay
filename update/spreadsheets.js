@@ -70,37 +70,33 @@ exports = module.exports = function (config, session) {
     let mappoolName = "";
 
     async function updateMappool() {
-        if (fs.existsSync(path.join(process.cwd(), "mappool.json"))) {
-            fs.readFile(path.join(process.cwd(), "mappool.json"), "utf8", (err, data) => {
-                if (err) throw err;
+        if (session.type === "showcase") {
+            return;
+        }
 
-                session.mappool = JSON.parse(data.toString()).mappool;
-            });
-        } else {
-            const res = await sheets.spreadsheets.values.get({
-                spreadsheetId: config.sheet,
-                range: range_updateMappool,
-            });
-            const rows = res.data.values;
-            let mappool = {};
+        const res = await sheets.spreadsheets.values.get({
+            spreadsheetId: config.sheet,
+            range: range_updateMappool,
+        });
+        const rows = res.data.values;
+        let mappool = {};
 
-            let gettingMappool = false;
-            for (let i = 0; i < rows.length; i++) {
-                if (rows[i][0] === mappoolName) {
-                    console.log(`Found <Mappool ${rows[i][0]}> on sheet!`);
-                    gettingMappool = true;
-                } else if (gettingMappool) {
-                    if (rows[i][0].startsWith("{")) {
-                        const data = JSON.parse(rows[i][0]);
-                        Object.assign(mappool, data);
-                    } else {
-                        break;
-                    }
+        let gettingMappool = false;
+        for (let i = 0; i < rows.length; i++) {
+            if (rows[i][0] === mappoolName) {
+                console.log(`Found <Mappool ${rows[i][0]}> on sheet!`);
+                gettingMappool = true;
+            } else if (gettingMappool) {
+                if (rows[i][0].startsWith("{")) {
+                    const data = JSON.parse(rows[i][0]);
+                    Object.assign(mappool, data);
+                } else {
+                    break;
                 }
             }
-
-            session.mappool = mappool;
         }
+
+        session.mappool = mappool;
     }
 
     setInterval(() => {
@@ -142,7 +138,7 @@ exports = module.exports = function (config, session) {
             }
         }
 
-        order[order.length-1].pop();        // last map is TB
+        order[order.length - 1].pop();        // last map is TB
 
         for (let i = 0; i < order.length; i++) {                // apply to session
             session.progress.phases[i].order = order[i];
