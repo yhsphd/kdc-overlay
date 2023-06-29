@@ -74,7 +74,7 @@ function mapCompact_regenMapCompacts(currentPhasePicks, element2add2) {
     mapCompact_getDOM();
 }
 
-function mapCompact_updateInfo(teams, currentPhasePicks) {
+function mapCompact_updateInfo(teams, currentPhasePicks, lobby) {
     for (let i = 0; i < currentPhasePicks.length; i++) {
         if (currentPhasePicks[i].pick === 1) {
             if (currentPhasePicks[i].team === teams[0].name) {
@@ -87,11 +87,17 @@ function mapCompact_updateInfo(teams, currentPhasePicks) {
 
             mapCompact_codeElements[i].innerText = currentPhasePicks[i].code;
 
-            if ((i === 0 || currentPhasePicks[i - 1].win) && !currentPhasePicks[i].win) {   // now playing
+            if ((i === 0 || currentPhasePicks[i - 1].win) && !currentPhasePicks[i].win) {   // current map
                 mapCompact_winTextElements[i].style.opacity = 0;
-                mapCompact_circleElements[i].style.backgroundColor = "var(--white)";
-                mapCompact_circleElements[i].style.opacity = 1;
-                mapCompact_playIcons[i].style.opacity = 1;
+                if (lobby.set_scores[0] >= (lobby.bo + 1) / 2 ||
+                    lobby.set_scores[1] >= (lobby.bo + 1) / 2) {                            // match ended; not going to play this map
+                    mapCompact_circleElements[i].style.opacity = 0;
+                    mapCompact_playIcons[i].style.opacity = 0;
+                } else {                                                                    // now playing
+                    mapCompact_circleElements[i].style.backgroundColor = "var(--white)";
+                    mapCompact_circleElements[i].style.opacity = 1;
+                    mapCompact_playIcons[i].style.opacity = 1;
+                }
             } else {
                 if (currentPhasePicks[i].win === teams[0].name) {           // red win
                     mapCompact_winTextElements[i].style.opacity = 1;
@@ -152,7 +158,7 @@ function mapCompact_updateMapCompact(overlayData, leftBoxElement) {
 
         mapCompact_regenMapCompacts(picksOnly, leftBoxElement);
     } else {
-        mapCompact_updateInfo(overlayData.teams, picksOnly);
+        mapCompact_updateInfo(overlayData.teams, picksOnly, overlayData.lobby);
     }
     currentPhasePicks = picksOnly;
 }

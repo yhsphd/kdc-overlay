@@ -12,8 +12,6 @@ exports = module.exports = {
         name: "",
         acronym: "",
         seed: 0,
-        set_score: 0,
-        score: 0,
         players: [{
             id: 0,
             nick: "",
@@ -27,8 +25,6 @@ exports = module.exports = {
         name: "",
         acronym: "",
         seed: 0,
-        set_score: 0,
-        score: 0,
         players: [{
             id: 0,
             nick: "",
