@@ -20,6 +20,8 @@ function intro_updateTeams(teams) {
             rankElements[j].innerText = "#" + teams[i].players[j].rank;
         }
 
+        textFit(nickElements, {maxFontSize: 32});
+
         let teamStatsElements = intro_teams[i].getElementsByClassName("intro-teamStatsBox-value");
         teamStatsElements[0].innerText = "#" + Math.round((teams[i].players[0].rank + teams[i].players[1].rank) / 2);
         teamStatsElements[1].innerText = "#" + teams[i].seed;
