@@ -1,10 +1,11 @@
 {
-  "name": "kdc23-overlay",
+  "name": "qs-overlay",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
+    "format": "prettier . --write",
     "build": "pkg . && ncp node_modules/lzma-native/prebuilds dist/prebuilds",
     "postinstall": "patch-package"
   },
@@ -20,6 +21,8 @@
     "websocket": "^1.0.34"
   },
   "devDependencies": {
+    "eslint": "^8.50.0",
+    "prettier": "^3.0.3",
     "ncp": "^2.0.0",
     "pkg": "^5.8.1"
   },

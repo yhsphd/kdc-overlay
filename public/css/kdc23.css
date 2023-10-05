@@ -1,111 +1,110 @@
-@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,200;0,300;0,400;0,500;0,600;0,700;0,800;1,200;1,300;1,400;1,500;1,600;1,700;1,800&family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,200;0,300;0,400;0,500;0,600;0,700;0,800;1,200;1,300;1,400;1,500;1,600;1,700;1,800&family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap");
 
 :root {
-    --red: rgba(238, 83, 79, 0.5);
-    --redOpaque: rgba(238, 83, 79, 1);
-    --blue: rgba(65, 164, 245, 0.5);
-    --blueOpaque: rgba(65, 164, 245, 1);
-    --green: rgba(63, 241, 124, 0.5);
-    --greenOpaque: rgba(63, 241, 124, 1);
-    --yellow: rgba(218, 213, 106, 0.6);
-    --yellowOpaque: rgba(218, 213, 106, 1);
-    --purple: rgba(153, 127, 255, 0.5);
-    --purpleOpaque: rgba(153, 127, 255, 1);
-    --white: rgba(255, 255, 255, 0.5);
-    --black: rgba(0, 0, 0, 0.5);
-    --orange: rgba(252, 171, 112, 0.5);
-    --orangeOpaque: rgba(252, 171, 112, 1);
+  --red: rgba(238, 83, 79, 0.5);
+  --redOpaque: rgba(238, 83, 79, 1);
+  --blue: rgba(65, 164, 245, 0.5);
+  --blueOpaque: rgba(65, 164, 245, 1);
+  --green: rgba(63, 241, 124, 0.5);
+  --greenOpaque: rgba(63, 241, 124, 1);
+  --yellow: rgba(218, 213, 106, 0.6);
+  --yellowOpaque: rgba(218, 213, 106, 1);
+  --purple: rgba(153, 127, 255, 0.5);
+  --purpleOpaque: rgba(153, 127, 255, 1);
+  --white: rgba(255, 255, 255, 0.5);
+  --black: rgba(0, 0, 0, 0.5);
+  --orange: rgba(252, 171, 112, 0.5);
+  --orangeOpaque: rgba(252, 171, 112, 1);
 }
 
 body {
-    position: absolute;
-    background-color: black;
-    font-family: 'Plus Jakarta Sans', sans-serif;
-    color: white;
-    width: 1920px;
-    height: 1080px;
+  position: absolute;
+  background-color: black;
+  font-family: "Plus Jakarta Sans", sans-serif;
+  color: white;
+  width: 1920px;
+  height: 1080px;
 }
 
 .monospace {
-    font-family: 'Roboto', sans-serif;
+  font-family: "Roboto", sans-serif;
 }
 
 .bold {
-    font-weight: 700;
+  font-weight: 700;
 }
 
 .panel-bg {
-    overflow: auto;
+  overflow: auto;
 }
 
 .contentBox {
-    margin: 10px;
-    background-color: var(--black);
+  margin: 10px;
+  background-color: var(--black);
 }
 
 .divider {
-    height: 100%;
-    width: 2px;
-    background-color: white;
+  height: 100%;
+  width: 2px;
+  background-color: white;
 }
 
 .verticalCenterFlexBox {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 
 .horizontalFlexBox {
-    display: flex;
-    flex-direction: row;
+  display: flex;
+  flex-direction: row;
 }
 
 .acronym {
-    border-radius: 999px;
-    font-weight: 700;
-    text-align: center;
+  border-radius: 999px;
+  font-weight: 700;
+  text-align: center;
 }
 
 .acronym-red {
-    background-color: var(--red);
+  background-color: var(--red);
 }
 
 .acronym-blue {
-    background-color: var(--blue);
+  background-color: var(--blue);
 }
 
 .circle {
-    border-radius: 999px;
+  border-radius: 999px;
 }
 
-
 @keyframes fadeIn {
-    0% {
-        opacity: 0;
-    }
-    100% {
-        opacity: 1;
-    }
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
 }
 
 .fadeInAnimation,
 .fadeOutAnimation {
-    animation-name: fadeIn;
-    animation-iteration-count: 1;
-    animation-timing-function: linear;
+  animation-name: fadeIn;
+  animation-iteration-count: 1;
+  animation-timing-function: linear;
 }
 
 .fadeOutAnimation {
-    animation-direction: reverse;
+  animation-direction: reverse;
 }
 
 .overflowScroll {
-    position: relative;
-    overflow: hidden;
+  position: relative;
+  overflow: hidden;
 }
 
 .overflowScroll > span {
-    position: relative;
-    display: inline-block;
-    white-space: nowrap;
+  position: relative;
+  display: inline-block;
+  white-space: nowrap;
 }

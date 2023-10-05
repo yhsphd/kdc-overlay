@@ -1,39 +1,39 @@
 #team-red {
-    position: absolute;
-    left: 128px;
-    top: 440px;
+  position: absolute;
+  left: 128px;
+  top: 440px;
 }
 
 #team-blue {
-    position: absolute;
-    left: 750px;
-    top: 440px;
+  position: absolute;
+  left: 750px;
+  top: 440px;
 }
 
 .acronym {
-    width: 100px;
-    height: 50px;
-    line-height: 50px;
-    font-size: 32px;
+  width: 100px;
+  height: 50px;
+  line-height: 50px;
+  font-size: 32px;
 }
 
 .intro-teamName {
-    width: 540px;
-    height: 80px;
-    line-height: 80px;
-    font-size: 40px;
+  width: 540px;
+  height: 80px;
+  line-height: 80px;
+  font-size: 40px;
 }
 
 .intro-teamBG {
-    width: 400px;
-    height: 380px;
-    padding-left: 30px;
+  width: 400px;
+  height: 380px;
+  padding-left: 30px;
 }
 
 #teamBG-red {
-    background-color: var(--red);
+  background-color: var(--red);
 }
 
 #teamBG-blue {
-    background-color: var(--blue);
+  background-color: var(--blue);
 }
