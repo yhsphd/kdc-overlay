@@ -129,9 +129,8 @@ dist
 .yarn/install-state.gz
 .pnp.*
 
-public/samples/
 config.js
 streamConfig.js
+mappool.csv
 mappool.json
-
 credentials.json
