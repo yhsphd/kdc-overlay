@@ -3,7 +3,11 @@ const express = require("express");
 const app = express();
 const server = http.createServer(app);
 const { Server } = require("socket.io");
-const io = new Server(server);
+const io = new Server(server, {
+  cors: {
+    origin: "*",
+  },
+});
 const fs = require("fs");
 const path = require("path");
 
@@ -43,8 +47,8 @@ async function Init() {
     require("./osuApi")(config);
 
     // Static Folder
-    const publicBase = require("./public");
-    app.use("/", publicBase);
+    //const publicBase = require("./public");
+    //app.use("/", publicBase);
 
     // API
     const api = require("./api")(config);
