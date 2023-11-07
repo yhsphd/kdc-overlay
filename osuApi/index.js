@@ -4,8 +4,10 @@ exports = module.exports = function (config) {
   // You need to login only once on application start (auto renew token for v2)
   // https://github.com/cyperdark/osu-api-extended
   async function authenticate() {
-    await auth.login(config.clientID, config.clientSecret);
-    const data = await v2.beatmap.diff(75);
+    const SCOPE_LIST = ["public"];
+
+    await auth.login(config.clientID, config.clientSecret, SCOPE_LIST);
+    const data = await v2.beatmap.id.details(75);
     if (data.beatmapset_id === 1) {
       console.log("osu!api authentication success!");
     } else {
@@ -15,5 +17,6 @@ exports = module.exports = function (config) {
       );
     }
   }
+
   authenticate();
 };

@@ -2,7 +2,7 @@ path = require("path");
 
 exports = module.exports = {
   type: "",
-  match_code: 0,
+  match_code: "",
   bracket: "0",
   mappool_name: "",
   bo: 0,
@@ -71,5 +71,6 @@ exports = module.exports = {
       },
     ],
   },
+  sheets: {},
   chat: [],
 };

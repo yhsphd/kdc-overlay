@@ -95,7 +95,7 @@ exports = module.exports = function (config, session) {
       // Using osu!Api as gosumemory cannot pull metadata
       if (mapIdTemp !== data.menu.bm.id) {
         // Beatmap changed
-        v2.beatmap.diff(data.menu.bm.id).then((response) => {
+        v2.beatmap.id.details(data.menu.bm.id).then((response) => {
           session.now_playing.osu.stats.cs = response.cs;
           session.now_playing.osu.stats.ar = response.ar;
           session.now_playing.osu.stats.od = response.accuracy;

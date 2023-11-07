@@ -129,6 +129,8 @@ dist
 .yarn/install-state.gz
 .pnp.*
 
+public/
+
 config.js
 streamConfig.js
 mappool.csv
