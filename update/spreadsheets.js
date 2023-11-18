@@ -11,111 +11,101 @@ const auth = new google.auth.GoogleAuth({
 });
 const sheets = google.sheets({ version: "v4", auth });
 
-exports = module.exports = function (config, session) {
+exports = module.exports = function(config, session) {
   //
   // Match Info Update
 
   let matchCode = "";
+  const range_data = "B19:F30";
 
-  const range_round = "!H3";
-  const range_playerIds = "!AI4:AL5"; // Rows: nicks, ids
-
-  async function updateMatch() {
-    // No need to fetch the match info if we are not broadcasting match or there is no match code
-    if (session.type !== "match" || !matchCode) {
+  async function updateData() {
+    // We are not broadcasting match or there is no match code
+    if (session.type !== "match" || !session.match_code) {
+      // Print Showcase Stream Title
+      console.log(
+        "\n==================== Stream Title ====================",
+      );
+      console.log(
+        `QS: ${session.stream_title}`,
+      );
+      console.log(
+        "======================================================\n",
+      );
+      // No need to fetch the match info
       return;
     }
 
     try {
-      sheets.spreadsheets.values
-        .batchGet({
-          spreadsheetId: config.sheet,
-          ranges: [
-            matchCode + range_round,
-            matchCode + range_playerIds,
-            matchCode + range_points,
-          ],
-        })
-        .then((response) => {
-          session.bracket = response.data.valueRanges[0].values[0][0];
-          session.sheets.players = [
-            {
-              nick: response.data.valueRanges[1].values[0][0],
-              id: parseInt(response.data.valueRanges[1].values[1][0]),
-            },
-            {
-              nick: response.data.valueRanges[1].values[0][1],
-              id: parseInt(response.data.valueRanges[1].values[1][1]),
-            },
-            {
-              nick: response.data.valueRanges[1].values[0][2],
-              id: parseInt(response.data.valueRanges[1].values[1][2]),
-            },
-            {
-              nick: response.data.valueRanges[1].values[0][3],
-              id: parseInt(response.data.valueRanges[1].values[1][3]),
-            },
-          ];
+      sheets.spreadsheets.values.get({
+        spreadsheetId: config.sheet,
+        range: session.match_code + "!" + range_data,
+      }).then((response) => {
+        let data = {};
+
+        // Prepare data
+        for (let i = 0; i < response.data.values.length; i++) {
+          data[response.data.values[i][0]] = response.data.values[i].slice(1);
+        }
+
+        //console.log(data);
+
+        // Create stream title if matchCode has changed
+        if (matchCode !== session.match_code) {
+          matchCode = session.match_code;
 
           console.log(
-            "\n==================== Stream Title ===================="
+            "\n==================== Stream Title ====================",
           );
           console.log(
-            `QS: [${
-              session.bracket
-            } match ${matchCode}] ${response.data.valueRanges[1].values[0].join(
-              " vs. "
-            )}`
+            `QS: [${data.round_string} match ${matchCode}] ${data.nick.join(" vs. ")}`,
           );
           console.log(
-            "======================================================\n"
+            "======================================================\n",
           );
-        });
-    } catch (e) {
-      console.log(`\nCouldn't find match "${matchCode}" on the sheet.`);
-    }
-  }
+        }
 
-  setInterval(() => {
-    if (matchCode !== session.match_code) {
-      matchCode = session.match_code;
-      updateMatch();
-    }
-  }, 1000);
+        // Get bracket
+        session.bracket = data.round_string[0];
 
-  //
-  // Score Update
-
-  const range_points = "!AD25:AG27"; // Rows: advantage, sum, rank
-
-  async function updatePoints() {
-    if (session.type !== "match" || !matchCode) {
-      return;
-    }
-
-    try {
-      sheets.spreadsheets.values
-        .get({
-          spreadsheetId: config.sheet,
-          range: matchCode + range_points,
-        })
-        .then((response) => {
-          session.sheets.points = {
-            advantage: response.data.values[0].map((x) => parseInt(x)),
-            sum: response.data.values[1].map((x) => parseInt(x)),
-            rank: response.data.values[2].map((x) => parseInt(x)),
+        // Get players
+        if (!session.sheets.hasOwnProperty("players")) {
+          session.sheets.players = [{ nick: "", uid: -1 }, { nick: "", uid: -1 }, { nick: "", uid: -1 }, {
+            nick: "",
+            uid: -1,
+          }];
+        }
+        for (let i = 0; i < data.nick.length; i++) {
+          while (session.sheets.players.length < i + 1) {
+            session.sheets.players.push({});
+          }
+          session.sheets.players[i] = {
+            nick: data.nick[i],
+            id: parseInt(data.uid[i]),
           };
-        });
+        }
+
+        // Update Points
+        session.sheets.points = {
+          advantage: data.advantage.map((x) => parseInt(x)),
+          sum: data.total_point.map((x) => parseInt(x)),
+          rank: data.standing.map((x) => parseInt(x)),
+        };
+
+        while (session.sheets.points.sum.length < 4) {
+          session.sheets.points.sum.push(0);
+        }
+        while (session.sheets.points.rank.length < 4) {
+          session.sheets.points.rank.push(0);
+        }
+      });
     } catch (e) {
-      console.log(`\nCouldn't fetch scores on the sheet.`);
+      console.log(`\nCouldn't find match "${session.match_code}" on the sheet.`);
     }
   }
 
-  setInterval(() => {
-    if (session.type === "match") {
-      updatePoints();
-    }
-  }, 5000);
+
+  setInterval(updateData, 2000);
+
 
   //
   // Mappool Update
