@@ -56,21 +56,6 @@ exports = module.exports = {
     set_scores: [0, 0],
   },
   mappool: {},
-  progress: {
-    phase: 1,
-    phases: [
-      {
-        first_pick: "",
-        order: [
-          // require(path.join(__dirname, "banpick"))
-        ],
-      },
-      {
-        first_pick: "",
-        order: [],
-      },
-    ],
-  },
   sheets: {},
   chat: [],
 };

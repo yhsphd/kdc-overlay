@@ -1,9 +1,5 @@
 const path = require("path");
-const fs = require("fs");
 const { google } = require("googleapis");
-const { v2 } = require("osu-api-extended");
-const session = require("../templates/session");
-const { response } = require("express");
 
 const auth = new google.auth.GoogleAuth({
   keyFile: path.join(process.cwd(), "credentials.json"),
@@ -17,20 +13,24 @@ exports = module.exports = function(config, session) {
 
   let matchCode = "";
   const range_data = "B19:F30";
+  let streamTitle = "";
 
   async function updateData() {
     // We are not broadcasting match or there is no match code
     if (session.type !== "match" || !session.match_code) {
-      // Print Showcase Stream Title
-      console.log(
-        "\n==================== Stream Title ====================",
-      );
-      console.log(
-        `QS: ${session.stream_title}`,
-      );
-      console.log(
-        "======================================================\n",
-      );
+      // Print showcase stream title if changed
+      if (streamTitle !== session.stream_title) {
+        streamTitle = session.stream_title;
+        console.log(
+          "\n==================== Stream Title ====================",
+        );
+        console.log(
+          `QS: ${session.stream_title}`,
+        );
+        console.log(
+          "======================================================\n",
+        );
+      }
       // No need to fetch the match info
       return;
     }
@@ -84,7 +84,7 @@ exports = module.exports = function(config, session) {
           };
         }
 
-        // Update Points
+        // Update points
         session.sheets.points = {
           advantage: data.advantage.map((x) => parseInt(x)),
           sum: data.total_point.map((x) => parseInt(x)),
@@ -97,6 +97,9 @@ exports = module.exports = function(config, session) {
         while (session.sheets.points.rank.length < 4) {
           session.sheets.points.rank.push(0);
         }
+
+        // Update map index
+        session.sheets.order = [data.current_map[0], data.total_map[0]];
       });
     } catch (e) {
       console.log(`\nCouldn't find match "${session.match_code}" on the sheet.`);
