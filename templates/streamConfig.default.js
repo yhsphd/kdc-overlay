@@ -11,5 +11,4 @@ streamConfig.mappool_name = "Mappool 1";
 streamConfig.schedule = "2023-05-21T01:00:00+09:00";
 streamConfig.title = "";
 
-
 module.exports = streamConfig;

@@ -6,20 +6,26 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "pkg . && ncp node_modules/lzma-native/prebuilds dist/prebuilds",
-    "postinstall": "patch-package"
+    "postinstall": "patch-package",
+    "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs --fix --ignore-path .gitignore",
+    "format": "prettier --write ."
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "express": "^4.18.2",
-    "googleapis": "^105.0.0",
-    "osu-api-extended": "^2.5.30",
-    "patch-package": "^7.0.0",
-    "socket.io": "^4.6.1",
+    "express": "^4.19.2",
+    "googleapis": "^134.0.0",
+    "osu-api-extended": "^2.8.3",
+    "patch-package": "^8.0.0",
+    "socket.io": "^4.7.5",
     "websocket": "^1.0.34"
   },
   "devDependencies": {
+    "@rushstack/eslint-patch": "^1.10.1",
+    "@vue/eslint-config-prettier": "^9.0.0",
+    "eslint": "^9.0.0",
+    "prettier": "^3.2.5",
     "ncp": "^2.0.0",
     "pkg": "^5.8.1"
   },
