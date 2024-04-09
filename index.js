@@ -29,8 +29,7 @@ async function Init() {
         require("./osuApi")(config);
 
         // Static Folder
-        const publicBase = require("./public");
-        app.use("/", publicBase);
+        app.use("/", express.static(path.join(__dirname + "/public")));
 
         // API
         const api = require("./api")(config);
@@ -42,7 +41,7 @@ async function Init() {
 
         // Run Server
         server.listen(config.port, () => {
-            console.log(`KDC23 overlay server running at http://localhost:${config.port}/`);
+            console.log(`KDC overlay backend server running at http://localhost:${config.port}/`);
         });
     }
 }
