@@ -39,7 +39,10 @@ exports = module.exports = (function () {
     if (ez) od_multiplier *= 0.5;
 
     od *= od_multiplier;
-    let odms = hr && !dt && !ht ? ms.od0 - ms_step.od * od : ms.od0 - Math.ceil(ms_step.od * od);
+    let odms =
+      hr && !dt && !ht
+        ? ms.od0 - ms_step.od * od
+        : ms.od0 - Math.ceil(ms_step.od * od);
 
     //hp
     if (ez) hp *= 0.5;
@@ -60,7 +63,8 @@ exports = module.exports = (function () {
     if (ez) ar_multiplier *= 0.5;
 
     ar *= ar_multiplier;
-    let arms = ar <= 5 ? ms.ar0 - ms_step.ar_1 * ar : ms.ar5 - ms_step.ar_2 * (ar - 5);
+    let arms =
+      ar <= 5 ? ms.ar0 - ms_step.ar_1 * ar : ms.ar5 - ms_step.ar_2 * (ar - 5);
 
     //cs
     let cs_multiplier = 1;
@@ -78,19 +82,24 @@ exports = module.exports = (function () {
 
     // convert OD and AR back into their stat form
     od = (ms.od0 - odms) / ms_step.od;
-    ar = ar <= 5 ? (ms.ar0 - arms) / ms_step.ar_1 : 5.0 + (ms.ar5 - arms) / ms_step.ar_2;
+    ar =
+      ar <= 5
+        ? (ms.ar0 - arms) / ms_step.ar_1
+        : 5.0 + (ms.ar5 - arms) / ms_step.ar_2;
 
     cs *= cs_multiplier;
     cs = Math.max(0, Math.min(10, cs));
 
     // get star rating from the osu api
     if (ez || hr || dt || ht) {
-      const attributes = await v2.beatmap.attributes(mapId, { mods: modsNum });
+      const attributes = await v2.beatmap.id.attributes(mapId, {
+        mods: modsNum,
+      });
       if (
         !attributes.hasOwnProperty("authentication") &&
-        attributes.attributes.hasOwnProperty("star_rating")
+        attributes.hasOwnProperty("difficulty_rating")
       ) {
-        sr = attributes.attributes.star_rating;
+        sr = attributes.difficulty_rating;
       }
     }
 
