@@ -14,10 +14,12 @@ function loadStreamConfig() {
   session.schedule = streamConfig.schedule;
   session.stream_title = streamConfig.title;
 
-  // Get mappool data from mappool.json if showcase mode
-  if (session.type === "showcase" && fs.existsSync(path.join(process.cwd(), "mappool.json"))) {
+  // Get mappool data from mappool.json if exists
+  if (fs.existsSync(path.join(process.cwd(), "mappool.json"))) {
     console.log("Manual mappool: got mappool data from the mappool.json");
-    session.mappool = JSON.parse(fs.readFileSync(path.join(process.cwd(), "mappool.json"))).mappool;
+    session.mappool = JSON.parse(
+      fs.readFileSync(path.join(process.cwd(), "mappool.json"), "utf-8")
+    );
   }
 }
 
