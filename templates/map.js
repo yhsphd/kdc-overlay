@@ -10,6 +10,7 @@ exports = module.exports = {
   mapper: "",
   difficulty: "",
   time: 0, // used for now_playing
+  length: 0,
   stats: {
     cs: 0,
     ar: 0,

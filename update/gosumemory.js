@@ -5,7 +5,7 @@ const difficultyCalculator = require("./difficultyCalculator");
 
 let gosuWs;
 
-exports = module.exports = function (config, session) {
+exports = module.exports = function(config, session) {
   function setupGosuWs() {
     gosuWs = new WebSocket(`ws://${config.gosumemoryHost}:${config.gosumemoryPort}/ws`);
 
@@ -101,6 +101,7 @@ exports = module.exports = function (config, session) {
           session.now_playing.osu.stats.sr = response.difficulty_rating;
           session.now_playing.osu.stats.bpm = response.bpm;
           session.now_playing.osu.stats.length = response.total_length * 1000;
+          session.now_playing.osu.length = data.menu.bm.time.mp3;
 
           if (response.id === data.menu.bm.id) {
             // api call success
