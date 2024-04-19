@@ -36,10 +36,10 @@ exports = module.exports = function(config, session) {
       }
 
       let code = "";
-      for (let key in session.mappool) {
+      for (let i = 0; i < session.mappool.length; i++) {
         // Check if current map is mappool
-        if (session.mappool[key].map_id === data.menu.bm.id) {
-          code = key;
+        if (session.mappool[i].map_id === data.menu.bm.id) {
+          code = session.mappool[i].code;
           break;
         }
       }

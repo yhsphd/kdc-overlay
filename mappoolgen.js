@@ -8,7 +8,7 @@ const mappoolCSV = fs
   .trim()
   .split(/\r?\n/);
 let maps = {};
-let mappool = {};
+let mappool = [];
 
 mappoolCSV.forEach((line) => {
   const spl = line.split(",");
@@ -23,7 +23,7 @@ const call = async () => {
 
   for (const code of Object.keys(maps)) {
     const data = await v2.beatmap.id.details(maps[code]);
-    mappool[code] = {
+    mappool.push({
       map_id: maps[code],
       mapset_id: data.beatmapset_id,
       code: code,
@@ -42,11 +42,11 @@ const call = async () => {
         bpm: data.bpm,
         length: data.total_length * 1000,
       },
-    };
+    });
   }
 };
 
 call().then(() => {
-  console.log(mappool);
-  fs.writeFileSync("./mappool.json", JSON.stringify(mappool, null, 2));
+  console.log({ mappool: mappool });
+  fs.writeFileSync("./mappool.json", JSON.stringify({ mappool: mappool }, null, 2));
 });

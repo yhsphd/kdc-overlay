@@ -10,7 +10,7 @@ const auth = new google.auth.GoogleAuth({
 });
 const sheets = google.sheets({ version: "v4", auth });
 
-exports = module.exports = function (config, session) {
+exports = module.exports = function(config, session) {
   //
   // Team Info Update
 
@@ -77,7 +77,7 @@ exports = module.exports = function (config, session) {
       range: range_updateMappool,
     });
     const rows = res.data.values;
-    let mappool = {};
+    let mappool = [];
 
     let gettingMappool = false;
     for (let i = 0; i < rows.length; i++) {
@@ -87,18 +87,20 @@ exports = module.exports = function (config, session) {
       } else if (gettingMappool) {
         if (rows[i][0].startsWith("{")) {
           const data = JSON.parse(rows[i][0]);
-          Object.assign(mappool, data);
+          mappool.push(data);
         } else {
           break;
         }
       }
     }
 
-    session.mappool = mappool;
+    if (mappool.length) {
+      session.mappool = mappool;
+    }
   }
 
   setInterval(() => {
-    if (mappoolName !== session.mappool_name) {
+    if (!session.mappool_manual && mappoolName !== session.mappool_name) {
       mappoolName = session.mappool_name;
       updateMappool();
     }

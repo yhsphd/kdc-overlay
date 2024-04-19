@@ -17,13 +17,12 @@ function loadStreamConfig() {
   // Get mappool data from mappool.json if exists
   if (fs.existsSync(path.join(process.cwd(), "mappool.json"))) {
     console.log("Manual mappool: got mappool data from the mappool.json");
-    session.mappool = JSON.parse(
-      fs.readFileSync(path.join(process.cwd(), "mappool.json"), "utf-8")
-    );
+    session.mappool_manual = false;
+    session.mappool = JSON.parse(fs.readFileSync(path.join(process.cwd(), "mappool.json"), "utf-8")).mappool;
   }
 }
 
-exports = module.exports = function (config, io) {
+exports = module.exports = function(config, io) {
   // Load debug values
   if (fs.existsSync(path.join(process.cwd(), "session.js"))) {
     const manualSession = require(path.join(process.cwd(), "session.js"));
@@ -38,8 +37,8 @@ exports = module.exports = function (config, io) {
   fs.watch(path.join(process.cwd(), "streamConfig.js"), loadStreamConfig);
 
   // socket.io setup
-  io.on("connection", function (socket) {
-    socket.on("file1Event", function () {
+  io.on("connection", function(socket) {
+    socket.on("file1Event", function() {
       console.log("file1Event triggered");
     });
   });
