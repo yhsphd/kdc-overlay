@@ -133,7 +133,7 @@ exports = module.exports = function(config, session) {
         order.push([]);
       }
 
-      if (!(pick.pick === -1 && pick.team === "")) {
+      if (!(pick.pick === -1 && pick.team === -1)) {
         // pass if invalid pick
         order[phase].push(pick);
       }

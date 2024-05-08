@@ -1,6 +1,6 @@
 exports = module.exports = {
   code: "",
-  team: "",
+  team: 0,
   pick: 0, // 0: ban, 1: pick
-  win: "",
+  win: 0,
 };
