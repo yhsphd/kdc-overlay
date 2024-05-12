@@ -119,8 +119,8 @@ exports = module.exports = function(config, session) {
     const rows = res.data.values;
 
     session.progress.phase = parseInt(rows[0][1]);
-    session.progress.phases[0].first_pick = rows[2][1];
-    session.progress.phases[1].first_pick = rows[3][1];
+    session.progress.phases[0].first_pick = parseInt(rows[2][1]);
+    session.progress.phases[1].first_pick = parseInt(rows[3][1]);
 
     let order = [];
     let phase = 0;

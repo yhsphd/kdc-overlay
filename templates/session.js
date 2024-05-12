@@ -61,13 +61,13 @@ exports = module.exports = {
     phase: 1,
     phases: [
       {
-        first_pick: "",
+        first_pick: 0,
         order: [
           // require(path.join(__dirname, "banpick"))
         ],
       },
       {
-        first_pick: "",
+        first_pick: 0,
         order: [],
       },
     ],
