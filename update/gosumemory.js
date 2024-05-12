@@ -154,7 +154,7 @@ exports = module.exports = function(config, session) {
         }
 
         // Get players' live playdata
-        for (let i = 0; i < 4; i++) {
+        for (let i = 0; i < data.tourney.ipcClients.length; i++) {
           session.lobby.players[i] = {
             id: data.tourney.ipcClients[i].spectating.userID,
             nick: data.tourney.ipcClients[i].spectating.name,
