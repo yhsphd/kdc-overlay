@@ -1,5 +1,6 @@
 const path = require("path");
 const fs = require("fs");
+const chokidar = require("chokidar");
 
 // Initialize session object structure
 const session = require("../templates/session");
@@ -13,12 +14,16 @@ function loadStreamConfig() {
   session.mappool_name = streamConfig.mappool_name;
   session.schedule = streamConfig.schedule;
   session.stream_title = streamConfig.title;
+}
 
+function loadManualMappool() {
   // Get mappool data from mappool.json if exists
   if (fs.existsSync(path.join(process.cwd(), "mappool.json"))) {
     console.log("Manual mappool: got mappool data from the mappool.json");
-    session.mappool_manual = false;
+    session.mappool_manual = true;
     session.mappool = JSON.parse(fs.readFileSync(path.join(process.cwd(), "mappool.json"), "utf-8")).mappool;
+  } else {
+    session.mappool_manual = false;
   }
 }
 
@@ -31,10 +36,10 @@ exports = module.exports = function(config, io) {
     }
   }
 
-  // Load streamConfig values
-  loadStreamConfig();
-  // Update value whenever the config file is changed
-  fs.watch(path.join(process.cwd(), "streamConfig.js"), loadStreamConfig);
+  // Load streamConfig values and try to get mappool data from mappool.json
+  // Update data whenever the files are changed
+  chokidar.watch(path.join(process.cwd(), "streamConfig.js")).on("all", loadStreamConfig);
+  chokidar.watch(path.join(process.cwd(), "mappool.json")).on("all", loadManualMappool);
 
   // socket.io setup
   io.on("connection", function(socket) {
