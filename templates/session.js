@@ -53,6 +53,7 @@ exports = module.exports = {
   lobby: {
     players: [],
     bo: 0,
+    aspect: 1,
     scores: [0, 0],
     set_scores: [0, 0],
   },

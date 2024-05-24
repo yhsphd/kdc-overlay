@@ -1,26 +1,44 @@
 const { w3cwebsocket: WebSocket } = require("websocket");
 const { v2 } = require("osu-api-extended");
 const { response } = require("express");
+const fs = require("fs");
 const difficultyCalculator = require("./difficultyCalculator");
 
 let gosuWs;
+let connected = false;
 
-exports = module.exports = function(config, session) {
+exports = module.exports = function (config, session) {
   function setupGosuWs() {
     gosuWs = new WebSocket(`ws://${config.gosumemoryHost}:${config.gosumemoryPort}/ws`);
 
     gosuWs.onopen = () => {
       console.log("Successfully Connected to Gosumemory!");
+      // connected will be updated onmessage
     };
 
     gosuWs.onclose = (event) => {
       console.log("Gosumemory WebSocket Connection closed.");
+      connected = false;
       setTimeout(setupGosuWs, 1000);
     };
 
     gosuWs.onerror = (error) => {
       console.log("Gosumemory WebSocket Connection error.");
     };
+
+    function updateAspect(gosuData) {
+      const osuPath = gosuData.settings.folders.game;
+      fs.readFile(osuPath + "\\tournament.cfg", (err, data) => {
+        data
+          .toString()
+          .split(/\r?\n/)
+          .forEach((x) => {
+            if (x.startsWith("Aspect")) {
+              session.lobby.aspect = parseFloat(x.replace("Aspect", "").replace(/[^\d.-]/g, ""));
+            }
+          });
+      });
+    }
 
     let chatCount = 0;
     let mapIdTemp = 0;
@@ -131,6 +149,13 @@ exports = module.exports = function(config, session) {
           for (let i = 0; i < data.tourney.ipcClients.length; i++) {
             session.lobby.players.push({});
           }
+          updateAspect(data); // Slot mismatch usually occurs when the client is restarted, when aspect can be changed
+        }
+
+        // Get aspect value in tournament.cfg: needed for determining 1vs1 or 2vs2 in KDC24
+        if (!connected) {
+          // Run only once when connected
+          updateAspect(data);
         }
 
         // If not null, receive new chat messages
@@ -178,6 +203,9 @@ exports = module.exports = function(config, session) {
         // Get IPCstate
         session.progress.state = data.tourney.manager.ipcState;
       }
+
+      // We are now connected as we received data just now
+      connected = true;
     };
   }
 
