@@ -7,7 +7,7 @@ const difficultyCalculator = require("./difficultyCalculator");
 let gosuWs;
 let connected = false;
 
-exports = module.exports = function (config, session) {
+exports = module.exports = function(config, session) {
   function setupGosuWs() {
     gosuWs = new WebSocket(`ws://${config.gosumemoryHost}:${config.gosumemoryPort}/ws`);
 
@@ -43,13 +43,17 @@ exports = module.exports = function (config, session) {
     let chatCount = 0;
     let mapIdTemp = 0;
     let modsTemp = -1;
+    let timeout = setTimeout(() => connected = false, 1000);
     // Update osu! data when receiving websocket messaage
     gosuWs.onmessage = (event) => {
       let data;
 
       try {
         data = JSON.parse(event.data);
+        clearTimeout(timeout);
+        timeout = setTimeout(() => connected = false, 1000);
       } catch (exception) {
+        connected = false;  // osu! is closed or something
         return;
       }
 
