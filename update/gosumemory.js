@@ -43,13 +43,16 @@ exports = module.exports = function(config, session) {
     let chatCount = 0;
     let mapIdTemp = 0;
     let modsTemp = -1;
+    // Set timeout of the connection, as tosu just stops sending data when osu gets closed and
+    // silently resumes when opened. With this we can detect situations where osu is restarted.
     let timeout = setTimeout(() => connected = false, 1000);
-    // Update osu! data when receiving websocket messaage
+    // Update osu! data when receiving websocket message
     gosuWs.onmessage = (event) => {
       let data;
 
       try {
         data = JSON.parse(event.data);
+        // Reset the connection timeout
         clearTimeout(timeout);
         timeout = setTimeout(() => connected = false, 1000);
       } catch (exception) {
