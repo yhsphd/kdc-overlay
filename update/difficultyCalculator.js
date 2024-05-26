@@ -1,7 +1,7 @@
 const { v2 } = require("osu-api-extended");
 const { response } = require("express");
 
-exports = module.exports = (function () {
+exports = module.exports = (function() {
   const ms = {
     od0: 79.5,
     od10: 19.5,

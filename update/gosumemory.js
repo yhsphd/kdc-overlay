@@ -84,6 +84,8 @@ exports = module.exports = function(config, session) {
         mods = data.menu.mods.num;
       }
 
+      const dt = (mods >> 6) % 2 === 1;
+
       // Update now playing data in session
       session.now_playing.osu.map_id = data.menu.bm.id;
       session.now_playing.osu.mapset_id = data.menu.bm.set;
@@ -95,26 +97,29 @@ exports = module.exports = function(config, session) {
       session.now_playing.osu.artist = data.menu.bm.metadata.artist;
       session.now_playing.osu.mapper = data.menu.bm.metadata.mapper;
       session.now_playing.osu.difficulty = data.menu.bm.metadata.difficulty;
+      session.now_playing.osu.length = data.menu.bm.time.mp3;
       session.now_playing.osu.time = data.menu.bm.time.current;
-      /*session.now_playing.osu.stats = {
-                cs : data.menu.bm.stats.CS,
-                ar : data.menu.bm.stats.AR,
-                od : data.menu.bm.stats.OD,
-                hp : data.menu.bm.stats.HP,
-                sr : data.menu.bm.stats.SR,
-                bpm : data.menu.bm.stats.BPM.min === data.menu.bm.stats.BPM.max ? data.menu.bm.stats.BPM.min : data.menu.bm.stats.BPM.min + "-" + data.menu.bm.stats.BPM.max,
-                length : data.menu.bm.time.mp3,
-                modified : {
-                    cs : data.menu.bm.stats.memoryCS,
-                    ar : data.menu.bm.stats.memoryAR,
-                    od : data.menu.bm.stats.memoryOD,
-                    hp : data.menu.bm.stats.memoryHP,
-                    sr : data.menu.bm.stats.fullSR,
-                    bpm : data.menu.bm.stats.BPM.min === data.menu.bm.stats.BPM.max ? data.menu.bm.stats.BPM.min * (dt ? 1.5 : 1) : data.menu.bm.stats.BPM.min * (dt ? 1.5 : 1) + "-" + data.menu.bm.stats.BPM.max * (dt ? 1.5 : 1),
-                    length : data.menu.bm.time.mp3 * (dt ? (2 / 3) : 1)
-                }
-            };*/ // Currently not working on gosumemory
+      Object.assign(session.now_playing.osu.stats, {
+        cs: data.menu.bm.stats.memoryCS,
+        ar: data.menu.bm.stats.memoryAR,
+        od: data.menu.bm.stats.memoryOD,
+        hp: data.menu.bm.stats.memoryHP,
+        //sr: data.menu.bm.stats.SR,  // Broken on tosu
+        bpm: data.menu.bm.stats.BPM.common * (dt ? (2 / 3) : 1),
+        length: data.menu.bm.time.full,
+        modified: {
+          cs: data.menu.bm.stats.CS,
+          ar: data.menu.bm.stats.AR,
+          od: data.menu.bm.stats.OD,
+          hp: data.menu.bm.stats.HP,
+          sr: data.menu.bm.stats.fullSR,
+          bpm: data.menu.bm.stats.BPM.common,
+          length: data.menu.bm.time.full * (dt ? (2 / 3) : 1),
+        },
+      });
 
+      // tosu reads stats well but left for future when things should go wrong
+      /*
       // Using osu!Api as gosumemory cannot pull metadata
       if (mapIdTemp !== data.menu.bm.id) {
         // Beatmap changed
@@ -144,6 +149,21 @@ exports = module.exports = function(config, session) {
           .then((modified) => {
             session.now_playing.osu.stats.modified = modified;
           });
+      }*/
+
+      // Get original sr from the api
+      if (mapIdTemp !== data.menu.bm.id) {
+        // Beatmap changed
+        let taskDone = true;
+
+        v2.beatmap.id.attributes(data.menu.bm.id, {}).then((res) => {
+          session.now_playing.osu.stats.sr = res?.attributes?.star_rating;
+          if (!session.now_playing.osu.stats.sr) {
+            taskDone = false;
+          }
+        });
+
+        if (taskDone) mapIdTemp = data.menu.bm.id;
       }
 
       // If Tourney Mode
