@@ -12,6 +12,7 @@ function loadStreamConfig() {
   session.type = streamConfig.type;
   session.match_code = streamConfig.match_code;
   session.mappool_name = streamConfig.mappool_name;
+  session.bracket = streamConfig.mappool_name;
   session.schedule = streamConfig.schedule;
   session.stream_title = streamConfig.title;
 }
