@@ -28,7 +28,14 @@ exports = module.exports = function(config, session) {
 
     function updateAspect(gosuData) {
       const osuPath = gosuData.settings.folders.game;
-      fs.readFile(osuPath + "\\tournament.cfg", (err, data) => {
+      fs.readFile(path.join(osuPath, "tournament.cfg"), (err, data) => {
+        if (err) {
+          // If failing to read the tournament.cfg file, fall back to the default value of 1
+          // It can be because the file disappeared somehow,
+          // or gosumemory(tosu) and tournament client is running remotely.
+          session.lobby.aspect = 1;
+          return;
+        }
         data
           .toString()
           .split(/\r?\n/)
