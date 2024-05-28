@@ -1,7 +1,7 @@
 const { v2 } = require("osu-api-extended");
 const { response } = require("express");
 
-exports = module.exports = (function() {
+exports = module.exports = (function () {
   const ms = {
     od0: 79.5,
     od10: 19.5,
@@ -39,10 +39,7 @@ exports = module.exports = (function() {
     if (ez) od_multiplier *= 0.5;
 
     od *= od_multiplier;
-    let odms =
-      hr && !dt && !ht
-        ? ms.od0 - ms_step.od * od
-        : ms.od0 - Math.ceil(ms_step.od * od);
+    let odms = hr && !dt && !ht ? ms.od0 - ms_step.od * od : ms.od0 - Math.ceil(ms_step.od * od);
 
     //hp
     if (ez) hp *= 0.5;
@@ -63,8 +60,7 @@ exports = module.exports = (function() {
     if (ez) ar_multiplier *= 0.5;
 
     ar *= ar_multiplier;
-    let arms =
-      ar <= 5 ? ms.ar0 - ms_step.ar_1 * ar : ms.ar5 - ms_step.ar_2 * (ar - 5);
+    let arms = ar <= 5 ? ms.ar0 - ms_step.ar_1 * ar : ms.ar5 - ms_step.ar_2 * (ar - 5);
 
     //cs
     let cs_multiplier = 1;
@@ -82,10 +78,7 @@ exports = module.exports = (function() {
 
     // convert OD and AR back into their stat form
     od = (ms.od0 - odms) / ms_step.od;
-    ar =
-      ar <= 5
-        ? (ms.ar0 - arms) / ms_step.ar_1
-        : 5.0 + (ms.ar5 - arms) / ms_step.ar_2;
+    ar = ar <= 5 ? (ms.ar0 - arms) / ms_step.ar_1 : 5.0 + (ms.ar5 - arms) / ms_step.ar_2;
 
     cs *= cs_multiplier;
     cs = Math.max(0, Math.min(10, cs));

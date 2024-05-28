@@ -7,7 +7,7 @@ const difficultyCalculator = require("./difficultyCalculator");
 let gosuWs;
 let connected = false;
 
-exports = module.exports = function(config, session) {
+exports = module.exports = function (config, session) {
   function setupGosuWs() {
     gosuWs = new WebSocket(`ws://${config.gosumemoryHost}:${config.gosumemoryPort}/ws`);
 
@@ -52,7 +52,7 @@ exports = module.exports = function(config, session) {
     let modsTemp = -1;
     // Set timeout of the connection, as tosu just stops sending data when osu gets closed and
     // silently resumes when opened. With this we can detect situations where osu is restarted.
-    let timeout = setTimeout(() => connected = false, 1000);
+    let timeout = setTimeout(() => (connected = false), 1000);
     // Update osu! data when receiving websocket message
     gosuWs.onmessage = (event) => {
       let data;
@@ -61,9 +61,9 @@ exports = module.exports = function(config, session) {
         data = JSON.parse(event.data);
         // Reset the connection timeout
         clearTimeout(timeout);
-        timeout = setTimeout(() => connected = false, 1000);
+        timeout = setTimeout(() => (connected = false), 1000);
       } catch (exception) {
-        connected = false;  // osu! is closed or something
+        connected = false; // osu! is closed or something
         return;
       }
 
@@ -112,7 +112,7 @@ exports = module.exports = function(config, session) {
         od: data.menu.bm.stats.memoryOD,
         hp: data.menu.bm.stats.memoryHP,
         //sr: data.menu.bm.stats.SR,  // Broken on tosu
-        bpm: data.menu.bm.stats.BPM.common * (dt ? (2 / 3) : 1),
+        bpm: data.menu.bm.stats.BPM.common * (dt ? 2 / 3 : 1),
         length: data.menu.bm.time.full,
         modified: {
           cs: data.menu.bm.stats.CS,
@@ -121,7 +121,7 @@ exports = module.exports = function(config, session) {
           hp: data.menu.bm.stats.HP,
           sr: data.menu.bm.stats.fullSR,
           bpm: data.menu.bm.stats.BPM.common,
-          length: data.menu.bm.time.full * (dt ? (2 / 3) : 1),
+          length: data.menu.bm.time.full * (dt ? 2 / 3 : 1),
         },
       });
 
