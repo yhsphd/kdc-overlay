@@ -19,14 +19,14 @@ async function Init() {
   if (firstRun) {
     if (!configFileExists) {
       await fs.copyFileSync(
-        path.join(__dirname + "/templates/config.default.js"),
+        path.join(__dirname, "/templates/config.default.js"),
         path.join(process.cwd(), "./config.js")
       );
       console.log("Default config file created! Please re-run the program after you complete!");
     }
     if (!streamConfigFileExists) {
       await fs.copyFileSync(
-        path.join(__dirname + "/templates/streamConfig.default.js"),
+        path.join(__dirname, "/templates/streamConfig.default.js"),
         path.join(process.cwd(), "./streamConfig.js")
       );
       console.log(
@@ -41,7 +41,7 @@ async function Init() {
     require("./osuApi")(config);
 
     // Static Folder
-    app.use("/", express.static(path.join(__dirname + "/public")));
+    app.use("/", express.static(path.join(__dirname, "/public")));
 
     // API
     const api = require("./api")(config);

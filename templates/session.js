@@ -47,8 +47,8 @@ exports = module.exports = {
   ],
   now_playing: {
     mode: "",
-    osu: require(path.join(__dirname, "map")),
-    fb2k: require(path.join(__dirname, "fb2k")),
+    osu: require("./map"),
+    fb2k: require("./fb2k"),
   },
   lobby: {
     players: [],
@@ -64,7 +64,7 @@ exports = module.exports = {
       {
         first_pick: 0,
         order: [
-          // require(path.join(__dirname, "banpick"))
+          // require("banpick")
         ],
       },
       {
