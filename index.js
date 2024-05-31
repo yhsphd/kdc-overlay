@@ -12,22 +12,22 @@ const fs = require("fs");
 const path = require("path");
 
 async function Init() {
-  const configFileExists = fs.existsSync(path.join(process.cwd(), "./config.js"));
-  const streamConfigFileExists = fs.existsSync(path.join(process.cwd(), "./streamConfig.js"));
+  const configFileExists = fs.existsSync(path.join(process.cwd(), "config.js"));
+  const streamConfigFileExists = fs.existsSync(path.join(process.cwd(), "streamConfig.js"));
   const firstRun = !(configFileExists && streamConfigFileExists);
 
   if (firstRun) {
     if (!configFileExists) {
       await fs.copyFileSync(
-        path.join(__dirname, "/templates/config.default.js"),
-        path.join(process.cwd(), "./config.js")
+        path.join(__dirname, "templates/config.default.js"),
+        path.join(process.cwd(), "config.js")
       );
       console.log("Default config file created! Please re-run the program after you complete!");
     }
     if (!streamConfigFileExists) {
       await fs.copyFileSync(
-        path.join(__dirname, "/templates/streamConfig.default.js"),
-        path.join(process.cwd(), "./streamConfig.js")
+        path.join(__dirname, "templates/streamConfig.default.js"),
+        path.join(process.cwd(), "streamConfig.js")
       );
       console.log(
         "Default streamConfig file created! Please re-run the program after you complete!"
@@ -35,13 +35,13 @@ async function Init() {
     }
     process.exit();
   } else {
-    const config = require(path.join(process.cwd(), "./config.js"));
+    const config = require(path.join(process.cwd(), "config.js"));
 
     // osu!api (v2) init
     require("./osuApi")(config);
 
     // Static Folder
-    app.use("/", express.static(path.join(__dirname, "/public")));
+    app.use("/", express.static(path.join(__dirname, "public")));
 
     // API
     const api = require("./api")(config);
