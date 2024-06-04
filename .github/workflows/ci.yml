@@ -23,22 +23,6 @@ jobs:
           node-version: 18.x
           cache: "npm"
 
-      ######################
-      # Check Version Bump #
-      ######################
-
-      - name: Check if version has been updated
-        id: check
-        uses: EndBug/version-check@v2
-
-      - name: Log when changed
-        if: steps.check.outputs.changed == 'true'
-        run: 'echo "Version change found in commit ${{ steps.check.outputs.commit }}! New version: ${{ steps.check.outputs.version }} (${{ steps.check.outputs.type }})"'
-
-      - name: Log when unchanged
-        if: steps.check.outputs.changed == 'false'
-        run: 'echo "No version change :/"'
-
       #########
       # Build #
       #########
@@ -66,4 +50,40 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: kdc-overlay
-          path: dist/kdc-overlay.exe
+          path: dist/
+
+      ######################
+      # Check Version Bump #
+      ######################
+
+      - name: Check if version has been updated
+        id: check
+        uses: EndBug/version-check@v2
+
+      - name: Log when changed
+        if: steps.check.outputs.changed == 'true'
+        run: 'echo "Version change found in commit ${{ steps.check.outputs.commit }}! New version: ${{ steps.check.outputs.version }} (${{ steps.check.outputs.type }})"'
+
+      - name: Log when unchanged
+        if: steps.check.outputs.changed == 'false'
+        run: 'echo "No version change :/"'
+
+      ############################
+      # Create Release if Bumped #
+      ############################
+
+      - name: Download build artifacts
+        if: steps.check.outputs.changed == 'true'
+        id: download-artifact
+        uses: dawidd6/action-download-artifact@v4
+        with:
+          skip_unpack: true
+
+      - name: Release
+        if: steps.check.outputs.changed == 'true'
+        uses: softprops/action-gh-release@v2
+        with:
+          name: v${{ steps.check.outputs.version }}
+          tag_name: v${{ steps.check.outputs.version }}
+          generate_release_notes: true
+          files: kdc-overlay.zip
