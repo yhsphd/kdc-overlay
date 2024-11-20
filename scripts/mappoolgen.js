@@ -1,7 +1,7 @@
 const { v2, auth } = require("osu-api-extended");
 const fs = require("fs");
 
-const config = require("./config.js");
+const config = require("../config.js");
 
 const mappoolCSV = fs
   .readFileSync("./mappool.csv", { encoding: "utf8", flag: "r" })

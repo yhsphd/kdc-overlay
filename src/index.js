@@ -41,7 +41,7 @@ async function Init() {
     require("./osuApi")(config);
 
     // Static Folder
-    app.use("/", express.static(path.join(__dirname, "public")));
+    app.use("/", express.static(path.join(__dirname, "../public")));
 
     // API
     const api = require("./api")(config);
