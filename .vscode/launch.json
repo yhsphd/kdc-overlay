@@ -9,7 +9,7 @@
       "request": "launch",
       "name": "start csl-overlay",
       "skipFiles": ["<node_internals>/**"],
-      "program": "${workspaceFolder}/index.js"
+      "program": "${workspaceFolder}/src/index.js"
     }
   ]
 }
