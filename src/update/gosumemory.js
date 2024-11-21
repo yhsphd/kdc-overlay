@@ -3,6 +3,7 @@ const { v2 } = require("osu-api-extended");
 const { response } = require("express");
 const fs = require("fs");
 const difficultyCalculator = require("./difficultyCalculator");
+const logger = require("winston")
 
 let gosuWs;
 let connected = false;
@@ -12,18 +13,18 @@ exports = module.exports = function (config, session) {
     gosuWs = new WebSocket(`ws://${config.gosumemoryHost}:${config.gosumemoryPort}/ws`);
 
     gosuWs.onopen = () => {
-      console.log("Successfully Connected to Gosumemory!");
+      logger.info("Successfully Connected to Gosumemory!");
       // connected will be updated onmessage
     };
 
     gosuWs.onclose = (event) => {
-      console.log("Gosumemory WebSocket Connection closed.");
+      logger.info("Gosumemory WebSocket Connection closed.");
       connected = false;
       setTimeout(setupGosuWs, 1000);
     };
 
     gosuWs.onerror = (error) => {
-      console.log("Gosumemory WebSocket Connection error.");
+      logger.error("Gosumemory WebSocket Connection error.");
     };
 
     function updateAspect(gosuData) {
@@ -178,7 +179,7 @@ exports = module.exports = function (config, session) {
       if (tourney) {
         // Match gosumemory and overlay's slot count
         if (session.lobby.players.length !== data.tourney.ipcClients.length) {
-          console.log("slot mismatch");
+          logger.info("slot mismatch");
           session.lobby.players = [];
           for (let i = 0; i < data.tourney.ipcClients.length; i++) {
             session.lobby.players.push({});

@@ -1,12 +1,13 @@
 const path = require("path");
 const fs = require("fs");
 const chokidar = require("chokidar");
+const logger = require("winston");
 
 // Initialize session object structure
 const session = require("../templates/session");
 
 function loadStreamConfig() {
-  console.log("streamConfig file updated!");
+  logger.info("streamConfig file updated!");
   delete require.cache[path.join(process.cwd(), "streamConfig.js")];
   const streamConfig = require(path.join(process.cwd(), "streamConfig.js"));
   session.type = streamConfig.type;
@@ -20,7 +21,7 @@ function loadStreamConfig() {
 function loadManualMappool() {
   // Get mappool data from mappool.json if exists
   if (fs.existsSync(path.join(process.cwd(), "mappool.json"))) {
-    console.log("Manual mappool: got mappool data from the mappool.json");
+    logger.warn("Manual mappool: got mappool data from the mappool.json");
     session.mappool_manual = true;
     session.mappool = JSON.parse(
       fs.readFileSync(path.join(process.cwd(), "mappool.json"), "utf-8")
@@ -47,7 +48,7 @@ exports = module.exports = function (config, io) {
   // socket.io setup
   io.on("connection", function (socket) {
     socket.on("file1Event", function () {
-      console.log("file1Event triggered");
+      logger.info("file1Event triggered");
     });
   });
 

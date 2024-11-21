@@ -10,6 +10,8 @@ const io = new Server(server, {
 });
 const fs = require("fs");
 const path = require("path");
+const logger = require("winston");
+require("./logger")();
 
 async function Init() {
   const configFileExists = fs.existsSync(path.join(process.cwd(), "config.js"));
@@ -22,14 +24,14 @@ async function Init() {
         path.join(__dirname, "templates/config.default.js"),
         path.join(process.cwd(), "config.js")
       );
-      console.log("Default config file created! Please re-run the program after you complete!");
+      logger.info("Default config file created! Please re-run the program after you complete!");
     }
     if (!streamConfigFileExists) {
       await fs.copyFileSync(
         path.join(__dirname, "templates/streamConfig.default.js"),
         path.join(process.cwd(), "streamConfig.js")
       );
-      console.log(
+      logger.info(
         "Default streamConfig file created! Please re-run the program after you complete!"
       );
     }
@@ -38,13 +40,13 @@ async function Init() {
     const config = require(path.join(process.cwd(), "config.js"));
 
     // osu!api (v2) init
-    require("./osuApi")(config);
+    require("./osuAPI")(config);
 
     // Static Folder
     app.use("/", express.static(path.join(__dirname, "../public")));
 
     // API
-    const api = require("./api")(config);
+    const api = require("./api")(config, logger);
     app.use("/api", api);
 
     // Info fetching and sending to browser
@@ -52,7 +54,7 @@ async function Init() {
 
     // Run Server
     server.listen(config.port, () => {
-      console.log(
+      logger.info(
         `Circles in SEOUL overlay backend server running at http://localhost:${config.port}/`
       );
     });

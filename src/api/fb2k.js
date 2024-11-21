@@ -1,5 +1,6 @@
 const express = require("express");
 const router = express.Router();
+const logger = require("winston");
 
 const net = require("net");
 
@@ -32,7 +33,7 @@ exports = module.exports = function (config) {
 
   client.on("connect", () => {
     clearIntervalConnect();
-    console.log("Successfully Connected to foobar2000 control server!");
+    logger.info("Successfully Connected to foobar2000 control server!");
     updateAlbumArt();
   });
 
@@ -47,7 +48,7 @@ exports = module.exports = function (config) {
       albumart += dataString.split("|")[0];
       if (dataString.endsWith("|")) {
         receivingAlbumArt = false;
-        console.log(consolePrefix + "Done fetching album art!");
+        logger.info(consolePrefix + "Done fetching album art!");
       }
     } else {
       let lines = data
@@ -56,34 +57,32 @@ exports = module.exports = function (config) {
         .split(/\r?\n/);
       lines.forEach((line) => {
         if (line.startsWith("701")) {
-          console.log(consolePrefix + "Downloading new album art!");
+          logger.info(consolePrefix + "Downloading new album art!");
           albumart = line.split("|")[2];
           if (!line.endsWith("|")) {
             receivingAlbumArt = true;
           } else {
-            console.log(consolePrefix + "Done fetching album art!");
+            logger.info(consolePrefix + "Done fetching album art!");
           }
         } else if (line.startsWith("111")) {
-          console.log(consolePrefix + "Song Changed!");
-          console.log(consolePrefix + line);
+          logger.info(consolePrefix + "Song Changed!");
           updateAlbumArt();
-        } else {
-          console.log(consolePrefix + line);
         }
+        logger.verbose(consolePrefix + (line.length > 500 ? line.substring(0, 500) + "\n(...Excessive output omitted)" : line));
       });
     }
   });
 
   client.on("close", () => {
     if (!intervalConnect) {
-      console.log("Disconnected from foobar2000 control server.");
+      logger.info("Disconnected from foobar2000 control server.");
     }
     launchIntervalConnect();
   });
 
   client.on("error", (err) => {
     if (!intervalConnect) {
-      console.log("foobar2000 control server connection error.");
+      logger.info("foobar2000 control server connection error.");
     }
     launchIntervalConnect();
   });

@@ -4,6 +4,7 @@ const { google } = require("googleapis");
 const { v2 } = require("osu-api-extended");
 const get2dValue = require("../globs/get2dValue");
 const session = require("../templates/session");
+const logger = require("winston");
 
 const auth = new google.auth.GoogleAuth({
   keyFile: path.join(process.cwd(), "credentials.json"),
@@ -62,7 +63,7 @@ exports = module.exports = function (config, session) {
     }
 
     session.teams = teamsData;
-    console.log(`Found teams ${teams} on sheet!`);
+    logger.info(`Found teams ${teams} on sheet!`);
   }
 
   //
@@ -120,7 +121,7 @@ exports = module.exports = function (config, session) {
 
     if (mappool.length) {
       session.mappool = mappool;
-      console.log(`\nFound mappool <${mappoolName}> (size: ${mappool.length}) on sheet!`);
+      logger.info(`Found mappool <${mappoolName}> (size: ${mappool.length}) on sheet!`);
     }
   }
 
@@ -152,17 +153,18 @@ exports = module.exports = function (config, session) {
 
       matchCode = session.match_code;
 
-      console.log(`\nFound Match <${matchCode}> on sheet!`);
+      logger.info(`Found Match <${matchCode}> on sheet!`);
       const teamNums = [
         parseInt(get2dValue.byRange(rows, "N4")),
         parseInt(get2dValue.byRange(rows, "S4")),
       ];
       updateTeams(teamNums);
       updateMappoolFromSheet(session.mappool_name);
-      console.log();
-      console.log("\n==================== Stream Title ====================");
-      console.log(get2dValue.byRange(rows, "W2"));
-      console.log("======================================================\n");
+      logger.info("\n" +
+        "==================== Stream Title ====================\n" +
+        get2dValue.byRange(rows, "W2") + "\n" +
+        "======================================================"
+      )
     }
 
     // Get Match Progress Data
