@@ -52,7 +52,9 @@ async function Init() {
 
     // Run Server
     server.listen(config.port, () => {
-      console.log(`Circles in SEOUL overlay backend server running at http://localhost:${config.port}/`);
+      console.log(
+        `Circles in SEOUL overlay backend server running at http://localhost:${config.port}/`
+      );
     });
   }
 }
