@@ -160,23 +160,24 @@ exports = module.exports = function (config, session) {
       ];
       updateTeams(teamNums);
       updateMappoolFromSheet(session.mappool_name);
-      logger.info("\n" +
-        "==================== Stream Title ====================\n" +
-        get2dValue.byRange(rows, "W2") + "\n" +
-        "======================================================"
-      )
+      logger.info(
+        "\n" +
+          "==================== Stream Title ====================\n" +
+          get2dValue.byRange(rows, "W2") +
+          "\n" +
+          "======================================================"
+      );
     }
 
     // Get Match Progress Data
-    const progressData = get2dValue.byRange(rows, "B2:C");
+    const progressData = get2dValue.byRange(rows, "B3:C");
 
-    session.progress.phase = parseInt(progressData[0][1]);
-    session.progress.phases[0].first_pick = parseInt(progressData[2][1]);
-    session.progress.phases[1].first_pick = parseInt(progressData[3][1]);
+    session.progress.curmap = parseInt(progressData[0][1]);
+    session.progress.first_ban = parseInt(progressData[1][1]);
+    session.progress.first_pick = parseInt(progressData[2][1]);
 
     let order = [];
-    let phase = 0;
-    for (let i = 4; i < progressData.length; i++) {
+    for (let i = 3; i < progressData.length; i++) {
       if (!progressData[i][1]) {
         // Stop reading if empty
         break;
@@ -184,24 +185,14 @@ exports = module.exports = function (config, session) {
 
       const pick = JSON.parse(progressData[i][1]);
 
-      if (progressData[i][0].startsWith("phase_")) {
-        // change phase
-        phase = parseInt(progressData[i][0].substring(6)) - 1;
-        order.push([]);
-      }
-
-      if (!(pick.pick === -1 && pick.team === -1)) {
+      if (pick.pick !== -1) {
         // pass if invalid pick
-        order[phase].push(pick);
+        order.push(pick);
       }
     }
 
-    order[order.length - 1].pop(); // last map is TB
-
-    for (let i = 0; i < order.length; i++) {
-      // apply to session
-      session.progress.phases[i].order = order[i];
-    }
+    // apply to session
+    session.progress.order = order;
   }
 
   setInterval(() => {
