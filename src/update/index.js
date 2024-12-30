@@ -3,6 +3,8 @@ const fs = require("fs");
 const chokidar = require("chokidar");
 const logger = require("winston");
 
+const controls = require("./controls");
+
 // Initialize session object structure
 const session = require("../templates/session");
 
@@ -32,6 +34,8 @@ function loadManualMappool() {
 }
 
 exports = module.exports = function (config, io) {
+  const controlHandler = new controls(config, session);
+
   // Load debug values
   if (fs.existsSync(path.join(process.cwd(), "session.js"))) {
     const manualSession = require(path.join(process.cwd(), "session.js"));
@@ -46,9 +50,9 @@ exports = module.exports = function (config, io) {
   chokidar.watch(path.join(process.cwd(), "mappool.json")).on("all", loadManualMappool);
 
   // socket.io setup
-  io.on("connection", function (socket) {
-    socket.on("file1Event", function () {
-      logger.info("file1Event triggered");
+  io.on("connection", (socket) => {
+    socket.on("control", (res) => {
+      controlHandler.handleControlEvent(res);
     });
   });
 

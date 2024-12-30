@@ -19,6 +19,7 @@
   "license": "ISC",
   "dependencies": {
     "chokidar": "^3.6.0",
+    "csvtojson": "^2.0.10",
     "date-fns": "^4.1.0",
     "express": "^4.19.2",
     "googleapis": "^136.0.0",
