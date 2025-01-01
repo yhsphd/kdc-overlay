@@ -145,13 +145,12 @@ exports = module.exports = function (config, session) {
     session.bracket = get2dValue.byRange(rows, "W7");
     session.mappool_name = get2dValue.byRange(rows, "G2");
     session.bo = parseInt(get2dValue.byRange(rows, "W4"));
-    session.schedule = get2dValue.byRange(rows, "W3");
+    // session.schedule = get2dValue.byRange(rows, "W3");
     session.stream_title = get2dValue.byRange(rows, "W2");
 
-    if (matchCode !== session.match_code) {
-      // Match changeds
-
+    if (matchCode !== session.match_code) {   // Match changed
       matchCode = session.match_code;
+      session.schedule = get2dValue.byRange(rows, "W3");  // CSL temporal change: timer control - update schedule value with on on sheet only when the matchCode has changed
 
       logger.info(`Found Match <${matchCode}> on sheet!`);
       const teamNums = [
