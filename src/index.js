@@ -1,5 +1,6 @@
 const http = require("http");
 const express = require("express");
+const ip = require("ip");
 const app = express();
 const server = http.createServer(app);
 const { Server } = require("socket.io");
@@ -55,7 +56,7 @@ async function Init() {
     // Run Server
     server.listen(config.port, () => {
       logger.info(
-        `Circles in SEOUL overlay backend server running at http://localhost:${config.port}/`
+        `Circles in SEOUL overlay backend server running at http://${ip.address()}:${config.port}/`
       );
     });
   }
