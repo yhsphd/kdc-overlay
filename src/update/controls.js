@@ -7,17 +7,6 @@ const controlEventHandlers = require("./controlEventHandlers");
 
 const peopleCsvPath = path.join(process.cwd(), "people.csv");
 
-chokidar.watch(peopleCsvPath).on("all", loadPeople);
-const people = { people: [] };
-
-function loadPeople() {
-  csv()
-    .fromFile(peopleCsvPath)
-    .then((jsonObj) => {
-      people.people = [...jsonObj];
-    });
-}
-
 exports = module.exports = class controls {
   constructor(config, session) {
     this.config = config;
@@ -25,27 +14,25 @@ exports = module.exports = class controls {
     this.handlers = new controlEventHandlers(config, session);
   }
 
+  CSL_watchPeopleList() {
+    chokidar.watch(peopleCsvPath).on("all", () => {
+      csv()
+        .fromFile(peopleCsvPath)
+        .then((jsonObj) => {
+          this.session.CSL.people = jsonObj;
+        });
+    });
+  }
+
   handleControlEvent(data) {
     logger.info(data);
     switch (data.type) {
       case "scheduleUpdate":
-        logger.info("scheduleUpdate");
         this.handlers.updateSchedule(data.data); // data: <String> new schedule in ISO
         break;
-      case "showPersonCard":
-        logger.info("showPersonCard");
-        break;
-      case "addPerson":
-        logger.info("addPerson");
-        break;
-      case "modifyPerson":
-        logger.info("modifyPerson");
-        break;
-      case "deletePerson":
-        logger.info("deletePerson");
+      case "showPeopleCards":
+        logger.info(JSON.stringify(data));
         break;
     }
   }
 };
-
-loadPeople();

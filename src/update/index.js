@@ -36,6 +36,8 @@ function loadManualMappool() {
 exports = module.exports = function (config, io) {
   const controlHandler = new controls(config, session);
 
+  controlHandler.CSL_watchPeopleList();
+
   // Load debug values
   if (fs.existsSync(path.join(process.cwd(), "session.js"))) {
     const manualSession = require(path.join(process.cwd(), "session.js"));
