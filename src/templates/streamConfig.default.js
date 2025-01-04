@@ -4,7 +4,7 @@ let streamConfig = {};
 streamConfig.type = "match";
 
 // For match streaming
-streamConfig.match_code = 0;
+streamConfig.match_code = "";
 streamConfig.mappool_name = "Mappool 1";
 
 // For showcase streaming

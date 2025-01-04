@@ -1,9 +1,9 @@
 const path = require("path");
-const fs = require("fs");
 const { google } = require("googleapis");
 const { v2 } = require("osu-api-extended");
 const get2dValue = require("../globs/get2dValue");
-const session = require("../templates/session");
+const delay = require("../globs/globs.js").delay;
+const SlottedSheetsFetcher = require("./sheetsAPI");
 const logger = require("winston");
 
 const auth = new google.auth.GoogleAuth({
@@ -12,30 +12,41 @@ const auth = new google.auth.GoogleAuth({
 });
 const sheets = google.sheets({ version: "v4", auth });
 
-exports = module.exports = function (config, session) {
-  function getColumnLabels(firstRow) {
-    const data = {};
-    for (let i = 0; i < firstRow.length; i++) {
-      data[firstRow[i]] = i;
-    }
-    return data;
+const interval = 1500;
+
+function getColumnLabels(firstRow) {
+  const data = {};
+  for (let i = 0; i < firstRow.length; i++) {
+    data[firstRow[i]] = i;
+  }
+  return data;
+}
+
+class SpreadsheetManager {
+  constructor(config, session) {
+    this.config = config;
+    this.session = session;
+    this.matchInfo = [];
+    this.matchSchedule = ""; // CSL - Keep sheet's schedule separated with actual schedule in session
+    this.fetcher = new SlottedSheetsFetcher(sheets, config.sheet);
   }
 
-  //
-  // Team Info Update
-  async function updateTeams(teams) {
-    if (session.type !== "match") {
-      return;
-    }
+  async init() {
+    const updateMatchInfoLoop = () => {
+      this.updateMatchInfo().then(() => {
+        setTimeout(updateMatchInfoLoop, interval);
+      });
+    };
+
+    updateMatchInfoLoop();
+  }
+
+  async updateTeams(teams) {
+    if (this.session.type !== "match") return;
 
     const range = "Teams"; // Specifying only the sheet name as range to get the whole cells in the sheet
-    let matchCode = 0;
-
-    const res = await sheets.spreadsheets.values.get({
-      spreadsheetId: config.sheet,
-      range: range,
-    });
-    const rows = res.data.values; // Got data from the sheet
+    const res = await this.fetcher.fetchRange(range);
+    const rows = res.values; // Got data from the sheet
 
     const labels = getColumnLabels(rows[0]);
 
@@ -62,25 +73,40 @@ exports = module.exports = function (config, session) {
       }
     }
 
-    session.teams = teamsData;
+    this.session.teams = teamsData;
     logger.info(`Found teams ${teams} on sheet!`);
   }
 
-  //
-  // Mappool Update (from sheets)
-  async function updateMappoolFromSheet(mappoolName) {
-    if (session.mappool_manual) {
-      // Don't get mappool info from the sheet if it is provided manually
-      return;
-    }
+  async matchChanged() {
+    await this.updateMatchInfo(); // Update match info first
+
+    this.session.schedule = this.matchSchedule; // CSL temporal change: timer control - update schedule value with on on sheet only when the matchCode has changed
+
+    const rows = this.matchInfo;
+
+    logger.info(`Found Match <${this.session.match_code}> on sheet!`);
+    const teamNums = [
+      parseInt(get2dValue.byRange(rows, "N4")),
+      parseInt(get2dValue.byRange(rows, "S4")),
+    ];
+    logger.verbose("Going to query teams " + teamNums);
+    await this.updateTeams(teamNums);
+    await this.updateMappool(this.session.mappool_name);
+    logger.info(
+      "\n" +
+        "==================== Stream Title ====================\n" +
+        get2dValue.byRange(rows, "W2") +
+        "\n" +
+        "======================================================"
+    );
+  }
+
+  async updateMappool(mappoolName) {
+    if (this.session.mappool_manual) return; // Don't get mappool info from the sheet if it is provided manually
 
     const range = "Mappool"; // Specifying only the sheet name as range to get the whole cells in the sheet
-
-    const res = await sheets.spreadsheets.values.get({
-      spreadsheetId: config.sheet,
-      range: range,
-    });
-    const rows = res.data.values; // Got data from the sheet
+    const res = await this.fetcher.fetchRange(range);
+    const rows = res.values; // Got data from the sheet
 
     const labels = getColumnLabels(rows[0]);
 
@@ -120,60 +146,34 @@ exports = module.exports = function (config, session) {
     }
 
     if (mappool.length) {
-      session.mappool = mappool;
+      this.session.mappool = mappool;
       logger.info(`Found mappool <${mappoolName}> (size: ${mappool.length}) on sheet!`);
     }
   }
 
-  //
-  // Match Info Update
-  let matchCode = 0;
+  async updateMatchInfo() {
+    if (this.session.type !== "match") return; // Not accessing the sheet if not in match mode
 
-  async function updateMatchInfo() {
-    if (session.type !== "match") {
-      // Not accessing the sheet if not in match mode
-      return;
-    }
-    const range = session.match_code; // Specifying only the sheet name (which is same with the match code) as range to get the whole cells in the sheet
+    const range = this.session.match_code; // Specifying only the sheet name (which is same with the match code) as range to get the whole cells in the sheet
+    const res = await this.fetcher.fetchRange(range);
 
-    const res = await sheets.spreadsheets.values.get({
-      spreadsheetId: config.sheet,
-      range: range,
-    });
-    const rows = res.data.values; // Got data from the sheet
+    const rows = res.values; // Got data from the sheet
 
-    session.bracket = get2dValue.byRange(rows, "W7");
-    session.mappool_name = get2dValue.byRange(rows, "G2");
-    session.bo = parseInt(get2dValue.byRange(rows, "W4"));
+    this.matchInfo = rows;
+
+    this.session.bracket = get2dValue.byRange(rows, "W7");
+    this.session.mappool_name = get2dValue.byRange(rows, "G2");
+    this.session.bo = parseInt(get2dValue.byRange(rows, "W4"));
     // session.schedule = get2dValue.byRange(rows, "W3");
-    session.stream_title = get2dValue.byRange(rows, "W2");
-
-    if (matchCode !== session.match_code) {   // Match changed
-      matchCode = session.match_code;
-      session.schedule = get2dValue.byRange(rows, "W3");  // CSL temporal change: timer control - update schedule value with on on sheet only when the matchCode has changed
-
-      logger.info(`Found Match <${matchCode}> on sheet!`);
-      const teamNums = [
-        parseInt(get2dValue.byRange(rows, "N4")),
-        parseInt(get2dValue.byRange(rows, "S4")),
-      ];
-      updateTeams(teamNums);
-      updateMappoolFromSheet(session.mappool_name);
-      logger.info(
-        "\n" +
-          "==================== Stream Title ====================\n" +
-          get2dValue.byRange(rows, "W2") +
-          "\n" +
-          "======================================================"
-      );
-    }
+    this.matchSchedule = get2dValue.byRange(rows, "W3"); // CSL
+    this.session.stream_title = get2dValue.byRange(rows, "W2");
 
     // Get Match Progress Data
     const progressData = get2dValue.byRange(rows, "B3:C");
 
-    session.progress.curmap = parseInt(progressData[0][1]);
-    session.progress.first_ban = parseInt(progressData[1][1]);
-    session.progress.first_pick = parseInt(progressData[2][1]);
+    this.session.progress.curmap = parseInt(progressData[0][1]);
+    this.session.progress.first_ban = parseInt(progressData[1][1]);
+    this.session.progress.first_pick = parseInt(progressData[2][1]);
 
     let order = [];
     for (let i = 3; i < progressData.length; i++) {
@@ -191,12 +191,8 @@ exports = module.exports = function (config, session) {
     }
 
     // apply to session
-    session.progress.order = order;
+    this.session.progress.order = order;
   }
+}
 
-  setInterval(() => {
-    if (session.type === "match") {
-      updateMatchInfo();
-    }
-  }, 1100);
-};
+exports = module.exports = SpreadsheetManager;

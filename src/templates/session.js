@@ -2,7 +2,7 @@ path = require("path");
 
 exports = module.exports = {
   type: "",
-  match_code: 0,
+  match_code: "",
   bracket: "0",
   mappool_name: "",
   mappool_manual: false,

@@ -2,8 +2,8 @@ const path = require("path");
 const fs = require("fs");
 const chokidar = require("chokidar");
 const logger = require("winston");
-
 const controls = require("./controls");
+const SpreadsheetManager = require("./spreadsheets");
 
 // Initialize session object structure
 const session = require("../templates/session");
@@ -48,7 +48,10 @@ exports = module.exports = function (config, io) {
 
   // Load streamConfig values and try to get mappool data from mappool.json
   // Update data whenever the files are changed
-  chokidar.watch(path.join(process.cwd(), "streamConfig.js")).on("all", loadStreamConfig);
+  chokidar.watch(path.join(process.cwd(), "streamConfig.js")).on("all", () => {
+    loadStreamConfig();
+    sheets.matchChanged();
+  });
   chokidar.watch(path.join(process.cwd(), "mappool.json")).on("all", loadManualMappool);
 
   // socket.io setup
@@ -65,7 +68,8 @@ exports = module.exports = function (config, io) {
   require("./fb2k")(config, session);
 
   // Information from Google sheets
-  require("./spreadsheets")(config, session);
+  const sheets = new SpreadsheetManager(config, session);
+  sheets.init();
 
   // Session data broadcasting
   function broadcastUpdate() {
