@@ -1,5 +1,5 @@
 const logger = require("winston");
-const { delay } = require("../globs/globs");
+const { delay, waitForCondition } = require("../globs/globs");
 
 class SlottedSheetsFetcher {
   constructor(sheets, sheetId, slotDuration = 1100) {
@@ -15,10 +15,9 @@ class SlottedSheetsFetcher {
     // Ensure ambiguous ranges are wrapped in quotes
     const formattedRange = range.includes("!") ? "range" : `'${range}'`;
 
-    logger.verbose("[sheetsAPI] Received range request: " + range);
-    if (this.fetching) {
-      await delay(500);
-    }
+    // logger.verbose("[sheetsAPI] Received range request: " + range);
+
+    await waitForCondition(() => !this.fetching);
 
     return new Promise((resolve, reject) => {
       if (!this.requestQueue.has(formattedRange)) {
@@ -45,7 +44,7 @@ class SlottedSheetsFetcher {
     // Get the current batch of ranges
     const ranges = Array.from(this.requestQueue.keys());
 
-    logger.verbose("[sheetsAPI] Calling API for: " + ranges);
+    // logger.verbose("[sheetsAPI] Calling API for: " + ranges);
 
     try {
       // Make a batch request
