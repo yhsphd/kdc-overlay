@@ -5,6 +5,7 @@ const get2dValue = require("../globs/get2dValue");
 const delay = require("../globs/globs.js").delay;
 const SlottedSheetsFetcher = require("./sheetsAPI");
 const logger = require("winston");
+const { getRandomInt } = require("../globs/globs.js");
 
 const auth = new google.auth.GoogleAuth({
   keyFile: path.join(process.cwd(), "credentials.json"),
@@ -27,6 +28,7 @@ class SpreadsheetManager {
     this.config = config;
     this.session = session;
     this.matchInfo = [];
+    this.allTeams = [];
     this.matchSchedule = ""; // CSL - Keep sheet's schedule separated with actual schedule in session
     this.fetcher = new SlottedSheetsFetcher(sheets, config.sheet);
   }
@@ -34,10 +36,17 @@ class SpreadsheetManager {
   async init() {
     const updateMatchInfoLoop = () => {
       this.updateMatchInfo().then(() => {
-        setTimeout(updateMatchInfoLoop, interval);
+        setTimeout(updateMatchInfoLoop, interval + getRandomInt(100));
       });
     };
 
+    const CSL_UpdateOtherMatchesLoop = () => {
+      this.CSL_UpdateOtherMatches().then(() => {
+        setTimeout(CSL_UpdateOtherMatchesLoop, interval + getRandomInt(100));
+      });
+    };
+
+    CSL_UpdateOtherMatchesLoop();
     updateMatchInfoLoop();
   }
 
@@ -50,9 +59,15 @@ class SpreadsheetManager {
 
     const labels = getColumnLabels(rows[0]);
 
+    const allTeamsData = [];
     const teamsData = new Array(teams.length);
 
     for (let i = 1; i < rows.length; i++) {
+      allTeamsData[rows[i][labels.Index]] = {
+        id: parseInt(rows[i][labels.uid1]),
+        nick: rows[i][labels.Player1],
+        rank: 0,
+      };
       if (teams.includes(parseInt(rows[i][labels.Index]))) {
         teamsData[teams.indexOf(parseInt(rows[i][labels.Index]))] = {
           name: rows[i][labels.TeamName],
@@ -73,7 +88,9 @@ class SpreadsheetManager {
       }
     }
 
+    this.allTeams = allTeamsData;
     this.session.teams = teamsData;
+    this.session.CSL.teams = allTeamsData;
     logger.info(`Found teams ${teams} on sheet!`);
   }
 
@@ -192,6 +209,46 @@ class SpreadsheetManager {
 
     // apply to session
     this.session.progress.order = order;
+  }
+
+  async CSL_UpdateOtherMatches() {
+    if (this.session.type !== "match") return; // Not accessing the sheet if not in match mode
+
+    const range = "Schedule"; // Specifying only the sheet name (which is same with the match code) as range to get the whole cells in the sheet
+    const res = await this.fetcher.fetchRange(range);
+
+    const rows = res.values; // Got data from the sheet
+
+    const labels = getColumnLabels(rows[0]);
+
+    const matches = {};
+
+    for (let i = 1; i < rows.length; i++) {
+      const matchCode = rows[i][labels.Match];
+      if (matchCode.startsWith("M")) {
+        matches[matchCode] = {
+          bracket: (() => {
+            switch (matchCode) {
+              case "M1":
+              case "M2":
+                return "Quarterfinals";
+              case "M3":
+              case "M4":
+                return "Semifinals";
+              case "M5":
+                return "Final";
+              default:
+                return "";
+            }
+          })(),
+          schedule: rows[i][labels.iso],
+          players: rows[i].slice(7, 9).map((x) => parseInt(x)),
+          result: rows[i].slice(13, 15).map((x) => parseInt(x)),
+        };
+      }
+    }
+
+    Object.assign(this.session.CSL.matches, matches);
   }
 }
 

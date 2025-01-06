@@ -69,5 +69,7 @@ exports = module.exports = {
   chat: [],
   CSL: {
     people: {},
+    teams: [],
+    matches: {},
   },
 };
