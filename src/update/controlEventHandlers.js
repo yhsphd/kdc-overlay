@@ -13,4 +13,12 @@ exports = module.exports = class controls {
       logger.info(this.session.schedule);
     }, 2000); */
   }
+
+  updateTitle(title) {
+    this.session.stream_title = title;
+  }
+
+  showPersonCards(showObject, io) {
+    io.emit("showPersonCards", showObject);
+  }
 };

@@ -57,7 +57,7 @@ exports = module.exports = function (config, io) {
   // socket.io setup
   io.on("connection", (socket) => {
     socket.on("control", (res) => {
-      controlHandler.handleControlEvent(res);
+      controlHandler.handleControlEvent(res, io);
     });
   });
 

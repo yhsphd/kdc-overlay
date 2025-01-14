@@ -18,7 +18,7 @@ const interval = 1500;
 function getColumnLabels(firstRow) {
   const data = {};
   for (let i = 0; i < firstRow.length; i++) {
-    data[firstRow[i]] = i;
+    if (firstRow[i].length > 0) data[firstRow[i]] = i;
   }
   return data;
 }
@@ -67,6 +67,7 @@ class SpreadsheetManager {
         id: parseInt(rows[i][labels.uid1]),
         nick: rows[i][labels.Player1],
         rank: 0,
+        comment: rows[i][labels.comment],
       };
       if (teams.includes(parseInt(rows[i][labels.Index]))) {
         teamsData[teams.indexOf(parseInt(rows[i][labels.Index]))] = {
@@ -77,6 +78,7 @@ class SpreadsheetManager {
             { id: parseInt(rows[i][labels.uid1]), nick: rows[i][labels.Player1], rank: 0 },
             { id: parseInt(rows[i][labels.uid2]), nick: rows[i][labels.Player2], rank: 0 },
           ],
+          comment: rows[i][labels.comment],
         };
       }
     }
@@ -85,6 +87,7 @@ class SpreadsheetManager {
       for (let j = 0; j < 2; j++) {
         const playerdata = await v2.user.details(teamsData[i].players[j].id);
         teamsData[i].players[j].rank = playerdata.statistics.global_rank;
+        teamsData[i].players[j].pp = playerdata.statistics.pp;
       }
     }
 
@@ -116,6 +119,7 @@ class SpreadsheetManager {
         "\n" +
         "======================================================"
     );
+    this.session.stream_title = get2dValue.byRange(rows, "W2"); // CSL
   }
 
   async updateMappool(mappoolName) {
@@ -183,7 +187,7 @@ class SpreadsheetManager {
     this.session.bo = parseInt(get2dValue.byRange(rows, "W4"));
     // session.schedule = get2dValue.byRange(rows, "W3");
     this.matchSchedule = get2dValue.byRange(rows, "W3"); // CSL
-    this.session.stream_title = get2dValue.byRange(rows, "W2");
+    // this.session.stream_title = get2dValue.byRange(rows, "W2");  // CSL temporal change: title set control - only update stream_title when match has changed
 
     // Get Match Progress Data
     const progressData = get2dValue.byRange(rows, "B3:C");
@@ -227,6 +231,7 @@ class SpreadsheetManager {
       const matchCode = rows[i][labels.Match];
       if (matchCode.startsWith("M")) {
         matches[matchCode] = {
+          code: matchCode,
           bracket: (() => {
             switch (matchCode) {
               case "M1":

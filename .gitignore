@@ -137,3 +137,7 @@ credentials.json
 public/
 logs/
 people.csv
+badges_separated.csv
+badges.csv
+players.csv
+players.json

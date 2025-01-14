@@ -24,14 +24,17 @@ exports = module.exports = class controls {
     });
   }
 
-  handleControlEvent(data) {
-    logger.info(data);
+  handleControlEvent(data, io) {
+    logger.verbose(data);
     switch (data.type) {
+      case "titleUpdate":
+        this.handlers.updateTitle(data.data); // data: <String> new Stream Title
+        break;
       case "scheduleUpdate":
         this.handlers.updateSchedule(data.data); // data: <String> new schedule in ISO
         break;
-      case "showPeopleCards":
-        logger.info(JSON.stringify(data));
+      case "showPersonCards":
+        this.handlers.showPersonCards(data.data, io); // "data":{"duration":5,"people":[{"nick":"Fuvell","pfp":"https://a.ppy.sh/10220343","uid":"10220343","desc":"Host"}]}
         break;
     }
   }
