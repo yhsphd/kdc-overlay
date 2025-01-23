@@ -71,5 +71,6 @@ exports = module.exports = {
     people: {},
     teams: [],
     matches: {},
+    history: {},
   },
 };
