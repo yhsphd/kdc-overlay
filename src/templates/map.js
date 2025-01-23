@@ -11,6 +11,9 @@ exports = module.exports = {
   difficulty: "",
   time: 0, // used for now_playing
   length: 0,
+  count_circles: 0,
+  count_sliders: 0,
+  count_spinners: 0,
   stats: {
     cs: 0,
     ar: 0,

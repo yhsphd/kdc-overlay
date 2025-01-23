@@ -107,6 +107,9 @@ exports = module.exports = function (config, session) {
       session.now_playing.osu.difficulty = data.menu.bm.metadata.difficulty;
       session.now_playing.osu.length = data.menu.bm.time.mp3;
       session.now_playing.osu.time = data.menu.bm.time.current;
+      session.now_playing.osu.count_circles = data.menu.bm.stats.circles;
+      session.now_playing.osu.count_sliders = data.menu.bm.stats.sliders;
+      session.now_playing.osu.count_spinners = data.menu.bm.stats.spinners;
       Object.assign(session.now_playing.osu.stats, {
         cs: data.menu.bm.stats.memoryCS,
         ar: data.menu.bm.stats.memoryAR,

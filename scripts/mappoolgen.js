@@ -33,6 +33,9 @@ const call = async () => {
       artist: data.beatmapset.artist,
       mapper: data.beatmapset.creator,
       difficulty: data.version,
+      count_circles: data.count_circles,
+      count_sliders: data.count_sliders,
+      count_spinners: data.count_spinners,
       stats: {
         cs: data.cs,
         ar: data.ar,
