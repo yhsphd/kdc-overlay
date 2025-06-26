@@ -9,16 +9,16 @@ const { initializeOsuApi } = require("./osuApi");
 const { start } = require("./entry");
 const { mappoolgen } = require("./scripts/mappoolgen");
 
-const VERSION = "KDC Overlay v2025.0.1";
+const VERSION = "o!mLN4 Overlay v0.0.0";
 const HELP = `
-kdc-overlay
-Duo Cup: KOREA 2025 Broadcasting Tool
+omln4-overlay
+osu!mania Long Note Tournament 4 Broadcasting Tool
 
 Usage:
-  kdc-overlay                   # Runs the program.
-  kdc-overlay mappoolgen        # Generates mappool.json file from mappool.csv.
-  kdc-overlay -h | --help
-  kdc-overlay -v | --version
+  omln4-overlay                   # Runs the program.
+  omln4-overlay mappoolgen        # Generates mappool.json file from mappool.csv.
+  omln4-overlay -h | --help
+  omln4-overlay -v | --version
 
 Options:
   -h --help     Show this screen.
