@@ -31,7 +31,9 @@ async function start(config) {
 
   // Run Server
   server.listen(config.port, () => {
-    logger.info(`osu!mania Long Note Tournament 4 overlay backend server running at http://${ip.address()}:${config.port}/`);
+    logger.info(
+      `osu!mania Long Note Tournament 4 overlay backend server running at http://${ip.address()}:${config.port}/`
+    );
   });
 }
 
