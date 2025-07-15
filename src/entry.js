@@ -18,7 +18,10 @@ async function start(config) {
   });
 
   // Static Folder
-  app.use("/", express.static(path.join(__dirname, "public")));
+  app.use("/overlay", express.static(path.join(__dirname, "public")));
+  app.get("/overlay/*splat", (req, res) => {
+    res.sendFile(path.join(__dirname, "public", "index.html"));
+  });
 
   // API
   const api = new Apis(config);

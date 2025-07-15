@@ -135,7 +135,7 @@ mappool.csv
 mappool.json
 credentials.json
 credentials_osuapi.json
-public/
+src/public/
 logs/
 people.csv
 badges_separated.csv
