@@ -1,6 +1,7 @@
 const fs = require("fs");
 const logger = require("winston");
 const { v2 } = require("osu-api-extended");
+const path = require("path");
 
 const consolePrefix = "[mappoolgen] ";
 
@@ -11,6 +12,19 @@ function isMD5(inputString) {
 }
 
 async function mappoolgen() {
+  // Check if mappool.csv exists first
+  const mappoolCsvFilePath = path.join(process.cwd(), "mappool.csv");
+  const mappoolCsvFileExists = fs.existsSync(mappoolCsvFilePath);
+
+  if (!mappoolCsvFileExists) {
+    fs.copyFileSync(
+      path.join(__dirname, "templates/configs/mappool.default.csv"),
+      mappoolCsvFilePath
+    );
+    console.log("Default mappool.csv file created! Please re-run the program after you complete!");
+  }
+
+  // We have mappool.csv
   const mappoolCSV = fs
     .readFileSync("./mappool.csv", { encoding: "utf8", flag: "r" })
     .trim()
@@ -19,17 +33,23 @@ async function mappoolgen() {
   let maps = {};
   let mappool = [];
 
-  mappoolCSV.forEach((line) => {
+  mappoolCSV.slice(1).forEach((line) => {
+    // Drop first row (header)
+
     const spl = line.split(",");
 
     const code = spl[0].trim();
     const val = spl[1].trim();
     const md5 = isMD5(val);
+    const custom = Boolean(Number(spl[2]));
+    const original = Boolean(Number(spl[3]));
 
     maps[code] = {
       code,
       md5: md5 ? val : "",
       id: md5 ? 0 : parseInt(val),
+      custom,
+      original,
     };
     parseInt(spl[1]);
   });
@@ -65,14 +85,16 @@ async function mappoolgen() {
           count_sliders: data.count_sliders,
           count_spinners: data.count_spinners,
           stats: {
-            cs: data.cs,
-            ar: data.ar,
+            // cs: data.cs,   // o!mLN4
+            // ar: data.ar,
             od: data.accuracy,
             hp: data.drain,
             sr: data.difficulty_rating,
             bpm: data.bpm,
             length: data.total_length * 1000,
           },
+          custom: map.custom,
+          original: map.original,
         };
       } catch (err) {
         logger.error(consolePrefix + `While fetching beatmap metadata from osu!api...`);
@@ -100,14 +122,16 @@ async function mappoolgen() {
         count_sliders: 0,
         count_spinners: 0,
         stats: {
-          cs: 0,
-          ar: 0,
+          // cs: 0,
+          // ar: 0,
           od: 0,
           hp: 0,
           sr: 0,
           bpm: 0,
           length: 0,
         },
+        custom: map.custom,
+        original: map.original,
       };
     }
 

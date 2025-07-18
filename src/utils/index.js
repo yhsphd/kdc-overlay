@@ -18,10 +18,21 @@ const waitForCondition = (conditionFn, interval = 100) => {
   });
 };
 
+const sheetStrToBool = (str) => {
+  if (str === "TRUE") {
+    return true;
+  } else if (str === "FALSE") {
+    return false;
+  } else {
+    return undefined;
+  }
+};
+
 module.exports = {
   applyMods,
   get2dValue,
   delay,
   getRandomInt,
   waitForCondition,
+  sheetStrToBool,
 };

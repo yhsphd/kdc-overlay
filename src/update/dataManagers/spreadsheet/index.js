@@ -6,7 +6,8 @@ const eaw = require("eastasianwidth");
 const logger = require("winston");
 
 const { SlottedSheetsFetcher } = require("./sheetsApi");
-const { getRandomInt, get2dValue } = require("../../../utils");
+const { getRandomInt, get2dValue, sheetStrToBool } = require("../../../utils");
+const { parseMatch } = require("./omln4");
 
 const auth = new google.auth.GoogleAuth({
   keyFile: path.join(process.cwd(), "credentials.json"),
@@ -29,12 +30,15 @@ class SpreadsheetManager {
   constructor(config, session) {
     this.config = config;
     this.session = session;
-    this.matchInfo = [];
+    this.rawMatchInfo = [];
     this.allTeams = [];
     this.matchSchedule = ""; // CSL - Keep sheet's schedule separated with actual schedule in session
     this.fetcher = new SlottedSheetsFetcher(sheets, config.sheet);
   }
 
+  /**
+   * Configure and start the SpreadsheetManager.
+   */
   async init() {
     this.setup();
 
@@ -49,10 +53,13 @@ class SpreadsheetManager {
 
   setup() {
     chokidar.watch(path.join(process.cwd(), "config_stream.yaml")).on("all", () => {
-      if (this.session.type === "match") {
-        // Fetch match info only when match mode
-        this.matchChanged();
-      }
+      // temporary fix: wait for a brief moment until this.session.type is updated by /update/index.js
+      setTimeout(() => {
+        if (this.session.type === "match") {
+          // Fetch match info only when match mode
+          this.matchChanged();
+        }
+      }, 300);
     });
   }
 
@@ -73,11 +80,7 @@ class SpreadsheetManager {
         name: rows[i][labels.TeamName],
         acronym: rows[i][labels.Acronym],
         seed: parseInt(rows[i][labels.Seed]),
-        players: [
-          { id: parseInt(rows[i][labels.uid1]), nick: rows[i][labels.Player1], rank: 0 },
-          { id: parseInt(rows[i][labels.uid2]), nick: rows[i][labels.Player2], rank: 0 },
-        ],
-        comment: rows[i][labels.comment],
+        players: [{ id: parseInt(rows[i][labels.UID1]), nick: rows[i][labels.Player1], rank: 0 }],
       };
 
       if (!teamData) continue;
@@ -88,7 +91,8 @@ class SpreadsheetManager {
     }
 
     for (let i = 0; i < teamsData.length; i++) {
-      for (let j = 0; j < 2; j++) {
+      for (let j = 0; j < 1; j++) {
+        // TeamSize = 1
         if (!teamsData[i].players[j].id) continue;
         logger.verbose(
           consolePrefix + `Querying rank and pp of player id ${teamsData[i].players[j].id}`
@@ -109,27 +113,30 @@ class SpreadsheetManager {
     logger.info(consolePrefix + `Found teams ${teams} on sheet!`);
   }
 
+  /**
+   * The match code has changed - so we re-fetch information
+   * We get the match's team information, mappool, and title here, and the rest is handled by updateMatchInfo().
+   */
   async matchChanged() {
     await this.updateMatchInfo(); // Update match info first
 
     this.session.schedule = this.matchSchedule; // CSL temporal change: timer control - update schedule value with on on sheet only when the matchCode has changed
 
-    const rows = this.matchInfo;
-
     logger.info(consolePrefix + `Found match <${this.session.match_code}> on sheet!`);
     const teamNums = [
-      parseInt(get2dValue.byRange(rows, "N4")),
-      parseInt(get2dValue.byRange(rows, "S4")),
+      this.session.progress.pre_match.red_index,
+      this.session.progress.pre_match.blue_index,
     ];
     logger.verbose(consolePrefix + "Going to query teams " + teamNums);
 
     await this.updateTeams(teamNums);
     await this.updateMappool(this.session.mappool_name);
 
-    const streamTitle = get2dValue.byRange(rows, "W2");
+    /*     const streamTitle = get2dValue.byRange(rows, "W2");
     const titleLen = eaw.length(streamTitle);
     const lines = [];
 
+    // Print stream title
     lines.push("┌" + "─".repeat(titleLen - 2) + "┐");
     lines.push(streamTitle);
     lines.push("└" + "─".repeat(titleLen - 2) + "┘");
@@ -139,7 +146,7 @@ class SpreadsheetManager {
         "Stream title generated. Copy & paste the following to your streamer dashboard:\n" +
         lines.join("\n")
     );
-    this.session.stream_title = get2dValue.byRange(rows, "W2"); // CSL
+    this.session.stream_title = get2dValue.byRange(rows, "W2"); // CSL */
   }
 
   async updateMappool(mappoolName) {
@@ -164,23 +171,23 @@ class SpreadsheetManager {
 
       if (gettingMappool) {
         mappool.push({
-          map_id: parseInt(rows[i][labels.map_id]),
-          mapset_id: parseInt(rows[i][labels.mapset_id]),
+          map_id: parseInt(rows[i][labels.ID_Map]),
+          mapset_id: parseInt(rows[i][labels.ID_Mapset]),
           code: rows[i][labels.Code],
-          background: rows[i][labels.background],
-          cover: rows[i][labels.cover],
-          title: rows[i][labels.title],
-          artist: rows[i][labels.artist],
-          mapper: rows[i][labels.mapper],
-          difficulty: rows[i][labels.difficulty],
+          background: rows[i][labels.Background],
+          cover: rows[i][labels.Cover],
+          title: rows[i][labels.Title],
+          artist: rows[i][labels.Artist],
+          mapper: rows[i][labels.Mapper],
+          difficulty: rows[i][labels.Difficulty],
+          custom: sheetStrToBool(rows[i][labels.Custom]),
+          original: sheetStrToBool(rows[i][labels.Original]),
           stats: {
-            cs: parseFloat(rows[i][labels.cs]),
-            ar: parseFloat(rows[i][labels.ar]),
-            od: parseFloat(rows[i][labels.od]),
-            hp: parseFloat(rows[i][labels.hp]),
-            sr: parseFloat(rows[i][labels.sr]),
-            bpm: parseFloat(rows[i][labels.bpm]),
-            length: parseFloat(rows[i][labels.length]),
+            od: parseFloat(rows[i][labels.OD]),
+            hp: parseFloat(rows[i][labels.HP]),
+            sr: parseFloat(rows[i][labels.SR]),
+            bpm: parseFloat(rows[i][labels.BPM]),
+            length: parseFloat(rows[i][labels.Length]),
           },
         });
       }
@@ -197,53 +204,20 @@ class SpreadsheetManager {
   async updateMatchInfo() {
     if (this.session.type !== "match") return; // Not accessing the sheet if not in match mode
 
-    const range = this.session.match_code; // Specifying only the sheet name (which is same with the match code) as range to get the whole cells in the sheet
+    const range = "Match Progression"; // in o!mLN4, all the match progression data is on a single sheet
     const res = await this.fetcher.fetchRange(range);
 
     const rows = res.values; // Got data from the sheet
-
-    this.matchInfo = rows;
-
-    this.session.bracket = get2dValue.byRange(rows, "W7");
-    this.session.mappool_name = get2dValue.byRange(rows, "G2");
-    this.session.bo = parseInt(get2dValue.byRange(rows, "W4"));
-    this.session.schedule = get2dValue.byRange(rows, "W3");
+    this.rawMatchInfo = rows;
 
     // Get Match Progress Data
-    const progressData = get2dValue.byRange(rows, "B2:C");
+    const progressData = parseMatch(rows, this.session.match_code);
+    this.session.progress = progressData;
 
-    this.session.progress.phase = parseInt(progressData[0][1]);
-    this.session.progress.phases[0].first_pick = parseInt(progressData[2][1]);
-    this.session.progress.phases[1].first_pick = parseInt(progressData[3][1]);
-
-    let order = [];
-    let phase = 0;
-    for (let i = 4; i < progressData.length; i++) {
-      if (!progressData[i][1]) {
-        // Stop reading if empty
-        break;
-      }
-
-      const pick = JSON.parse(progressData[i][1]);
-
-      if (progressData[i][0].startsWith("phase_")) {
-        // change phase
-        phase = parseInt(progressData[i][0].substring(6)) - 1;
-        order.push([]);
-      }
-
-      if (!(pick.pick === -1 && pick.team === -1)) {
-        // pass if invalid pick
-        order[phase].push(pick);
-      }
-    }
-
-    order[order.length - 1].pop(); // last map is TB
-
-    for (let i = 0; i < order.length; i++) {
-      // apply to session
-      this.session.progress.phases[i].order = order[i];
-    }
+    this.session.bracket = progressData.round;
+    this.session.mappool_name = progressData.round_code;
+    this.session.bo = progressData.bo;
+    this.session.schedule = progressData.schedule;
   }
 }
 

@@ -1,0 +1,58 @@
+function parseMatch(rows, id) {
+  const dataRow = rows.find((row) => row[0] === id.toString());
+
+  if (!dataRow) {
+    throw new Error(`Match ID ${id} not found.`);
+  }
+
+  // Fixed column indices based on your layout
+  const RED_INDEX_COL = 4;
+  const BLUE_INDEX_COL = 5;
+  const BO_COL = 6;
+  const RED_PROTECT_COL = 7;
+  const RED_BAN_COL = 8;
+  const BLUE_PROTECT_COL = 9;
+  const BLUE_BAN_COL = 10;
+  const RED_ROLL_COL = 11;
+  const BLUE_ROLL_COL = 12;
+  const FIRST_PICK_COL = 13;
+  const RED_FIRST_PICK_COL = 14;
+  const BLUE_FIRST_PICK_COL = 15;
+
+  // Pick columns: Assuming they start at index 15
+  const PICK_START_COL = 16;
+  const PICK_END_COL = PICK_START_COL + 16;
+
+  // Winner columns: Assuming they start after pick section + 1
+  const WINNER_START_COL = PICK_END_COL + 1;
+  const WINNER_END_COL = WINNER_START_COL + 16;
+
+  // Match Done column: last column
+  const DONE_COL = WINNER_END_COL + 1;
+
+  return {
+    id: Number(dataRow[0]),
+    round: dataRow[1],
+    round_code: dataRow[2],
+    schedule: dataRow[3],
+    pre_match: {
+      red_index: Number(dataRow[RED_INDEX_COL]) || null,
+      blue_index: Number(dataRow[BLUE_INDEX_COL]) || null,
+      bo: dataRow[BO_COL] || null,
+      red_protect: dataRow[RED_PROTECT_COL] || null,
+      red_ban: dataRow[RED_BAN_COL] || null,
+      blue_protect: dataRow[BLUE_PROTECT_COL] || null,
+      blue_ban: dataRow[BLUE_BAN_COL] || null,
+      red_roll: dataRow[RED_ROLL_COL] || null,
+      blue_roll: dataRow[BLUE_ROLL_COL] || null,
+      first_pick: dataRow[FIRST_PICK_COL] || null,
+      red_first_pick: dataRow[RED_FIRST_PICK_COL] || null,
+      blue_first_pick: dataRow[BLUE_FIRST_PICK_COL] || null,
+    },
+    pick: dataRow.slice(PICK_START_COL, PICK_END_COL).map((val) => val || null),
+    winner: dataRow.slice(WINNER_START_COL, WINNER_END_COL).map((val) => val || null),
+    done: dataRow[DONE_COL] === "TRUE" || dataRow[DONE_COL] === true,
+  };
+}
+
+exports = module.exports = { parseMatch };

@@ -56,21 +56,7 @@ exports = module.exports = {
     set_scores: [0, 0],
   },
   mappool: [],
-  progress: {
-    phase: 1,
-    phases: [
-      {
-        first_pick: 0,
-        order: [
-          // require("banpick")
-        ],
-      },
-      {
-        first_pick: 0,
-        order: [],
-      },
-    ],
-  },
+  progress: {},
   chat: [],
   CSL: {
     people: {},
