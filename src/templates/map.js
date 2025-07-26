@@ -16,16 +16,16 @@ exports = module.exports = {
   count_sliders: 0,
   count_spinners: 0,
   stats: {
-    cs: 0,
-    ar: 0,
+    // cs: 0,   // o!mLN4
+    // ar: 0,
     od: 0,
     hp: 0,
     sr: 0,
     bpm: "",
     length: 0,
     modified: {
-      cs: 0,
-      ar: 0,
+      // cs: 0,
+      // ar: 0,
       od: 0,
       hp: 0,
       sr: 0,

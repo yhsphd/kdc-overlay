@@ -67,6 +67,8 @@ class GosumemoryManager {
     }
 
     let code = "";
+    let custom = false;
+    let original = false;
     for (let i = 0; i < this.session.mappool.length; i++) {
       // Check if current map is mappool
       if (
@@ -74,10 +76,13 @@ class GosumemoryManager {
         this.session.mappool[i].md5 === data.menu.bm.md5 // Custom map but md5 matches
       ) {
         code = this.session.mappool[i].code;
+        custom = this.session.mappool[i].custom;
+        original = this.session.mappool[i].original;
         break;
       }
     }
 
+    // Force apply mods if modded mappool
     let mods;
     if (code.startsWith("HD")) {
       mods = 8;
@@ -100,9 +105,11 @@ class GosumemoryManager {
       map_id: data.menu.bm.id,
       md5: data.menu.bm.md5,
       mapset_id: data.menu.bm.set,
-      mods: mods,
-      code: code,
-      background: `https://assets.ppy.sh/beatmaps/${data.menu.bm.set}/covers/raw.jpg`,
+      mods,
+      code,
+      custom,
+      original,
+      background: `http://${this.config.gosumemoryHost}:${this.config.gosumemoryPort}/Songs/${data.menu.bm.path.full.replace(/\\/g, "/")}`,
       cover: `https://assets.ppy.sh/beatmaps/${data.menu.bm.set}/covers/cover.jpg`,
       title: data.menu.bm.metadata.title,
       artist: data.menu.bm.metadata.artist,
@@ -113,6 +120,7 @@ class GosumemoryManager {
       count_circles: data.menu.bm.stats.circles,
       count_sliders: data.menu.bm.stats.sliders,
       count_spinners: data.menu.bm.stats.spinners,
+      player: data.gameplay.name,
     });
     Object.assign(this.session.now_playing.osu.stats, {
       cs: data.menu.bm.stats.memoryCS,

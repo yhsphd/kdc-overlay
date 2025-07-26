@@ -17,11 +17,13 @@ exports = module.exports = {
           id: 0,
           nick: "",
           rank: 0,
+          country_code: ""
         },
         {
           id: 0,
           nick: "",
           rank: 0,
+          country_code: ""
         },
       ],
     },
@@ -34,11 +36,13 @@ exports = module.exports = {
           id: 0,
           nick: "",
           rank: 0,
+          country_code: ""
         },
         {
           id: 0,
           nick: "",
           rank: 0,
+          country_code: ""
         },
       ],
     },
@@ -50,7 +54,7 @@ exports = module.exports = {
   },
   lobby: {
     players: [],
-    bo: 0,
+    bo: 1,
     aspect: 1,
     scores: [0, 0],
     set_scores: [0, 0],

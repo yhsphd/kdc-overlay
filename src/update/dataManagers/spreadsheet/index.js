@@ -63,6 +63,9 @@ class SpreadsheetManager {
     });
   }
 
+  /**
+   * TODO: Add teamSize constant
+   */
   async updateTeams(teams) {
     if (this.session.type !== "match") return;
 
@@ -95,15 +98,16 @@ class SpreadsheetManager {
         // TeamSize = 1
         if (!teamsData[i].players[j].id) continue;
         logger.verbose(
-          consolePrefix + `Querying rank and pp of player id ${teamsData[i].players[j].id}`
+          consolePrefix + `Querying rank, pp, and flag of player id ${teamsData[i].players[j].id}`
         );
         const playerdata = await v2.users.details({
           user: teamsData[i].players[j].id,
-          mode: "osu",
+          mode: "mania",  // o!mLN4
           key: "id",
         });
         teamsData[i].players[j].rank = playerdata.statistics.global_rank;
         teamsData[i].players[j].pp = playerdata.statistics.pp;
+        teamsData[i].players[j].country_code = playerdata.country_code;
       }
     }
 
