@@ -49,8 +49,11 @@ function parseMatch(rows, id) {
       red_first_pick: dataRow[RED_FIRST_PICK_COL] || null,
       blue_first_pick: dataRow[BLUE_FIRST_PICK_COL] || null,
     },
-    pick: dataRow.slice(PICK_START_COL, PICK_END_COL).filter((val) => val),
-    winner: dataRow.slice(WINNER_START_COL, WINNER_END_COL).filter((val) => val),
+    pick: dataRow
+      .slice(PICK_START_COL, PICK_END_COL)
+      .filter((x) => x) // Filter blanks out
+      .map((x) => (x === "TB" ? "TB1" : x)), // All the mappools must have index number (TB -> TB1)
+    winner: dataRow.slice(WINNER_START_COL, WINNER_END_COL).filter((x) => x),
     done: dataRow[DONE_COL] === "TRUE" || dataRow[DONE_COL] === true,
   };
 }
