@@ -7,7 +7,7 @@ const logger = require("winston");
 
 const { SlottedSheetsFetcher } = require("./sheetsApi");
 const { getRandomInt, get2dValue, sheetStrToBool } = require("../../../utils");
-const { parseMatch } = require("./omln4");
+const { parseMatch, parseQualsResults } = require("./omln4");
 
 const auth = new google.auth.GoogleAuth({
   keyFile: path.join(process.cwd(), "credentials.json"),
@@ -48,10 +48,17 @@ class SpreadsheetManager {
       });
     };
 
+    const updateAllMatchesLoop = () => {
+      this.updateAllMatches().then(() => {
+        setTimeout(updateAllMatchesLoop, interval + getRandomInt(100));
+      });
+    };
+
+    updateAllMatchesLoop();
     updateMatchInfoLoop();
   }
 
-  setup() {
+  async setup() {
     chokidar.watch(path.join(process.cwd(), "config_stream.yaml")).on("all", () => {
       // temporary fix: wait for a brief moment until this.session.type is updated by /update/index.js
       setTimeout(() => {
@@ -61,6 +68,30 @@ class SpreadsheetManager {
         }
       }, 300);
     });
+
+    await this.getBracketList();
+    await this.omln4_getQualsResults();
+  }
+
+  async getBracketList() {
+    const range = "RoundSetup"; // Specifying only the sheet name as range to get the whole cells in the sheet
+    const res = await this.fetcher.fetchRange(range);
+    const rows = res.values; // Got data from the sheet
+
+    const labels = getColumnLabels(rows[0]);
+
+    const brackets = [];
+
+    for (let i = 1; i < rows.length; i++) {
+      brackets.push({
+        code: rows[i][labels.RoundCode],
+        name: rows[i][labels.RoundName],
+        bo: rows[i][labels.Bo],
+        poolName: rows[i][labels.PoolName],
+      });
+    }
+
+    this.session.brackets = brackets;
   }
 
   /**
@@ -82,6 +113,7 @@ class SpreadsheetManager {
       const teamData = {
         name: rows[i][labels.TeamName],
         acronym: rows[i][labels.Acronym],
+        index: parseInt(rows[i][labels.Index]),
         seed: parseInt(rows[i][labels.Seed]),
         players: [{ id: parseInt(rows[i][labels.UID1]), nick: rows[i][labels.Player1], rank: 0 }],
       };
@@ -102,7 +134,7 @@ class SpreadsheetManager {
         );
         const playerdata = await v2.users.details({
           user: teamsData[i].players[j].id,
-          mode: "mania",  // o!mLN4
+          mode: "mania", // o!mLN4
           key: "id",
         });
         teamsData[i].players[j].rank = playerdata.statistics.global_rank;
@@ -113,7 +145,7 @@ class SpreadsheetManager {
 
     this.allTeams = allTeamsData;
     this.session.teams = teamsData;
-    this.session.CSL.teams = allTeamsData;
+    this.session.extended.teams = allTeamsData;
     logger.info(consolePrefix + `Found teams ${teams} on sheet!`);
   }
 
@@ -222,6 +254,50 @@ class SpreadsheetManager {
     this.session.mappool_name = progressData.round_code;
     this.session.bo = progressData.bo;
     this.session.schedule = progressData.schedule;
+  }
+
+  async updateAllMatches() {
+    if (this.session.type !== "match") return; // Not accessing the sheet if not in match mode
+
+    const range = "Schedule"; // Specifying only the sheet name (which is same with the match code) as range to get the whole cells in the sheet
+    const res = await this.fetcher.fetchRange(range);
+
+    const rows = res.values; // Got data from the sheet
+
+    const labels = getColumnLabels(rows[0]);
+
+    const matches = {};
+    const rCodeToFullname = (() => {
+      const brackets = this.session.brackets;
+      const rtn = {};
+
+      brackets.forEach((element) => {
+        rtn[element.code] = element.name;
+      });
+
+      return rtn;
+    })();
+
+    for (let i = 1; i < rows.length; i++) {
+      const matchCode = rows[i][labels.Match];
+      matches[matchCode] = {
+        code: matchCode,
+        bracket: rCodeToFullname[rows[i][labels.Round]],
+        schedule: rows[i][labels.Schedule_ISO],
+        players: [rows[i][labels.R_Index], rows[i][labels.B_Index]].map((x) => Number(x)),
+        result: [rows[i][labels.R_Score], rows[i][labels.B_Score]].map((x) => Number(x)),
+      };
+    }
+
+    Object.assign(this.session.extended.matches, matches);
+  }
+
+  async omln4_getQualsResults() {
+    const range = "Qualifier Data";
+    const res = await this.fetcher.fetchRange(range);
+    const rows = res.values;
+
+    this.session.extended.quals = parseQualsResults(rows);
   }
 }
 

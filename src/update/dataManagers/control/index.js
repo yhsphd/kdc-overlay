@@ -33,7 +33,7 @@ class ControlManager {
       csv()
         .fromFile(peopleCsvPath)
         .then((jsonObj) => {
-          this.session.CSL.people = jsonObj;
+          this.session.extended.people = jsonObj;
         });
     });
   }

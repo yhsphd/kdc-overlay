@@ -2,6 +2,7 @@ exports = module.exports = {
   type: "",
   match_code: "",
   bracket: "0",
+  brackets: [],
   mappool_name: "",
   mappool_manual: false,
   bo: 0,
@@ -17,13 +18,13 @@ exports = module.exports = {
           id: 0,
           nick: "",
           rank: 0,
-          country_code: ""
+          country_code: "",
         },
         {
           id: 0,
           nick: "",
           rank: 0,
-          country_code: ""
+          country_code: "",
         },
       ],
     },
@@ -36,13 +37,13 @@ exports = module.exports = {
           id: 0,
           nick: "",
           rank: 0,
-          country_code: ""
+          country_code: "",
         },
         {
           id: 0,
           nick: "",
           rank: 0,
-          country_code: ""
+          country_code: "",
         },
       ],
     },
@@ -62,9 +63,10 @@ exports = module.exports = {
   mappool: [],
   progress: {},
   chat: [],
-  CSL: {
+  extended: {
     people: {},
     teams: [],
     matches: {},
+    quals: [],
   },
 };

@@ -58,4 +58,59 @@ function parseMatch(rows, id) {
   };
 }
 
-exports = module.exports = { parseMatch };
+function parseQualsResults(rows) {
+  // Get map codes from the first row (RC1, RC2, etc)
+  const mapCodes = rows[0]
+    .slice(2)
+    .filter((x) => x)
+    .filter((x, i, arr) => arr.indexOf(x) === i);
+
+  // Find column positions from the header row (row[1])
+  const headerRow = rows[1];
+  const rankStart = headerRow.findIndex((x) => x === "Rank");
+  const scoreStart = headerRow.findIndex((x) => x === "Score");
+  const accStart = headerRow.findIndex((x) => x === "V2 Acc");
+  const scoreCountStart = headerRow.findIndex((x) => x === "# scores");
+  const maStart = headerRow.findIndex((x) => x === "MA");
+
+  // Skip header rows
+  const dataRows = rows.slice(2);
+
+  return dataRows
+    .filter((row) => row[0] && row[1]) // Only process rows with ID and player name
+    .map((row) => {
+      // Find summary column positions
+      const sumRankCol = headerRow.findIndex((x) => x === "Sum Rank");
+      const avgScoreCol = headerRow.findIndex((x) => x === "Av. Score");
+      const adjAvScoreCol = avgScoreCol + 1;
+      const avgAccCol = headerRow.findIndex((x) => x === "Av. Acc");
+      const adjAvAccCol = avgAccCol + 1;
+      const totalScoreCol = headerRow.findIndex((x) => x === "Total");
+      const avgMaCol = headerRow.findIndex((x) => x === "Avg. MA");
+
+      // Parse maps data
+      const maps = mapCodes.map((code, i) => ({
+        code,
+        rank: Number(row[rankStart + i]) || 0,
+        score: Number(row[scoreStart + i]?.replace(/,/g, "")) || 0,
+        acc: Number(row[accStart + i]) || 0,
+        scoreCount: Number(row[scoreCountStart + i]) || 0,
+        ma: Number(row[maStart + i]) || 0,
+      }));
+
+      return {
+        id: Number(row[0]),
+        nick: row[1],
+        maps,
+        rank_sum: Number(row[sumRankCol]) || 0,
+        score_avg: Number(row[avgScoreCol]?.replace(/,/g, "")) || 0,
+        score_adj_avg: Number(row[adjAvScoreCol]?.replace(/,/g, "")) || 0,
+        acc_avg: Number(row[avgAccCol]?.replace(/%/g, "")) / 100 || 0,
+        acc_adj_avg: Number(row[adjAvAccCol]?.replace(/%/g, "")) / 100 || 0,
+        score_count: Number(row[totalScoreCol]) || 0,
+        ma_avg: Number(row[avgMaCol]) || 0,
+      };
+    });
+}
+
+exports = module.exports = { parseMatch, parseQualsResults };
