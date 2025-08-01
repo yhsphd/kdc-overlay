@@ -115,6 +115,7 @@ class SpreadsheetManager {
         acronym: rows[i][labels.Acronym],
         index: parseInt(rows[i][labels.Index]),
         seed: parseInt(rows[i][labels.Seed]),
+        flag: rows[i][labels.Flag],
         players: [{ id: parseInt(rows[i][labels.UID1]), nick: rows[i][labels.Player1], rank: 0 }],
       };
 
