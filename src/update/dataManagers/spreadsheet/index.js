@@ -285,8 +285,12 @@ class SpreadsheetManager {
         code: matchCode,
         bracket: rCodeToFullname[rows[i][labels.Round]],
         schedule: rows[i][labels.Schedule_ISO],
-        players: [rows[i][labels.R_Index], rows[i][labels.B_Index]].map((x) => Number(x)),
-        result: [rows[i][labels.R_Score], rows[i][labels.B_Score]].map((x) => Number(x)),
+        players: [rows[i][labels.R_Index], rows[i][labels.B_Index]].map((x) =>
+          !x ? 0 : isNaN(Number(x)) ? -1 : Number(x)
+        ),
+        result: [rows[i][labels.R_Score], rows[i][labels.B_Score]].map(
+          (x) => (!x ? 0 : isNaN(Number(x)) ? -1 : Number(x)) // handle non-existing Array element and FF
+        ),
       };
     }
 
