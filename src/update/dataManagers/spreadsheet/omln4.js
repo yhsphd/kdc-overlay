@@ -113,4 +113,81 @@ function parseQualsResults(rows) {
     });
 }
 
-exports = module.exports = { parseMatch, parseQualsResults };
+function parseOiiResults(rows) {
+  const mapIdRow = rows[0];
+  const mapInfoRow = rows[1];
+  const headerRow = rows[2];
+  const dataRows = rows.slice(3);
+
+  // Find map sections by looking for round names in the second row
+  const mapSections = [];
+  for (let i = 2; i < mapInfoRow.length; i++) {
+    const roundName = mapInfoRow[i];
+    if (roundName && roundName.trim() !== "") {
+      const mapCode = mapInfoRow[i + 1];
+      const titleArtistDiff = mapInfoRow[i + 2];
+      const mapId = Number(mapIdRow[i + 5]) || 0; // Map ID is 5 columns after round name (H1 when round is C2)
+      
+      if (mapCode && titleArtistDiff) {
+        mapSections.push({
+          roundName,
+          mapCode,
+          titleArtistDiff,
+          mapId,
+          startCol: i,
+        });
+        
+        // Skip to next section (each section takes 7 columns)
+        i += 6;
+      }
+    }
+  }
+
+  // Define stats header for calculating column positions
+  const statsHeader = ["rank", "score", "v2 acc", "ma", "nth", "# scores", "tickets"];
+
+  // Group maps by round name
+  const roundsMap = {};
+  mapSections.forEach((section, sectionIndex) => {
+    if (!roundsMap[section.roundName]) {
+      roundsMap[section.roundName] = [];
+    }
+
+    const leaderboard = [];
+    const currentMapStartCol = headerRow.indexOf("rank") + sectionIndex * statsHeader.length;
+
+    dataRows.forEach((row) => {
+      // Only process if there's a score for the map
+      const score = row[currentMapStartCol + 1];
+      if (row[0] && row[1] && score) {
+        leaderboard.push({
+          id: Number(row[0]),
+          nick: row[1],
+          rank: Number(row[currentMapStartCol]),
+          score: Number(row[currentMapStartCol + 1]?.replace(/,/g, "")),
+          acc: Number(row[currentMapStartCol + 2]?.replace(/%/g, "")) / 100,
+          ma: Number(row[currentMapStartCol + 3]),
+          nth: Number(row[currentMapStartCol + 4]),
+          scores: Number(row[currentMapStartCol + 5]),
+          tickets: Number(row[currentMapStartCol + 6]),
+        });
+      }
+    });
+
+    // Sort leaderboard by rank
+    leaderboard.sort((a, b) => a.rank - b.rank);
+
+    roundsMap[section.roundName].push({
+      map: {
+        code: section.mapCode,
+        titleArtistDiff: section.titleArtistDiff,
+        id: section.mapId,
+      },
+      leaderboard,
+    });
+  });
+
+  return roundsMap;
+}
+
+exports = module.exports = { parseMatch, parseQualsResults, parseOiiResults };
