@@ -6,7 +6,7 @@ const logger = require("winston");
 
 const { SlottedSheetsFetcher } = require("./sheetsApi");
 const { getRandomInt, sheetStrToBool } = require("../../../utils");
-const { parseMatch, parseQualsResults, parseOiiResults } = require("./omln4");
+const { parseMatch, parseQualsResults, parseOiiResults, parseDrawResults } = require("./omln4");
 
 const auth = new google.auth.GoogleAuth({
   keyFile: path.join(process.cwd(), "credentials.json"),
@@ -59,9 +59,16 @@ class SpreadsheetManager {
       });
     };
 
+    const updateDrawResultsLoop = () => {
+      this.omln4_getDrawResults().then(() => {
+        setTimeout(updateDrawResultsLoop, interval + getRandomInt(100));
+      });
+    };
+
     updateAllMatchesLoop();
     updateMatchInfoLoop();
     updateOiiResultsLoop();
+    updateDrawResultsLoop();
   }
 
   async setup() {
@@ -310,13 +317,21 @@ class SpreadsheetManager {
 
     this.session.extended.quals = parseQualsResults(rows);
   }
-  
-  async omln4_getOiiResults(){
+
+  async omln4_getOiiResults() {
     const range = "OII Results";
     const res = await this.fetcher.fetchRange(range);
     const rows = res.values;
 
     this.session.extended.oiiResults = parseOiiResults(rows);
+  }
+
+  async omln4_getDrawResults() {
+    const range = "OII Winners";
+    const res = await this.fetcher.fetchRange(range);
+    const rows = res.values;
+
+    this.session.extended.oiiWinners = parseDrawResults(rows);
   }
 }
 

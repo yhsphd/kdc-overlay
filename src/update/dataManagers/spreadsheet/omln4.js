@@ -190,4 +190,69 @@ function parseOiiResults(rows) {
   return roundsMap;
 }
 
-exports = module.exports = { parseMatch, parseQualsResults, parseOiiResults };
+function parseDrawResults(rows) {
+  const headerRow = rows[1];
+  const dataRows = rows.slice(2);
+  
+  // Find column positions
+  const roundCol = headerRow.findIndex(x => x === "round");
+  const pickCol = headerRow.findIndex(x => x === "pick");
+  const mapIdCol = headerRow.findIndex(x => x === "map id");
+  const mapTitleCol = headerRow.findIndex(x => x === "map title");
+  const abbrCol = headerRow.findIndex(x => x === "abbr");
+  
+  // Find winner columns (id1, player1, id2, player2, etc.)
+  const winnerCols = [];
+  for (let i = 0; i < headerRow.length; i++) {
+    if (headerRow[i] && headerRow[i].match(/^id\d+$/)) {
+      const playerCol = headerRow.findIndex(x => x === headerRow[i].replace("id", "player"));
+      if (playerCol !== -1) {
+        winnerCols.push({ idCol: i, playerCol });
+      }
+    }
+  }
+  
+  // Group results by round abbreviation
+  const results = {};
+  
+  dataRows.forEach(row => {
+    if (!row[abbrCol] || !row[pickCol]) return; // Skip empty rows
+    
+    const roundAbbr = row[abbrCol];
+    const mapCode = row[pickCol];
+    const mapId = Number(row[mapIdCol]) || 0;
+    const mapTitle = row[mapTitleCol] || "";
+    
+    // Extract winners
+    const winners = [];
+    winnerCols.forEach(({ idCol, playerCol }) => {
+      const id = row[idCol];
+      const nick = row[playerCol];
+      if (id && nick) {
+        winners.push({
+          id: Number(id),
+          nick: nick
+        });
+      }
+    });
+    
+    // Initialize round array if it doesn't exist
+    if (!results[roundAbbr]) {
+      results[roundAbbr] = [];
+    }
+    
+    // Add map result to the round
+    results[roundAbbr].push({
+      map: {
+        code: mapCode,
+        id: mapId,
+        title: mapTitle
+      },
+      winners
+    });
+  });
+  
+  return results;
+}
+
+exports = module.exports = { parseMatch, parseQualsResults, parseOiiResults, parseDrawResults };
