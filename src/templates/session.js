@@ -1,5 +1,6 @@
 exports = module.exports = {
   type: "",
+  lang: "",
   match_code: "",
   bracket: "0",
   brackets: [],
@@ -68,5 +69,7 @@ exports = module.exports = {
     teams: [],
     matches: {},
     quals: [],
+    oiiResults: {},
+    oiiWinners: {},
   },
 };

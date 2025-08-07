@@ -195,7 +195,7 @@ function parseDrawResults(rows) {
   const dataRows = rows.slice(2);
   
   // Find column positions
-  const roundCol = headerRow.findIndex(x => x === "round");
+  // const roundCol = headerRow.findIndex(x => x === "round");
   const pickCol = headerRow.findIndex(x => x === "pick");
   const mapIdCol = headerRow.findIndex(x => x === "map id");
   const mapTitleCol = headerRow.findIndex(x => x === "map title");

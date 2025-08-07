@@ -5,6 +5,10 @@ port: 3000
 # error: 0, warn: 1, info: 2, http: 3, verbose: 4, debug: 5, silly: 6
 logLevel: 2
 
+# Language
+# English: en, Chinese: cn
+lang: "en"
+
 # Stream Data Sheet
 sheet: "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
 

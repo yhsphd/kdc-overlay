@@ -33,6 +33,7 @@ class DataUpdater {
       manager.init();
     });
 
+    // endpoint /json -> this.session in JSON (for debugging purposes)
     this.router.get("/", (req, res) => {
       res.json(this.session);
     });
@@ -47,6 +48,9 @@ class DataUpdater {
     chokidar
       .watch(path.join(process.cwd(), "mappool.json"))
       .on("all", () => this.loadManualMappool());
+
+    // Load locale
+    this.session.lang = this.config.lang
   }
 
   /**
