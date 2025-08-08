@@ -18,9 +18,14 @@ async function start(config) {
   });
 
   // Static Folder
-  app.use("/overlay", express.static(path.join(__dirname, "public")));
-  app.get("/overlay/*splat", (req, res) => {
-    res.sendFile(path.join(__dirname, "public", "index.html"));
+  const isPackaged = !!process.pkg;
+  const baseDir = isPackaged ? path.dirname(process.execPath) : __dirname;
+  const publicPath = path.join(baseDir, "public");
+  app.use("/overlay", express.static(publicPath));
+  // Only serve index.html for non-file routes (SPA fallback)
+  app.get("/overlay/*splat", (req, res, next) => {
+    if (path.extname(req.path)) return next();
+    res.sendFile(path.join(publicPath, "index.html"));
   });
 
   // API

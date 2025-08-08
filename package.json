@@ -10,7 +10,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "clean": "rimraf dist/",
-    "build": "npm run clean && pkg --compress GZip . && echo @echo off >> dist/omln4-overlay.cmd && echo omln4-overlay.exe >> dist/omln4-overlay.cmd && echo pause >> dist/omln4-overlay.cmd",
+    "build": "node scripts/build.js",
     "postinstall": "patch-package",
     "lint": "eslint .",
     "format": "prettier --write ."
@@ -49,11 +49,8 @@
     "app": "src/index.js"
   },
   "pkg": {
-    "scripts": [],
     "assets": [
-      "src/public/**/*",
-      "src/templates/**/*",
-      "credentials.json"
+      "src/templates/**/*"
     ],
     "targets": [
       "node22-win-x64"
