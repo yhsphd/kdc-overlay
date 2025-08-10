@@ -18,10 +18,11 @@ async function mappoolgen() {
 
   if (!mappoolCsvFileExists) {
     fs.copyFileSync(
-      path.join(__dirname, "templates/configs/mappool.default.csv"),
+      path.join(__dirname, "../templates/configs/mappool.default.csv"),
       mappoolCsvFilePath
     );
     console.log("Default mappool.csv file created! Please re-run the program after you complete!");
+    process.exit(0);
   }
 
   // We have mappool.csv
