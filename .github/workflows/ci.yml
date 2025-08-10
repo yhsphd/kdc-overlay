@@ -30,17 +30,9 @@ jobs:
       - name: Download dependencies
         run: npm ci
 
-      - name: Download latest release of kdc-overlay-front
-        uses: dsaltares/fetch-gh-release-asset@master
-        with:
-          repo: "Duo-Cup-Korea/kdc-overlay-front"
-          file: "kdc-overlay-front.zip"
-          token: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Install frontend to the public folder
+      - name: Clone frontend (omln4-overlay-front)
         run: |
-          mkdir -p src/public
-          unzip kdc-overlay-front.zip -d src/public
+          git clone --depth 1 https://github.com/yhsphd/omln4-overlay-front ../omln4-overlay-front
 
       - name: Build
         run: npm run build --if-present
