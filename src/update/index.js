@@ -18,10 +18,16 @@ class DataUpdater {
 
     this.managers = {
       control: new dataManagers.ControlManager(this.config, this.session, this.io),
-      spreadsheet: new dataManagers.SpreadsheetManager(this.config, this.session),
       fb2k: new dataManagers.Fb2kManager(this.config, this.session),
       gosumemory: new dataManagers.GosumemoryManager(this.config, this.session),
     };
+
+    // disable_google_api option in config
+    if (this.config.disable_google_api) {
+      logger.warn("Google API is disabled in config, Google Sheets data will not be fetched.");
+    } else {
+      this.managers.spreadsheet = new dataManagers.SpreadsheetManager(this.config,this.session);
+    }
 
     setInterval(() => this.broadcastUpdate(), 100);
   }

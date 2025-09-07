@@ -9,6 +9,9 @@ logLevel: 2
 # English: en, Chinese: cn
 lang: "en"
 
+# Disable Google API (for CN streamers, showcase only)
+disable_google_api: false
+
 # Stream Data Sheet
 sheet: "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
 
