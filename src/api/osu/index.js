@@ -36,6 +36,32 @@ class OsuApi {
         });
     });
 
+    this.router.get("/users", (req, res) => {
+      res.header("Access-Control-Allow-Origin", "*");
+      res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+
+      const userIds = JSON.parse(req.query.ids);
+      if (!userIds) {
+        return res.status(400).json({ error: "User IDs is required" });
+      }
+
+      Promise.resolve()
+        .then(async () => {
+          try {
+            const playerdata = await v2.users.list({
+              ids: userIds,
+              include_variants: false
+            });
+            res.json(playerdata);
+          } catch (error) {
+            res.status(500).json({ error: error.message });
+          }
+        })
+        .catch(() => {
+          res.status(500).json({ error: "Internal server error" });
+        });
+    });
+
     this.router.get("/beatmap", (req, res) => {
       res.header("Access-Control-Allow-Origin", "*");
       res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");

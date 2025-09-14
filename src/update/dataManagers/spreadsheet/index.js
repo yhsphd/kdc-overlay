@@ -142,7 +142,7 @@ class SpreadsheetManager {
     for (let i = 0; i < teamsData.length; i++) {
       for (let j = 0; j < 1; j++) {
         // TeamSize = 1
-        if (!teamsData[i].players[j].id) continue;
+        if (!teamsData[i]?.players[j]?.id) continue;
         logger.verbose(
           consolePrefix + `Querying rank, pp, and flag of player id ${teamsData[i].players[j].id}`
         );
