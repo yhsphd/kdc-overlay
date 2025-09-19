@@ -14,7 +14,7 @@ const auth = new google.auth.GoogleAuth({
 });
 const sheets = google.sheets({ version: "v4", auth });
 
-const interval = 1500;
+const interval = 2500;
 const consolePrefix = "[Spreadsheets] ";
 
 function getColumnLabels(firstRow) {
@@ -43,25 +43,25 @@ class SpreadsheetManager {
 
     const updateMatchInfoLoop = () => {
       this.updateMatchInfo().then(() => {
-        setTimeout(updateMatchInfoLoop, interval + getRandomInt(100));
+        logger.info(consolePrefix + "Match info updated.");
       });
     };
 
     const updateAllMatchesLoop = () => {
       this.updateAllMatches().then(() => {
-        setTimeout(updateAllMatchesLoop, interval + getRandomInt(100));
+        logger.info(consolePrefix + "All matches info updated.");
       });
     };
 
     const updateOiiResultsLoop = () => {
       this.omln4_getOiiResults().then(() => {
-        setTimeout(updateOiiResultsLoop, interval + getRandomInt(100));
+        logger.info(consolePrefix + "OII results updated.");
       });
     };
 
     const updateDrawResultsLoop = () => {
       this.omln4_getDrawResults().then(() => {
-        setTimeout(updateDrawResultsLoop, interval + getRandomInt(100));
+        logger.info(consolePrefix + "OII winners updated.");
       });
     };
 
