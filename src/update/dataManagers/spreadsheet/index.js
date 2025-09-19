@@ -43,25 +43,25 @@ class SpreadsheetManager {
 
     const updateMatchInfoLoop = () => {
       this.updateMatchInfo().then(() => {
-        logger.info(consolePrefix + "Match info updated.");
+        setTimeout(updateMatchInfoLoop, interval + getRandomInt(100));
       });
     };
 
     const updateAllMatchesLoop = () => {
       this.updateAllMatches().then(() => {
-        logger.info(consolePrefix + "All matches info updated.");
+        setTimeout(updateAllMatchesLoop, interval * 10 + getRandomInt(100));
       });
     };
 
     const updateOiiResultsLoop = () => {
       this.omln4_getOiiResults().then(() => {
-        logger.info(consolePrefix + "OII results updated.");
+        setTimeout(updateOiiResultsLoop, interval * 10 + getRandomInt(100));
       });
     };
 
     const updateDrawResultsLoop = () => {
       this.omln4_getDrawResults().then(() => {
-        logger.info(consolePrefix + "OII winners updated.");
+        setTimeout(updateDrawResultsLoop, interval * 10 + getRandomInt(100));
       });
     };
 
