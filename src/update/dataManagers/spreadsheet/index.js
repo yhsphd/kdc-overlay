@@ -129,7 +129,7 @@ class SpreadsheetManager {
         index: parseInt(rows[i][labels.Index]),
         seed: parseInt(rows[i][labels.Seed]),
         flag: rows[i][labels.Flag],
-        players: [{ id: parseInt(rows[i][labels.UID1]), nick: rows[i][labels.Player1], rank: 0 }],
+        players: [{ id: parseInt(rows[i][labels.UID1]), nick: rows[i][labels.Player1], rank_4k: 0, pp_4k: 0, country_code: "" }],
       };
 
       if (!teamData) continue;
@@ -151,8 +151,8 @@ class SpreadsheetManager {
           mode: "mania", // o!mLN4
           key: "id",
         });
-        teamsData[i].players[j].rank = playerdata.statistics.global_rank;
-        teamsData[i].players[j].pp = playerdata.statistics.pp;
+        teamsData[i].players[j].rank_4k = playerdata.statistics.variants[0].global_rank
+        teamsData[i].players[j].pp_4k = playerdata.statistics.variants[0].pp;
         teamsData[i].players[j].country_code = playerdata.country_code;
       }
     }
