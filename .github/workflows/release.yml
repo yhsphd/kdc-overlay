@@ -28,13 +28,25 @@ jobs:
       - name: Build
         run: npm run build
 
+      - name: Get version
+        id: get_version
+        shell: bash
+        run: |
+          # Strip 'v' prefix from the tag name (e.g., v2026.0.0 -> 2026.0.0)
+          VERSION=${GITHUB_REF_NAME#v}
+          echo "VERSION=$VERSION" >> $GITHUB_OUTPUT
+
+      - name: Package artifacts
+        shell: pwsh
+        run: |
+          $VERSION = "${{ steps.get_version.outputs.VERSION }}"
+          Compress-Archive -Path dist/* -DestinationPath "kdc-overlay-$VERSION.zip"
+
       - name: Create Release
         id: create_release
         uses: softprops/action-gh-release@v3
         with:
-          files: |
-            dist/kdc-overlay.exe
-            dist/kdc-overlay.cmd
+          files: kdc-overlay-${{ steps.get_version.outputs.VERSION }}.zip
           generate_release_notes: true
           draft: false
           prerelease: false

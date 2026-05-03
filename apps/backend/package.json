@@ -1,8 +1,7 @@
 {
   "name": "@kdc/backend",
-  "version": "2026.0.0",
   "engines": {
-    "node": "22"
+    "node": "24"
   },
   "type": "commonjs",
   "description": "",
@@ -12,7 +11,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "clean": "rimraf dist/ && rimraf public/",
     "copy-front": "shx rm -rf public && shx mkdir -p public && shx cp -r ../frontend/dist/* public/",
-    "build": "npm run copy-front && rimraf dist/ && pkg --compress GZip --output ../../dist/kdc-overlay.exe . && echo @echo off > ../../dist/kdc-overlay.cmd && echo kdc-overlay.exe >> ../../dist/kdc-overlay.cmd && echo pause >> ../../dist/kdc-overlay.cmd",
+    "build": "npm run copy-front && rimraf dist/ && pkg --compress GZip --output ../../dist/kdc-overlay.exe . && echo @echo off > ../../dist/kdc-overlay.cmd && echo kdc-overlay.exe >> ../../dist/kdc-overlay.cmd && echo pause >> ../../dist/kdc-overlay.cmd && echo @echo off > ../../dist/generate-mappool.cmd && echo kdc-overlay.exe mappoolgen >> ../../dist/generate-mappool.cmd && echo pause >> ../../dist/generate-mappool.cmd",
     "postinstall": "patch-package",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
@@ -61,7 +60,7 @@
       "credentials.json"
     ],
     "targets": [
-      "node22-win-x64"
+      "node24-win-x64"
     ],
     "outputPath": "dist"
   }

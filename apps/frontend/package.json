@@ -1,6 +1,5 @@
 {
   "name": "@kdc/frontend",
-  "version": "2026.0.0",
   "private": true,
   "type": "module",
   "scripts": {
