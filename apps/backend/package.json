@@ -14,8 +14,10 @@
     "copy-front": "shx rm -rf public && shx mkdir -p public && shx cp -r ../frontend/dist/* public/",
     "build": "npm run copy-front && rimraf dist/ && pkg --compress GZip --output ../../dist/kdc-overlay.exe . && echo @echo off > ../../dist/kdc-overlay.cmd && echo kdc-overlay.exe >> ../../dist/kdc-overlay.cmd && echo pause >> ../../dist/kdc-overlay.cmd",
     "postinstall": "patch-package",
-    "lint": "eslint . --fix",
-    "format": "prettier --write ."
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "format": "prettier --check .",
+    "format:fix": "prettier --write ."
   },
   "keywords": [],
   "author": "",
