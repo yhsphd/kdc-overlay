@@ -1,63 +1,21 @@
 {
   "name": "kdc-overlay",
-  "version": "2026.0.0",
-  "engines": {
-    "node": "22"
-  },
-  "type": "commonjs",
-  "description": "",
-  "main": "src/index.js",
+  "private": true,
+  "packageManager": "npm@11.12.1",
+  "description": "Duo Cup: Korea streaming overlay",
+  "workspaces": [
+    "apps/*"
+  ],
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "clean": "rimraf dist/",
-    "build": "npm run clean && pkg --compress GZip . && echo @echo off >> dist/kdc-overlay.cmd && echo kdc-overlay.exe >> dist/kdc-overlay.cmd && echo pause >> dist/kdc-overlay.cmd",
-    "postinstall": "patch-package",
-    "lint": "eslint .",
-    "format": "prettier --write ."
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "dependencies": {
-    "chokidar": "^4.0.3",
-    "csvtojson": "^2.0.10",
-    "date-fns": "^4.1.0",
-    "eastasianwidth": "^0.3.0",
-    "express": "^5.1.0",
-    "googleapis": "^148.0.0",
-    "ip": "^2.0.1",
-    "js-yaml": "^4.1.0",
-    "minimist": "^1.2.8",
-    "osu-api-extended": "^3.1.4",
-    "patch-package": "^8.0.0",
-    "socket.io": "^4.7.5",
-    "websocket": "^1.0.34",
-    "winston": "^3.17.0"
+    "build": "turbo run build",
+    "lint": "turbo run lint",
+    "format": "turbo run format",
+    "clean": "turbo run clean",
+    "dev": "turbo run dev"
   },
   "devDependencies": {
-    "@eslint/js": "^9.24.0",
-    "@rushstack/eslint-patch": "^1.11.0",
-    "@yao-pkg/pkg": "^6.3.2",
-    "eslint": "^9.24.0",
-    "eslint-config-prettier": "^10.1.1",
-    "globals": "^16.0.0",
-    "ncp": "^2.0.0",
-    "prettier": "^3.5.3",
-    "rimraf": "^6.0.1"
-  },
-  "bin": {
-    "app": "src/index.js"
-  },
-  "pkg": {
-    "scripts": [],
-    "assets": [
-      "src/public/**/*",
-      "src/templates/**/*",
-      "credentials.json"
-    ],
-    "targets": [
-      "node22-win-x64"
-    ],
-    "outputPath": "dist"
+    "@eslint/compat": "^2.0.5",
+    "shx": "^0.4.0",
+    "turbo": "^2.4.4"
   }
 }

@@ -1,0 +1,96 @@
+@import url("https://fonts.googleapis.com/css2?family=Lexend+Exa:wght@100;200;300;400;500;600;700;800;900&family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap");
+
+@font-face {
+  font-family: "TheJamsil";
+  src: url("https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_2302_01@1.0/TheJamsil1Thin.woff2")
+    format("woff2");
+  font-weight: 100;
+  font-style: normal;
+}
+@font-face {
+  font-family: "TheJamsil";
+  src: url("https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_2302_01@1.0/TheJamsil2Light.woff2")
+    format("woff2");
+  font-weight: 300;
+  font-style: normal;
+}
+@font-face {
+  font-family: "TheJamsil";
+  src: url("https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_2302_01@1.0/TheJamsil3Regular.woff2")
+    format("woff2");
+  font-weight: 400;
+  font-style: normal;
+}
+@font-face {
+  font-family: "TheJamsil";
+  src: url("https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_2302_01@1.0/TheJamsil4Medium.woff2")
+    format("woff2");
+  font-weight: 500;
+  font-style: normal;
+}
+@font-face {
+  font-family: "TheJamsil";
+  src: url("https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_2302_01@1.0/TheJamsil5Bold.woff2")
+    format("woff2");
+  font-weight: 700;
+  font-style: normal;
+}
+@font-face {
+  font-family: "TheJamsil";
+  src: url("https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_2302_01@1.0/TheJamsil6ExtraBold.woff2")
+    format("woff2");
+  font-weight: 800;
+  font-style: normal;
+}
+
+:root {
+  --color-text: #ffffff;
+  --color-background: #000000;
+
+  --color-line: rgba(255, 255, 255, 0.2);
+  --color-line-highlight: rgba(255, 255, 255, 0.5);
+
+  --color-white-translucent: rgba(255, 255, 255, 0.2);
+  --color-black-translucent: rgba(0, 0, 0, 0.5);
+
+  --color-red: rgba(238, 83, 79, 1);
+  --color-red-translucent: rgba(238, 83, 79, 0.5);
+  --color-blue: rgba(65, 164, 245, 1);
+  --color-blue-translucent: rgba(65, 164, 245, 0.5);
+  --color-yellow: rgba(231, 185, 66, 1);
+
+  --color-star: #e7b942;
+
+  --color-NM: rgba(185, 255, 196, 1);
+  --color-NM-translucent: rgba(63, 241, 124, 0.5);
+  --color-HD: rgba(253, 255, 177, 1);
+  --color-HD-translucent: rgba(218, 213, 106, 0.6);
+  --color-HR: rgba(255, 204, 204, 1);
+  --color-HR-translucent: rgba(238, 83, 79, 0.5);
+  --color-DT: rgba(242, 204, 255, 1);
+  --color-DT-translucent: rgba(153, 127, 255, 0.5);
+  --color-FM: rgba(159, 196, 229, 1);
+  --color-FM-translucent: rgba(65, 164, 245, 0.5);
+  --color-FcM: rgba(252, 171, 112, 1);
+  --color-FcM-translucent: rgba(252, 171, 112, 0.5);
+  --color-TB: rgba(240, 240, 240, 1);
+  --color-TB-translucent: rgba(240, 240, 240, 0.5);
+}
+
+body {
+  color: var(--color-text);
+  background-color: var(--color-background);
+  font-family: "Plus Jakarta Sans", "TheJamsil";
+  font-weight: normal;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  margin: 0;
+}
+
+#app {
+  width: 1920px;
+  height: 1080px;
+  overflow: hidden;
+  margin: 0;
+}

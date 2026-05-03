@@ -1,0 +1,22 @@
+# Dependency directories
+node_modules/
+
+# Build outputs
+dist/
+public/*
+!public/.gitkeep
+
+# Logs
+logs/
+*.log
+
+# Local env files/Secrets
+.env
+credentials.json
+credentials_osuapi.json
+
+# Local configs (if any)
+config.yaml
+config_stream.yaml
+mappool.csv
+mappool.json

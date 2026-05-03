@@ -1,0 +1,48 @@
+@import "./base.css";
+
+.roboto {
+  font-family: "Roboto", sans-serif;
+}
+
+.horizontal-box {
+  display: flex;
+  flex-direction: row;
+}
+
+.absolute-center {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.vertical-center {
+  display: flex;
+}
+
+.bold {
+  font-weight: bold;
+}
+
+.line {
+  height: 2px;
+  background-color: var(--color-line);
+}
+
+.line-highlight {
+  height: 2px;
+  background-color: var(--color-line-highlight);
+}
+
+.table {
+  font-size: 20px;
+}
+
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
