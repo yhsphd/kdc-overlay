@@ -1,7 +1,7 @@
 {
   "name": "kdc-overlay",
   "private": true,
-  "version": "2026.0.0",
+  "version": "2026.1.0",
   "packageManager": "npm@11.12.1",
   "description": "Duo Cup: Korea streaming overlay",
   "workspaces": [
