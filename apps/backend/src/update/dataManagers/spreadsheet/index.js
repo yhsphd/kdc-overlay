@@ -130,8 +130,6 @@ class SpreadsheetManager {
     const titleLen = eaw.length(streamTitle);
     const lines = [];
 
-    console.log(streamTitle, titleLen);
-
     lines.push("┌" + "─".repeat(titleLen - 2) + "┐");
     lines.push(streamTitle);
     lines.push("└" + "─".repeat(titleLen - 2) + "┘");
