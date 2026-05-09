@@ -1,11 +1,8 @@
-const path = require("path");
 const chokidar = require("chokidar");
 const csv = require("csvtojson");
 const logger = require("winston");
 
 const { ControlEventHandlers } = require("./eventHandlers");
-
-const peopleCsvPath = path.join(process.cwd(), "people.csv");
 
 class ControlManager {
   constructor(config, session, io) {
@@ -29,9 +26,9 @@ class ControlManager {
   }
 
   CSL_watchPeopleList() {
-    chokidar.watch(peopleCsvPath).on("all", () => {
+    chokidar.watch(this.config.paths.peopleCsv).on("all", () => {
       csv()
-        .fromFile(peopleCsvPath)
+        .fromFile(this.config.paths.peopleCsv)
         .then((jsonObj) => {
           this.session.CSL.people = jsonObj;
         });

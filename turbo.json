@@ -3,11 +3,19 @@
   "tasks": {
     "build": {
       "cache": false,
-      "dependsOn": ["^build"],
-      "outputs": ["dist/**", "public/**", "../../dist/**"]
+      "dependsOn": [
+        "^build"
+      ],
+      "outputs": [
+        "dist/**",
+        "public/**",
+        "../../dist/**"
+      ]
     },
     "lint": {},
     "format": {},
+    "lint:fix": {},
+    "format:fix": {},
     "clean": {
       "cache": false
     },

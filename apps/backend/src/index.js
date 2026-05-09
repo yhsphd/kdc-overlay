@@ -82,6 +82,15 @@ async function entry() {
 
   // We can load config
   const config = yaml.load(fs.readFileSync(configFilePath, { encoding: "utf8", flag: "r" }));
+  config.paths = {
+    configFile: configFilePath,
+    streamConfig: streamConfigPath,
+    mappool: path.join(process.cwd(), "mappool.json"),
+    mappoolCsv: path.join(process.cwd(), "mappool.csv"),
+    peopleCsv: path.join(process.cwd(), "people.csv"),
+    credentials: path.join(process.cwd(), "credentials.json"),
+  };
+
   initializeLogger(config.logLevel);
   await initializeOsuApi(config);
 

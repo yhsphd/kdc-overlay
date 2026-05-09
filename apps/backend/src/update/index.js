@@ -1,5 +1,4 @@
 const express = require("express");
-const path = require("path");
 const fs = require("fs");
 const chokidar = require("chokidar");
 const yaml = require("js-yaml");
@@ -41,12 +40,8 @@ class DataUpdater {
   setup() {
     // Load streamConfig values and try to get mappool data from mappool.json
     // Update data whenever the files are changed
-    chokidar
-      .watch(path.join(process.cwd(), "config_stream.yaml"))
-      .on("all", () => this.loadStreamConfig());
-    chokidar
-      .watch(path.join(process.cwd(), "mappool.json"))
-      .on("all", () => this.loadManualMappool());
+    chokidar.watch(this.config.paths.streamConfig).on("all", () => this.loadStreamConfig());
+    chokidar.watch(this.config.paths.mappool).on("all", () => this.loadManualMappool());
   }
 
   /**
@@ -59,7 +54,7 @@ class DataUpdater {
   loadStreamConfig() {
     logger.info("streamConfig file updated!");
     const streamConfig = yaml.load(
-      fs.readFileSync(path.join(process.cwd(), "config_stream.yaml"), {
+      fs.readFileSync(this.config.paths.streamConfig, {
         encoding: "utf8",
         flag: "r",
       })
@@ -76,11 +71,11 @@ class DataUpdater {
 
   loadManualMappool() {
     // Get mappool data from mappool.json if exists
-    if (fs.existsSync(path.join(process.cwd(), "mappool.json"))) {
+    if (fs.existsSync(this.config.paths.mappool)) {
       logger.warn("Manual mappool: got mappool data from the mappool.json");
       this.session.mappool_manual = true;
       this.session.mappool = JSON.parse(
-        fs.readFileSync(path.join(process.cwd(), "mappool.json"), "utf-8")
+        fs.readFileSync(this.config.paths.mappool, "utf-8")
       ).mappool;
     } else {
       this.session.mappool_manual = false;

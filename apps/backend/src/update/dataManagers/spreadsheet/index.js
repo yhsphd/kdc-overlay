@@ -48,7 +48,7 @@ class SpreadsheetManager {
   }
 
   setup() {
-    chokidar.watch(path.join(process.cwd(), "config_stream.yaml")).on("all", () => {
+    chokidar.watch(this.config.paths.streamConfig).on("all", () => {
       if (this.session.type === "match") {
         // Fetch match info only when match mode
         this.matchChanged();
