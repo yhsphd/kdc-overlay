@@ -11,7 +11,7 @@ defineProps({
   <div class="master-player-score">
     <b>#{{ rank }} {{ playerStatus?.nick }}</b
     ><br />
-    <animated-number :value="playerStatus.score"></animated-number>
+    <animated-number :value="playerStatus?.score"></animated-number>
     / x{{ playerStatus?.combo.toLocaleString() }} / {{ playerStatus?.acc.toFixed(2) }}%
   </div>
 </template>
