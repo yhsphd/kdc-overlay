@@ -59,7 +59,7 @@ onMounted(() => {
           <b>{{ np?.stats.modified.hp.toFixed(1) }}</b> /
           <b>{{ np?.stats.modified.sr.toFixed(2) }}</b> ☆ /
           <b>{{ secondsToMMSS(np?.stats.modified.length / 1000) }}</b> /
-          <b>{{ np?.stats.modified.bpm }}</b> BPM
+          <b>{{ +np?.stats.modified.bpm.toFixed(1) }}</b> BPM
         </div>
       </Transition>
       <Transition name="switchPage" mode="out-in">

@@ -118,15 +118,15 @@ class SpreadsheetManager {
 
     logger.info(consolePrefix + `Found match <${this.session.match_code}> on sheet!`);
     const teamNums = [
-      parseInt(get2dValue.byRange(rows, "N4")),
-      parseInt(get2dValue.byRange(rows, "S4")),
+      parseInt(get2dValue.byRange(rows, "P4")),
+      parseInt(get2dValue.byRange(rows, "P14")),
     ];
     logger.verbose(consolePrefix + "Going to query teams " + teamNums);
 
     await this.updateTeams(teamNums);
     await this.updateMappool(this.session.mappool_name);
 
-    const streamTitle = get2dValue.byRange(rows, "W2");
+    const streamTitle = get2dValue.byRange(rows, "J3");
     const titleLen = eaw.length(streamTitle);
     const lines = [];
 
@@ -204,13 +204,13 @@ class SpreadsheetManager {
 
     this.matchInfo = rows;
 
-    this.session.bracket = get2dValue.byRange(rows, "W7");
-    this.session.mappool_name = get2dValue.byRange(rows, "G2");
-    this.session.bo = parseInt(get2dValue.byRange(rows, "W4"));
-    this.session.schedule = get2dValue.byRange(rows, "W3");
+    this.session.bracket = get2dValue.byRange(rows, "P30");
+    this.session.mappool_name = get2dValue.byRange(rows, "P31");
+    this.session.bo = parseInt(get2dValue.byRange(rows, "P32"));
+    this.session.schedule = get2dValue.byRange(rows, "P33");
 
     // Get Match Progress Data
-    const progressData = get2dValue.byRange(rows, "B2:C");
+    const progressData = get2dValue.byRange(rows, "U2:V");
 
     this.session.progress.phase = parseInt(progressData[0][1]);
     this.session.progress.phases[0].first_pick = parseInt(progressData[2][1]);
@@ -218,7 +218,7 @@ class SpreadsheetManager {
 
     let order = [];
     let phase = 0;
-    for (let i = 4; i < progressData.length; i++) {
+    for (let i = 10; i < progressData.length; i++) {
       if (!progressData[i][1]) {
         // Stop reading if empty
         break;
@@ -238,7 +238,7 @@ class SpreadsheetManager {
       }
     }
 
-    order[order.length - 1].pop(); // last map is TB
+    // order[order.length - 1].pop(); // last map is TB // kjk_note: if TB is not picked, it pops the last map of the last phase.
 
     for (let i = 0; i < order.length; i++) {
       // apply to session
