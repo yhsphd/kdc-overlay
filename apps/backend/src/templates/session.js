@@ -69,6 +69,10 @@ exports = module.exports = {
         first_pick: 0,
         order: [],
       },
+      {
+        first_pick: 0,
+        order: [], // Temporal fix, TODO: Reconstruct progress parsing logic
+      },
     ],
   },
   chat: [],
