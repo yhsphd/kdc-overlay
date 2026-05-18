@@ -57,21 +57,12 @@ exports = module.exports = {
   },
   mappool: [],
   progress: {
-    phase: 1,
+    phase: "",
+    curmap: 0,
     phases: [
       {
-        first_pick: 0,
-        order: [
-          // require("banpick")
-        ],
-      },
-      {
-        first_pick: 0,
+        label: "",
         order: [],
-      },
-      {
-        first_pick: 0,
-        order: [], // Temporal fix, TODO: Reconstruct progress parsing logic
       },
     ],
   },

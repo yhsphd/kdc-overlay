@@ -210,40 +210,45 @@ class SpreadsheetManager {
     this.session.schedule = get2dValue.byRange(rows, "P33");
 
     // Get Match Progress Data
-    const progressData = get2dValue.byRange(rows, "U2:V");
+    const rawProgressData = get2dValue.byRange(rows, "U2:V");
 
-    this.session.progress.phase = parseInt(progressData[0][1]);
-    this.session.progress.phases[0].first_pick = parseInt(progressData[2][1]);
-    this.session.progress.phases[1].first_pick = parseInt(progressData[3][1]);
+    this.session.progress.phase = rawProgressData[0][1];
+    this.session.progress.curmap = rawProgressData[1][1];
 
-    let order = [];
-    let phase = 0;
-    for (let i = 10; i < progressData.length; i++) {
-      if (!progressData[i][1]) {
-        // Stop reading if empty
-        break;
+    const pickDataLimit = ((bo) => {
+      if (bo === 9) {
+        return 12;
+      } else if (bo === 11) {
+        return 14;
+      } else if (bo === 13) {
+        return 16;
+      } else {
+        return 0;
+      }
+    })(this.session.bo); // 각 bo에 대한 TB 제외한 픽/밴 수
+    let phases = [];
+    let phaseData = null; // 파싱 중인 phase data
+    for (let i = 10; i < rawProgressData.length; i++) {
+      // 10번 행부터 픽/밴 데이터
+      if (!rawProgressData[i][1]) break; // 데이터 없으면 파싱 종료
+
+      if (i >= 10 + pickDataLimit && rawProgressData[i][0] !== "TB") continue; // pickDataLimit 도달하면 스킵; 마지막 TB만 파싱
+
+      if (rawProgressData[i][0].length > 0) {
+        // phaseData 초기화 및 배열에 바로 참조 추가
+        phaseData = {
+          label: rawProgressData[i][0],
+          order: [],
+        };
+        phases.push(phaseData);
       }
 
-      const pick = JSON.parse(progressData[i][1]);
-
-      if (progressData[i][0].startsWith("phase_")) {
-        // change phase
-        phase = parseInt(progressData[i][0].substring(6)) - 1;
-        order.push([]);
-      }
-
-      if (!(pick.pick === -1 && pick.team === -1)) {
-        // pass if invalid pick
-        order[phase].push(pick);
+      if (phaseData) {
+        phaseData.order.push(JSON.parse(rawProgressData[i][1]));
       }
     }
-
-    // order[order.length - 1].pop(); // last map is TB // kjk_note: if TB is not picked, it pops the last map of the last phase.
-
-    for (let i = 0; i < order.length; i++) {
-      // apply to session
-      this.session.progress.phases[i].order = order[i];
-    }
+    // session에 적용
+    this.session.progress.phases = phases;
   }
 }
 
