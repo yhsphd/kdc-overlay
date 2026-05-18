@@ -4,6 +4,7 @@ import BanPickVisual from "@/components/BanPick/BanPickVisual.vue";
 import MapList from "@/components/BanPick/MapList.vue";
 import ChatBox from "@/components/ChatBox.vue";
 import { socket, useOverlayDataStore } from "@/socket.js";
+import MatchOverviewWidget from "./components/BanPick/MatchOverviewWidget.vue";
 
 const state = useOverlayDataStore();
 socket.off(); // remove any existing listeners (after a hot module replacement)
@@ -14,15 +15,16 @@ state.connect();
 <template>
   <div class="master-ban-pick">
     <div class="topBar horizontal-box">
-      <logo-header class="header" orientation="horizontal"></logo-header>
-      <div class="desc"><b>Ban/Pick</b><br />Phase {{ state.data?.progress?.phase }}</div>
+      <LogoHeader class="header" orientation="horizontal"></LogoHeader>
+       <div class="flex-grow"></div>
+      <MatchOverviewWidget class="matchWidget"></MatchOverviewWidget>
     </div>
     <div class="line-highlight"></div>
-    <ban-pick-visual class="visual"></ban-pick-visual>
+    <!-- <BanPickVisual class="visual"></BanPickVisual> -->
     <div class="line"></div>
-    <map-list></map-list>
+    <!-- <MapList></MapList> -->
     <div class="line-highlight"></div>
-    <chat-box class="chat"></chat-box>
+    <ChatBox class="chat"></ChatBox>
   </div>
 </template>
 
