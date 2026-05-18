@@ -14,10 +14,18 @@ export function useMatchProgressModel() {
     return index;
   });
 
+  const unavailableMapCodes = computed(() =>
+    phases.value
+      .map((x) => x.order || [])
+      .flat(1)
+      .map((x) => x.code)
+  );
+
   return {
     progress,
     phases,
     bo,
     activeInd,
+    unavailableMapCodes,
   };
 }

@@ -22,7 +22,7 @@ state.connect();
     <div class="line-highlight"></div>
     <!-- <BanPickVisual class="visual"></BanPickVisual> -->
     <div class="line"></div>
-    <!-- <MapList></MapList> -->
+    <MapList></MapList>
     <div class="line-highlight"></div>
     <ChatBox class="chat"></ChatBox>
   </div>
