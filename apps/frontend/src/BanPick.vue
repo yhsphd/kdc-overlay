@@ -16,11 +16,11 @@ state.connect();
   <div class="master-ban-pick">
     <div class="topBar horizontal-box">
       <LogoHeader class="header" orientation="horizontal"></LogoHeader>
-       <div class="flex-grow"></div>
+      <div class="flex-grow"></div>
       <MatchOverviewWidget class="matchWidget"></MatchOverviewWidget>
     </div>
     <div class="line-highlight"></div>
-    <!-- <BanPickVisual class="visual"></BanPickVisual> -->
+    <BanPickVisual class="visual"></BanPickVisual>
     <div class="line"></div>
     <MapList></MapList>
     <div class="line-highlight"></div>

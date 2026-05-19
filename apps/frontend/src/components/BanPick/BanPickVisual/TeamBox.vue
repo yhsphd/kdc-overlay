@@ -34,7 +34,7 @@ defineExpose({
       <Slide v-for="slide in 1" :key="slide">
         <div class="carousel__item">
           <div class="item horizontal-box">
-            <round-box :value="team.acronym" class="acronym"></round-box>
+            <RoundBox :value="team.acronym" class="acronym"></RoundBox>
             <div class="teamName">{{ team.name }}</div>
           </div>
         </div>

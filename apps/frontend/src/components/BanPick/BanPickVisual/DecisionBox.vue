@@ -39,7 +39,8 @@ defineProps({
 .master-decision-box {
   position: relative;
   margin-right: 10px;
-  width: 200px;
+  /* width: 200px; */
+  width: 400px;
   height: 150px;
 }
 
