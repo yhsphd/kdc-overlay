@@ -5,7 +5,8 @@ import TeamBar from "@/components/InGame/TeamBar.vue";
 import CurrentMap from "@/components/CurrentMap.vue";
 import ClientBox from "@/components/InGame/ClientBox.vue";
 import ScoreBar from "@/components/InGame/ScoreBar.vue";
-import PhaseOverview from "@/components/InGame/PhaseOverview.vue";
+import PhaseOverviewIdle from "@/components/InGame/PhaseOverviewIdle.vue";
+import PhaseOverviewPlaying from "@/components/InGame/PhaseOverviewPlaying.vue";
 import LobbyChatBox from "@/components/InGame/LobbyChatBox.vue";
 import { socket, useOverlayDataStore } from "@/socket.js";
 
@@ -40,7 +41,31 @@ const clientTeamSize = computed(() => {
 const teamSize = computed(() => (aspect.value === 1 ? 2 : 1));
 
 const idle = ref(false);
-const masterWidth = computed(() => (idle.value ? "1130px" : "1440px"));
+const layoutIdle = ref(idle.value);
+const contentIdle = ref(idle.value);
+const showUI = ref(true);
+const showChat = ref(idle.value);
+
+watch(idle, (newVal) => {
+  // 1. Fade out current UI elements
+  showUI.value = false;
+
+  // 2. Wait for fade out (500ms)
+  setTimeout(() => {
+    // 3. Trigger width transition and swap content internally (while hidden)
+    layoutIdle.value = newVal;
+    contentIdle.value = newVal;
+    showChat.value = newVal;
+
+    // 4. Wait for width transition (1000ms)
+    setTimeout(() => {
+      // 5. Fade in new UI elements
+      showUI.value = true;
+    }, 1000);
+  }, 500);
+});
+
+const masterWidth = computed(() => (layoutIdle.value ? "1130px" : "1440px"));
 const tourneyState = computed(() => state.data?.progress?.state);
 watch(tourneyState, (newState, oldState) => {
   if (newState === 1) {
@@ -70,13 +95,13 @@ watch(tourneyState, (newState, oldState) => {
             <div :style="{ backgroundColor: 'var(--color-red-translucent)' }"></div>
           </div>
           <div class="clientBg horizontal-box">
-            <client-box
+            <ClientBox
               v-for="item in clientIndex.slice(0, clientTeamSize)"
               :key="item"
               :index="item"
               :ratio="clientRatio"
               :team-size="teamSize"
-            ></client-box>
+            ></ClientBox>
           </div>
         </div>
 
@@ -86,43 +111,49 @@ watch(tourneyState, (newState, oldState) => {
             <div :style="{ backgroundColor: 'var(--color-blue-translucent)' }"></div>
           </div>
           <div class="clientBg horizontal-box">
-            <client-box
+            <ClientBox
               v-for="item in clientIndex.slice(clientTeamSize)"
               :key="item"
               :index="item"
               :ratio="clientRatio"
               :team-size="teamSize"
-            ></client-box>
+            ></ClientBox>
           </div>
         </div>
 
         <!--NowPlaying Region-->
-        <current-map class="nowPlaying"></current-map>
+        <CurrentMap class="nowPlaying"></CurrentMap>
 
         <!--ScoreBar Region-->
         <div class="scoreBarBgWrapper">
           <div class="scoreBarBg" :style="{ opacity: idle ? 0 : 1 }">
-            <score-bar :team-size="teamSize"></score-bar>
+            <ScoreBar :team-size="teamSize"></ScoreBar>
           </div>
         </div>
 
         <!--Team Acronym, Team Name, Team Points-->
-        <team-bar class="teamBar red" :team-index="0"></team-bar>
-        <team-bar class="teamBar blue" :team-index="1"></team-bar>
+        <TeamBar class="teamBar red" :team-index="0"></TeamBar>
+        <TeamBar class="teamBar blue" :team-index="1"></TeamBar>
       </div>
       <div class="masterBoxRightBorder"></div>
       <div class="subBox">
         <!--Tournament Header-->
-        <logo-header
+        <LogoHeader
           class="header"
           orientation="vertical"
           text1="Swiss Round 2"
           text2="Match 8"
-        ></logo-header>
+        ></LogoHeader>
         <!--Lobby Chat-->
-        <lobby-chat-box class="chatBox" :style="{ opacity: idle ? 1 : 0 }"></lobby-chat-box>
+        <LobbyChatBox
+          class="chatBox"
+          :style="{ opacity: showChat && showUI ? 1 : 0 }"
+        ></LobbyChatBox>
         <!--Phase View-->
-        <phase-overview :idle="idle"></phase-overview>
+        <div class="phase-overview-wrapper" :style="{ opacity: showUI ? 1 : 0 }">
+          <PhaseOverviewIdle v-if="contentIdle"></PhaseOverviewIdle>
+          <PhaseOverviewPlaying v-else></PhaseOverviewPlaying>
+        </div>
       </div>
     </div>
   </div>
@@ -221,10 +252,16 @@ watch(tourneyState, (newState, oldState) => {
 }
 
 .header {
-  margin-top: 10px;
+  margin-top: 0;
+  margin-bottom: 40px;
 }
 
 .chatBox {
   transition: opacity 500ms ease-in-out;
+}
+
+.phase-overview-wrapper {
+  transition: opacity 500ms ease-in-out;
+  width: 100%;
 }
 </style>
