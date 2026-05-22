@@ -2,7 +2,7 @@
 import { useMatchOverviewWidgetViewModel } from "@/composables/useMatchOverviewWidgetViewModel";
 
 // ViewModel에서 가공이 모두 끝난 데이터만 가져와서 바인딩합니다.
-const { bo, activeInd, layoutPhases } = useMatchOverviewWidgetViewModel();
+const { bo, layoutPhases, viewIndex, setPage } = useMatchOverviewWidgetViewModel();
 </script>
 
 <template>
@@ -14,7 +14,9 @@ const { bo, activeInd, layoutPhases } = useMatchOverviewWidgetViewModel();
           <th
             v-for="(phase, i) in layoutPhases"
             :key="'header-' + i"
-            :class="{ active: i === activeInd }"
+            :class="{ active: i === viewIndex }"
+            style="cursor: pointer"
+            @click="setPage(i)"
           >
             <div>
               {{ phase.label }}
@@ -26,7 +28,9 @@ const { bo, activeInd, layoutPhases } = useMatchOverviewWidgetViewModel();
           <td
             v-for="(phase, i) in layoutPhases"
             :key="'content-' + i"
-            :class="{ active: i === activeInd }"
+            :class="{ active: i === viewIndex }"
+            style="cursor: pointer"
+            @click="setPage(i)"
           >
             <!-- ViewModel에서 미리 계산된 layout.maxX 와 layout.items 를 사용합니다 -->
             <div class="grid-container" :style="{ '--max-x': phase.layout.maxX }">

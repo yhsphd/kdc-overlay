@@ -3,34 +3,70 @@ import { useOverlayDataStore } from "@/socket";
 import { useMatchProgressModel } from "./useMatchProgressModel";
 import { getMappool } from "@/assets/main.js";
 
+// Global Shared State for BanPick View
+const viewIndex = ref(0);
+const manualTimeoutSec = 5;
+let manualTimeoutId = null;
+const isManualOverride = ref(false);
+
 export function useBanPickVisualViewModel() {
   const store = useOverlayDataStore();
   const { phases, activeInd, getMatchLayout } = useMatchProgressModel();
 
-  const viewIndex = ref(0);
+  const resetManualOverride = () => {
+    isManualOverride.value = false;
+    if (activeInd.value >= 0 && activeInd.value < phases.value.length) {
+      viewIndex.value = activeInd.value; // Sync back to backend phase
+    }
+    if (manualTimeoutId) {
+      clearTimeout(manualTimeoutId);
+      manualTimeoutId = null;
+    }
+  };
+
+  const triggerManualOverride = () => {
+    isManualOverride.value = true;
+    if (manualTimeoutId) {
+      clearTimeout(manualTimeoutId);
+    }
+    manualTimeoutId = setTimeout(() => {
+      resetManualOverride();
+    }, manualTimeoutSec * 1000); // Revert after set timeout
+  };
 
   // activeInd가 변하면 뷰를 해당 페이지로 변경 (ex. 백엔드에서 phase 변경됨)
   watch(
     activeInd,
-    (newVal) => {
-      if (newVal >= 0 && newVal < phases.value.length) {
-        viewIndex.value = newVal + 1; // 더미 페이지를 고려해 +1
-      }
+    () => {
+      // Upon backend change, immediately cancel manual override and sync
+      resetManualOverride();
     },
     { immediate: true }
   );
 
+  // User scrolling the carousel changes viewIndex via v-model
+  watch(viewIndex, (newVal) => {
+    // If it differs from the backend active phase and it wasn't just auto-synced
+    if (newVal !== activeInd.value) {
+      triggerManualOverride();
+    }
+  });
+
   const prevPage = () => {
-    if (viewIndex.value > 1) viewIndex.value--;
+    if (viewIndex.value > 0) {
+      viewIndex.value--;
+    }
   };
 
   const nextPage = () => {
-    if (viewIndex.value < phases.value.length) viewIndex.value++;
+    if (viewIndex.value < phases.value.length - 1) {
+      viewIndex.value++;
+    }
   };
 
   const setPage = (index) => {
     if (index >= 0 && index < phases.value.length) {
-      viewIndex.value = index + 1;
+      viewIndex.value = index;
     }
   };
 
