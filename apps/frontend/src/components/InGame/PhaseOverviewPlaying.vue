@@ -17,36 +17,39 @@ const { allPhases } = usePhaseOverviewViewModel();
 
       <!-- Phase Content (Bans and Picks) with Vertical Divider -->
       <div class="phaseContent">
-        <div class="vertical-divider"></div>
+        <div
+          v-if="phase.label !== 'TB' && !phase.label.toLowerCase().includes('tiebreaker')"
+          class="vertical-divider"
+        ></div>
 
         <!-- Bans Section -->
-        <div v-if="phase.bans && phase.bans.length > 0" class="bans">
+        <div v-if="phase.label === 'Ban'" class="bans">
           <div class="bansSide left">
             <RoundBox
-              v-for="(b, bIdx) in phase.bans.filter((b) => b.team === 0)"
+              v-for="(b, bIdx) in phase.items.filter((b) => b.team === 0)"
               :key="'ban-red-' + bIdx"
               class="code"
               :value="b.code || ''"
               :mode="b.code ? 'code' : 'manual'"
-              :color="b.code ? undefined : 'var(--color-black-translucent)'"
+              :color="b.code ? undefined : 'var(--color-white-translucent)'"
             ></RoundBox>
           </div>
           <div class="bansGap"></div>
           <div class="bansSide right">
             <RoundBox
-              v-for="(b, bIdx) in phase.bans.filter((b) => b.team === 1)"       
+              v-for="(b, bIdx) in phase.items.filter((b) => b.team === 1)"
               :key="'ban-blue-' + bIdx"
               class="code"
               :value="b.code || ''"
               :mode="b.code ? 'code' : 'manual'"
-              :color="b.code ? undefined : 'var(--color-black-translucent)'"
+              :color="b.code ? undefined : 'var(--color-white-translucent)'"
             ></RoundBox>
           </div>
         </div>
 
         <!-- Picks Section -->
-        <div v-if="phase.picks && phase.picks.length > 0" class="picks">
-          <div v-for="(pick, i) in phase.picks" :key="'pick-' + i" class="pickRow">
+        <div v-else class="picks">
+          <div v-for="(pick, i) in phase.items" :key="'pick-' + i" class="pickRow">
             <!-- Left (Red) Result Indicator -->
             <div v-if="pick.win === 0" class="pickResult win" style="grid-column: 1">W</div>
             <div v-else-if="pick.win === 1" class="pickResult lose" style="grid-column: 1">L</div>
@@ -59,7 +62,7 @@ const { allPhases } = usePhaseOverviewViewModel();
                 pick.team === 1
                   ? 'grid-column: 2 / 5;'
                   : pick.team !== 0 && pick.team !== 1
-                    ? 'grid-column: 2 / 4;'
+                    ? 'grid-column: 2 / 4; margin-right: 27.5px;'
                     : 'grid-column: 2;'
               "
             ></div>
@@ -70,7 +73,7 @@ const { allPhases } = usePhaseOverviewViewModel();
                 pick.team === 1
                   ? 'grid-column: 2 / 5;'
                   : pick.team !== 0 && pick.team !== 1
-                    ? 'grid-column: 2 / 4;'
+                    ? 'grid-column: 2 / 4; margin-right: 27.5px;'
                     : 'grid-column: 2;'
               "
             ></div>
@@ -81,23 +84,23 @@ const { allPhases } = usePhaseOverviewViewModel();
               class="code"
               :value="pick.code || ''"
               :mode="pick.code ? 'code' : 'manual'"
-              :color="pick.code ? undefined : 'var(--color-black-translucent)'"
-              style="grid-column: 3; justify-self: center"
+              :color="pick.code ? undefined : 'var(--color-white-translucent)'"
+              style="grid-column: 3"
             ></RoundBox>
             <RoundBox
               v-else-if="pick.team === 1"
               class="code"
               :value="pick.code || ''"
               :mode="pick.code ? 'code' : 'manual'"
-              :color="pick.code ? undefined : 'var(--color-black-translucent)'"
-              style="grid-column: 5; justify-self: center"
+              :color="pick.code ? undefined : 'var(--color-white-translucent)'"
+              style="grid-column: 5"
             ></RoundBox>
             <RoundBox
               v-else
               class="code"
               :value="pick.code || ''"
               :mode="pick.code ? 'code' : 'manual'"
-              :color="pick.code ? undefined : 'var(--color-black-translucent)'"
+              :color="pick.code ? undefined : 'var(--color-white-translucent)'"
               style="grid-column: 3 / 6; justify-self: center"
             ></RoundBox>
 
@@ -109,7 +112,7 @@ const { allPhases } = usePhaseOverviewViewModel();
                 pick.team === 0
                   ? 'grid-column: 4 / 7;'
                   : pick.team !== 0 && pick.team !== 1
-                    ? 'grid-column: 5 / 7;'
+                    ? 'grid-column: 5 / 7; margin-left: 27.5px;'
                     : 'grid-column: 6;'
               "
             ></div>
@@ -120,7 +123,7 @@ const { allPhases } = usePhaseOverviewViewModel();
                 pick.team === 0
                   ? 'grid-column: 4 / 7;'
                   : pick.team !== 0 && pick.team !== 1
-                    ? 'grid-column: 5 / 7;'
+                    ? 'grid-column: 5 / 7; margin-left: 27.5px;'
                     : 'grid-column: 6;'
               "
             ></div>
@@ -138,12 +141,6 @@ const { allPhases } = usePhaseOverviewViewModel();
 </template>
 
 <style scoped>
-.bottomLine {
-  width: 100%;
-  height: 2px;
-  background-color: var(--color-line-highlight);
-  margin-top: 10px;
-}
 .master-phase-overview-playing {
   width: 100%;
   display: flex;
@@ -214,7 +211,11 @@ const { allPhases } = usePhaseOverviewViewModel();
   display: grid;
   grid-template-columns: 30px 1fr 70px 25px 70px 1fr 30px;
   align-items: center;
-  min-height: 25px;
+  height: 25px;
+}
+
+.pickRow > * {
+  grid-row: 1;
 }
 
 .phaseContent {
@@ -266,9 +267,6 @@ const { allPhases } = usePhaseOverviewViewModel();
   z-index: 2;
 }
 
-.resultLine {
-  width: 100%;
-}
 .resultLine.solid {
   height: 2px;
   background-color: var(--color-line-highlight);
@@ -283,5 +281,12 @@ const { allPhases } = usePhaseOverviewViewModel();
 }
 .resultLine.blue {
   margin-left: 5px;
+}
+
+.bottomLine {
+  width: 100%;
+  height: 2px;
+  background-color: var(--color-line);
+  margin-top: 10px;
 }
 </style>
