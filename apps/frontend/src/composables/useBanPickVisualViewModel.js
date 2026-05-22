@@ -84,17 +84,17 @@ export function useBanPickVisualViewModel() {
     return data;
   });
 
-  const getLayoutForPhase = (order) => {
+  const getLayoutForPhase = (order, isActivePhase, isTB) => {
     const baseLayout = getMatchLayout(order);
-    let foundWaiting = false;
 
+    let foundWaiting = false;
     const items = baseLayout.items.map((item) => {
       // Visibility Logic
       let visibility = 0;
       if (item.code && item.code.length > 0) {
         visibility = 2; // Decided
       } else {
-        if (!foundWaiting && item.team !== -1) {
+        if (!foundWaiting && item.team !== -1 && isActivePhase) {
           visibility = 1; // Waiting
           foundWaiting = true;
         } else {
@@ -113,16 +113,16 @@ export function useBanPickVisualViewModel() {
     });
 
     return {
-      items: items.filter((i) => i.team !== -1), // Only keep valid turn blocks
+      items: isTB ? items : items.filter((i) => i.team !== -1), // 유효한 픽만 남김, TB인 경우 삭제하지 않음
       itemsRaw: items,
       maxX: baseLayout.maxX,
     };
   };
 
   const displayPhases = computed(() => {
-    return phases.value.map((phase) => ({
+    return phases.value.map((phase, index) => ({
       ...phase,
-      layout: getLayoutForPhase(phase.order),
+      layout: getLayoutForPhase(phase.order, index === activeInd.value, phase.label === "TB"),
     }));
   });
 

@@ -22,10 +22,16 @@ defineProps({
         }"
       >
         <div class="overlay bgDim"></div>
+
+        <!--Disabled-->
         <svg v-if="visibility === -1" class="overlay disable" width="200" height="150">
           <line x1="0" y1="150" x2="200" y2="0"></line>
         </svg>
+
+        <!--Pending-->
         <div v-if="visibility === 1" class="loader absolute-center"></div>
+
+        <!--Decided-->
         <div v-if="visibility === 2" class="content absolute-center">
           <div class="code">{{ code }}</div>
           <div class="pickBan">{{ pickBan ? "PICK" : "BAN" }}</div>

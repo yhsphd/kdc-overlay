@@ -51,7 +51,7 @@ onMounted(() => {
           <div class="content">
             <div class="gridContainer" :style="{ '--max-x': phase.layout.maxX || 0 }">
               <!-- Horizontal Divider -->
-              <div class="boxDivider"></div>
+              <div v-if="phase.label !== 'TB'" class="boxDivider"></div>
 
               <!-- Foreground Decision Boxes -->
               <DecisionBox
