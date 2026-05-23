@@ -1,105 +1,21 @@
 <script setup>
 import TeamBox from "@/components/BanPick/BanPickVisual/TeamBox.vue";
 import DecisionBox from "@/components/BanPick/BanPickVisual/DecisionBox.vue";
-import { computed, onMounted, ref } from "vue";
-import { useOverlayDataStore } from "@/socket.js";
-import { getMappool } from "@/assets/main.js";
+import { Carousel, Slide, Navigation as CarouselNavigation } from "vue3-carousel";
+import "vue3-carousel/dist/carousel.css";
+import { onMounted, ref } from "vue";
+import { useBanPickVisualViewModel } from "@/composables/useBanPickVisualViewModel";
 
-const state = useOverlayDataStore();
-
-const cellData = computed(() => {
-  let insertOrder = [];
-  let disableOrder = [];
-  let hideOrder = [6, 9];
-  let data = new Array(12);
-
-  /*
-   * data array structure
-   *
-   * [visibility, pick/ban, team, code, mapSetId]
-   * visibility: Number / -2 hidden / -1 disable / 0 undecided / 1 waiting / 2 fixed
-   * pick/ban: string / "ban" / "pick"
-   * team: string / "red" / "blue"
-   * code: string / "NM1"
-   * mapSetId: Number
-   */
-
-  /*
-   * Cell Order
-   *
-   * 0 2 | 5 7 9 11
-   *  1 3|4 6 8 10
-   * */
-
-  if (phase.value === 1) {
-    insertOrder = [0, 1, 2, 3];
-  } else {
-    disableOrder = [0, 1, 2, 3];
-  }
-  insertOrder = [...insertOrder, 4, 5, 7, 8];
-  if (bo.value === 13) {
-    insertOrder = [...insertOrder, 10, 11];
-  } else {
-    disableOrder = [...disableOrder, 10, 11];
-  }
-
-  for (let i = 0; i < insertOrder.length; i++) {
-    if (i < banPickData.value?.length) {
-      data[insertOrder[i]] = {
-        visibility: 2,
-        pickBan: banPickData.value[i][0],
-        team: banPickData.value[i][1],
-        code: banPickData.value[i][2],
-        mapSetId: banPickData.value[i][3],
-      };
-    } else if (i === banPickData.value?.length) {
-      data[insertOrder[i]] = { visibility: 1 };
-    } else {
-      data[insertOrder[i]] = { visibility: 0 };
-    }
-  }
-
-  for (let i = 0; i < disableOrder.length; i++) {
-    data[disableOrder[i]] = { visibility: -1 };
-  }
-
-  for (let i = 0; i < hideOrder.length; i++) {
-    data[hideOrder[i]] = { visibility: -2 };
-  }
-
-  return data;
-});
-
-const bo = computed(() => state.data?.bo);
-const phase = computed(() => state.data?.progress?.phase);
-const currentPhase = computed(() => state.data?.progress?.phases[phase.value - 1]);
-const firstPick = computed(() => currentPhase.value?.first_pick);
-const banPickData = computed(() =>
-  currentPhase.value?.order
-    .filter((pick) => pick.code)
-    .map((x) => [x.pick, x.team, x.code, getMappool(state.data.mappool, x.code).mapset_id])
-);
-
-const pointsFromSheet = computed(() => {
-  const data = [0, 0];
-  const phases = state.data?.progress?.phases;
-
-  for (let i = 0; i < phases.length; i++) {
-    for (let j = 0; j < phases[i].order.length; j++) {
-      if (phases[i].order[j].win === 0 || phases[i].order[j].win === 1) {
-        data[phases[i].order[j].win]++;
-      }
-    }
-  }
-
-  return data;
-});
+const { teams, viewIndex, phases, pointsFromSheet } = useBanPickVisualViewModel();
 
 const teamBoxes = ref([]);
 onMounted(() => {
   setInterval(() => {
     teamBoxes.value.forEach((teamBox) => {
-      teamBox.advancePage();
+      // 컴포넌트가 unmount된 뒤 배열 요소가 없거나 함수가 제공되지 않을 대응
+      if (teamBox && typeof teamBox.advancePage === "function") {
+        teamBox.advancePage();
+      }
     });
   }, 10000); // Synchronize two carousels
 });
@@ -110,66 +26,55 @@ onMounted(() => {
     <!--TeamBox Area-->
     <div>
       <div
-        v-for="(team, i) in state.data.teams"
-        :key="i"
+        v-for="(team, i) in teams"
+        :key="'team-' + i"
         :class="{ teamBox: true, red: !i, blue: i }"
       >
         <div class="content">
-          <team-box ref="teamBoxes" :team="team" :point="pointsFromSheet[i]"></team-box>
+          <TeamBox ref="teamBoxes" :team="team" :point="pointsFromSheet[i]"></TeamBox>
         </div>
       </div>
     </div>
-    <!--BanBox Area-->
-    <div class="mapBox banBox">
-      <div class="horizontal-box mapsRow">
-        <div class="decisionBoxOffset" :style="{ flexGrow: firstPick ? 0 : 1 }">
-          <div>Ban</div>
-        </div>
-        <decision-box
-          v-for="i in firstPick ? [0, 2] : [1, 3]"
-          v-bind="cellData[i]"
-          :key="i"
-          :index="i"
-        ></decision-box>
-      </div>
-      <div class="horizontal-box mapsRow">
-        <div class="decisionBoxOffset" :style="{ flexGrow: firstPick ? 1 : 0 }">
-          <div>BAN</div>
-        </div>
-        <decision-box
-          v-for="i in firstPick ? [1, 3] : [0, 2]"
-          v-bind="cellData[i]"
-          :key="i"
-          :index="i"
-        ></decision-box>
-      </div>
-      <div class="boxDivider absolute-center"></div>
-    </div>
-    <!--PickBox Area-->
-    <div class="mapBox pickBox">
-      <div class="horizontal-box mapsRow">
-        <div class="decisionBoxOffset" :style="{ flexGrow: firstPick ? 1 : 0 }">
-          <div>Pick</div>
-        </div>
-        <decision-box
-          v-for="i in firstPick ? [5, 7, 9, 11] : [4, 6, 8, 10]"
-          v-bind="cellData[i]"
-          :key="i"
-          :index="i"
-        ></decision-box>
-      </div>
-      <div class="horizontal-box mapsRow">
-        <div class="decisionBoxOffset" :style="{ flexGrow: firstPick ? 0 : 1 }">
-          <div>Pick</div>
-        </div>
-        <decision-box
-          v-for="i in firstPick ? [4, 6, 8, 10] : [5, 7, 9, 11]"
-          v-bind="cellData[i]"
-          :key="i"
-          :index="i"
-        ></decision-box>
-      </div>
-      <div class="boxDivider absolute-center"></div>
+    <!--PhaseBox Area (Ban & Pick Combined Layout)-->
+    <div class="phaseBox">
+      <!-- Grid Content within Carousel -->
+      <Carousel
+        v-model="viewIndex"
+        items-to-show="auto"
+        :gap="10"
+        :wrap-around="false"
+        :mouse-wheel="true"
+        snap-align="center"
+        class="phaseCarousel"
+      >
+        <Slide v-for="(phase, i) in phases" :key="'slide-' + i">
+          <div class="content">
+            <div class="gridContainer" :style="{ '--max-x': phase.layout.maxX || 0 }">
+              <!-- Horizontal Divider -->
+              <div v-if="phase.label !== 'TB'" class="boxDivider"></div>
+
+              <!-- Foreground Decision Boxes -->
+              <DecisionBox
+                v-for="(item, j) in phase.layout.items"
+                :key="'decision-' + j"
+                class="gridItem"
+                :visibility="item.visibility"
+                :pick-ban="item.pickBan"
+                :team="item.team"
+                :code="item.code"
+                :map-set-id="item.mapSetId"
+                :style="{
+                  '--x': item.x,
+                  '--y': item.y,
+                }"
+              ></DecisionBox>
+            </div>
+          </div>
+        </Slide>
+        <template #addons>
+          <CarouselNavigation />
+        </template>
+      </Carousel>
     </div>
   </div>
 </template>
@@ -198,37 +103,73 @@ onMounted(() => {
   background-color: var(--color-black-translucent);
 }
 
-.mapBox {
+.phaseBox {
+  flex-grow: 1;
+  overflow: hidden;
   position: relative;
-  height: calc(100% - 30px);
+  height: 100%;
   background-color: var(--color-white-translucent);
   margin-left: 10px;
-  padding: 15px 10px 15px 10px;
+  padding: 10px;
+  box-sizing: border-box;
 }
 
-.mapBox.banBox {
-  width: 515px;
+.phaseCarousel {
+  height: 100%;
+
+  --vc-nav-background: var(--color-black-translucent);
+  --vc-nav-color: white;
+  --vc-nav-color-hover: #e5e5e5;
+  --vc-nav-border-radius: 50%;
+  --vc-nav-width: 40px;
+  --vc-nav-height: 40px;
 }
 
-.mapBox.pickBox {
-  width: 935px;
+.phaseCarousel :deep(.carousel__viewport) {
+  mask-image: linear-gradient(to right, transparent 0%, black 10%, black 90%, transparent 100%);
+}
+.phaseCarousel :deep(.carousel__slide:first-child) {
+  padding-left: 250px;
+}
+.phaseCarousel :deep(.carousel__slide:last-child) {
+  padding-right: 250px;
+}
+
+.phaseCarousel .content {
+  background: var(--color-black-translucent);
+  padding: 10px;
+  height: 100%;
 }
 
 .boxDivider {
-  width: calc(100% - 20px);
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
   height: 2px;
-  background-color: black;
+  background-color: var(--color-black-translucent);
+  transform: translateY(-50%);
+  z-index: 10;
+  pointer-events: none;
 }
 
-.mapsRow {
-  width: 100%;
-  margin-bottom: 40px;
+/* Grid System for Absolute Positioning */
+.gridContainer {
+  /* 400px width + 10px gap */
+  --grid-step-x: 410px;
+  /* 150px height is the decision box perfectly aligned to bottom */
+  --grid-step-y: calc(100% - 150px);
+
+  position: relative;
+  /* Width dynamically adjusts via inline CSS based on maxX items */
+  width: calc((var(--max-x) + 1) * var(--grid-step-x) - 10px);
+  height: 100%;
 }
 
 .decisionBoxOffset {
-  width: 0;
-  overflow: hidden;
-  transition: flex-grow 1s ease;
+  position: absolute;
+  width: 400px;
+  height: 150px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -236,6 +177,17 @@ onMounted(() => {
   text-align: center;
   font-style: italic;
   font-weight: bold;
-  opacity: 0.3;
+  opacity: 0.15;
+  transform: translateX(calc(var(--x) * var(--grid-step-x)));
+  top: calc(var(--y) * var(--grid-step-y));
+}
+
+.gridItem {
+  position: absolute;
+  transition:
+    transform 0.5s ease,
+    top 0.5s ease;
+  transform: translateX(calc(var(--x) * var(--grid-step-x)));
+  top: calc(var(--y) * var(--grid-step-y));
 }
 </style>

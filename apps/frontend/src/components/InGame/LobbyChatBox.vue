@@ -16,7 +16,7 @@ import ChatBox from "@/components/ChatBox.vue";
   width: 100%;
   font-size: 20px;
   margin-bottom: 40px;
-  margin-top: 120px;
+  margin-top: 0;
   height: 0;
   flex-grow: 1;
   display: flex;
@@ -29,6 +29,10 @@ import ChatBox from "@/components/ChatBox.vue";
 
 .header {
   font-size: 24px;
+  font-weight: bold;
+}
+.header::before {
+  content: "- ";
 }
 
 .row {

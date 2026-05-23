@@ -6,7 +6,10 @@ import { teamName2color } from "@/assets/main.js";
 const state = useOverlayDataStore();
 
 const props = defineProps({
-  value: String,
+  value: {
+    type: String,
+    default: "",
+  },
   mode: {
     type: String,
     default: "manual",
