@@ -215,7 +215,7 @@ onMounted(() => {
   left: 0;
   width: 200px;
   text-align: center;
-  font-size: 48px;
+  font-size: 36px;
   color: var(--color-white-translucent);
   font-weight: bold;
   line-height: 150px;
