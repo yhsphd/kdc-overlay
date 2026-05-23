@@ -75,6 +75,7 @@ onMounted(() => {
                 :team="item.team"
                 :code="item.code"
                 :map-set-id="item.mapSetId"
+                :map-data="item.mapData"
                 :style="{
                   '--x': item.x,
                   '--y': item.y,
@@ -217,7 +218,7 @@ onMounted(() => {
   top: 0;
 }
 .phaseLabel.bottom {
-  bottom: 10px;
+  bottom: 0;
 }
 .phaseLabel.tb {
   width: 100%;
