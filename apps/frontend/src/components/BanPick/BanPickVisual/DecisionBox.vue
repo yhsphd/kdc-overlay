@@ -8,6 +8,8 @@ const props = defineProps({
   code: String,
   mapSetId: Number,
   mapData: Object,
+  win: Number,
+  winTeamName: String,
 });
 
 const {
@@ -21,6 +23,8 @@ const {
   isDisabled,
   isHidden,
   mod,
+  win,
+  winTeamName,
 } = useDecisionBoxViewModel(props);
 </script>
 
@@ -47,12 +51,16 @@ const {
 
         <!--Decided-->
         <div v-if="isDecided" class="content layout-container">
+          <!-- Left side: Code -->
           <div class="codeBox">
             <span class="codeText" :style="{ color: `var(--color-${mod})` }">{{ code }}</span>
           </div>
 
           <!-- Right side: Metadata -->
           <div class="metaBox">
+            <div v-if="win === 0 || win === 1" class="winBadge" :class="win === 0 ? 'red' : 'blue'">
+              {{ winTeamName ? winTeamName + " WIN" : "WIN" }}
+            </div>
             <div class="titleArtist">
               <span class="artist">{{ artist }}</span>
               <span class="title">{{ title }}</span>
@@ -171,7 +179,7 @@ const {
 }
 
 .codeBox {
-  width: 80px;
+  width: 70px;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -179,6 +187,7 @@ const {
   border-right: 2px solid var(--color-line);
   padding-right: 12px;
   margin-right: 12px;
+  position: relative;
 }
 
 .codeText {
@@ -258,5 +267,48 @@ const {
 
 .statBadge.stars .statLable {
   color: #ffcc22;
+}
+
+/* Win Badge */
+.winBadge {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  font-size: 10px;
+  font-weight: 800;
+  padding: 3px 8px;
+  border-radius: 4px;
+  letter-spacing: 0.5px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+}
+
+.winBadge.red {
+  background-color: var(--color-red-translucent);
+  border: 1px solid var(--color-red);
+  color: #fff;
+}
+
+.winBadge.blue {
+  background-color: var(--color-blue-translucent);
+  border: 1px solid var(--color-blue);
+  color: #fff;
+}
+
+/* Ensure metadata elements have right padding to avoid overlap with the badge */
+.titleArtist {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 4px;
+  padding-right: 80px;
+}
+
+.mapper {
+  font-size: 11px;
+  color: #bbb;
+  margin-bottom: 10px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  padding-right: 80px;
 }
 </style>

@@ -76,6 +76,12 @@ onMounted(() => {
                 :code="item.code"
                 :map-set-id="item.mapSetId"
                 :map-data="item.mapData"
+                :win="item.win"
+                :win-team-name="
+                  item.win === 0 || item.win === 1
+                    ? teams[item.win]?.acronym || teams[item.win]?.name || ''
+                    : ''
+                "
                 :style="{
                   '--x': item.x,
                   '--y': item.y,

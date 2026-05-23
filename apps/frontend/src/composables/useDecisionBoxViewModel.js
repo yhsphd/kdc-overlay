@@ -40,6 +40,9 @@ export function useDecisionBoxViewModel(props) {
     }
   });
 
+  const win = computed(() => props.win);
+  const winTeamName = computed(() => props.winTeamName || "");
+
   return {
     title,
     artist,
@@ -51,5 +54,7 @@ export function useDecisionBoxViewModel(props) {
     isDisabled,
     isHidden,
     mod,
+    win,
+    winTeamName,
   };
 }
