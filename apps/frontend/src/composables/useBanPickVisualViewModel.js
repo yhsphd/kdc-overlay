@@ -5,7 +5,7 @@ import { getMappool } from "@/assets/main.js";
 
 // Global Shared State for BanPick View
 const viewIndex = ref(0);
-const manualTimeoutSec = 5;
+const manualTimeoutSec = 30;
 let manualTimeoutId = null;
 const isManualOverride = ref(false);
 

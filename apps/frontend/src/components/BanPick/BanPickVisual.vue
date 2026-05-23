@@ -53,6 +53,18 @@ onMounted(() => {
               <!-- Horizontal Divider -->
               <div v-if="phase.label !== 'TB'" class="boxDivider"></div>
 
+              <!-- Phase Label -->
+              <div
+                class="phaseLabel"
+                :class="{
+                  top: phase.layout.items[0].team === 1,
+                  bottom: phase.layout.items[0].team === 0,
+                  tb: phase.label === 'TB',
+                }"
+              >
+                {{ phase.label }}
+              </div>
+
               <!-- Foreground Decision Boxes -->
               <DecisionBox
                 v-for="(item, j) in phase.layout.items"
@@ -189,5 +201,26 @@ onMounted(() => {
     top 0.5s ease;
   transform: translateX(calc(var(--x) * var(--grid-step-x)));
   top: calc(var(--y) * var(--grid-step-y));
+}
+
+.phaseLabel {
+  position: absolute;
+  left: 0;
+  width: 200px;
+  text-align: center;
+  font-size: 48px;
+  color: var(--color-white-translucent);
+  font-weight: bold;
+  line-height: 150px;
+}
+.phaseLabel.top {
+  top: 0;
+}
+.phaseLabel.bottom {
+  bottom: 10px;
+}
+.phaseLabel.tb {
+  width: 100%;
+  line-height: 75px;
 }
 </style>
