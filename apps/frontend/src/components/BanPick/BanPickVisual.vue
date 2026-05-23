@@ -75,6 +75,13 @@ onMounted(() => {
                 :team="item.team"
                 :code="item.code"
                 :map-set-id="item.mapSetId"
+                :map-data="item.mapData"
+                :win="item.win"
+                :win-team-name="
+                  item.win === 0 || item.win === 1
+                    ? teams[item.win]?.acronym || teams[item.win]?.name || ''
+                    : ''
+                "
                 :style="{
                   '--x': item.x,
                   '--y': item.y,
@@ -208,7 +215,7 @@ onMounted(() => {
   left: 0;
   width: 200px;
   text-align: center;
-  font-size: 48px;
+  font-size: 36px;
   color: var(--color-white-translucent);
   font-weight: bold;
   line-height: 150px;
@@ -217,7 +224,7 @@ onMounted(() => {
   top: 0;
 }
 .phaseLabel.bottom {
-  bottom: 10px;
+  bottom: 0;
 }
 .phaseLabel.tb {
   width: 100%;

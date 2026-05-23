@@ -1,11 +1,31 @@
 <script setup>
-defineProps({
+import { useDecisionBoxViewModel } from "@/composables/useDecisionBoxViewModel";
+
+const props = defineProps({
   visibility: Number,
   pickBan: Number, // 0-ban, 1-pick
   team: Number, // 0-red, 1-blue
   code: String,
   mapSetId: Number,
+  mapData: Object,
+  win: Number,
+  winTeamName: String,
 });
+
+const {
+  title,
+  artist,
+  mapper,
+  stats,
+  backgroundUrl,
+  isDecided,
+  isPending,
+  isDisabled,
+  isHidden,
+  mod,
+  win,
+  winTeamName,
+} = useDecisionBoxViewModel(props);
 </script>
 
 <template>
@@ -15,26 +35,45 @@ defineProps({
         :key="visibility"
         class="wrapper"
         :style="{
-          backgroundImage: mapSetId
-            ? `url(https://assets.ppy.sh/beatmaps/${mapSetId}/covers/list@2x.jpg)`
-            : null,
-          opacity: visibility === -2 ? 0 : 1,
+          backgroundImage: backgroundUrl,
+          opacity: isHidden ? 0 : 1,
         }"
       >
         <div class="overlay bgDim"></div>
 
         <!--Disabled-->
-        <svg v-if="visibility === -1" class="overlay disable" width="200" height="150">
-          <line x1="0" y1="150" x2="200" y2="0"></line>
+        <svg v-if="isDisabled" class="overlay disable" width="400" height="150">
+          <line x1="0" y1="150" x2="400" y2="0"></line>
         </svg>
 
         <!--Pending-->
-        <div v-if="visibility === 1" class="loader absolute-center"></div>
+        <div v-if="isPending" class="loader"></div>
 
         <!--Decided-->
-        <div v-if="visibility === 2" class="content absolute-center">
-          <div class="code">{{ code }}</div>
-          <div class="pickBan">{{ pickBan ? "PICK" : "BAN" }}</div>
+        <div v-if="isDecided" class="content layout-container">
+          <!-- Left side: Code -->
+          <div class="codeBox">
+            <span class="codeText" :style="{ color: `var(--color-${mod})` }">{{ code }}</span>
+          </div>
+
+          <!-- Right side: Metadata -->
+          <div class="metaBox">
+            <div v-if="win === 0 || win === 1" class="winBadge" :class="win === 0 ? 'red' : 'blue'">
+              {{ winTeamName ? winTeamName + " WIN" : "WIN" }}
+            </div>
+            <div class="titleArtist">
+              <span class="artist">{{ artist }}</span>
+              <span class="title">{{ title }}</span>
+            </div>
+            <div class="mapper">Mapped by {{ mapper }}</div>
+            <div class="statsRow">
+              <div class="statBadge"><span class="statLable">CS</span> {{ stats.cs }}</div>
+              <div class="statBadge"><span class="statLable">AR</span> {{ stats.ar }}</div>
+              <div class="statBadge"><span class="statLable">OD</span> {{ stats.od }}</div>
+              <div class="statBadge"><span class="statLable">BPM</span> {{ stats.bpm }}</div>
+              <div class="statBadge stars"><span class="statLable">★</span> {{ stats.stars }}</div>
+            </div>
+          </div>
         </div>
       </div>
     </transition>
@@ -44,10 +83,9 @@ defineProps({
 <style scoped>
 .master-decision-box {
   position: relative;
-  margin-right: 10px;
-  /* width: 200px; */
   width: 400px;
   height: 150px;
+  overflow: hidden;
 }
 
 .wrapper {
@@ -58,10 +96,6 @@ defineProps({
   background-size: cover;
 }
 
-.master-decision-box:last-child {
-  margin-right: 0;
-}
-
 .overlay {
   position: absolute;
   width: 100%;
@@ -69,11 +103,11 @@ defineProps({
 }
 
 .bgDim {
-  background-color: rgba(0, 0, 0, 0.5);
+  background-color: rgba(0, 0, 0, 0.65);
 }
 
 .disable {
-  stroke: var(--color-line);
+  stroke: var(--color-line, #ff4c4c);
   stroke-width: 2px;
 }
 
@@ -82,6 +116,10 @@ defineProps({
   aspect-ratio: 1;
   border-radius: 50%;
   animation: l5 1s infinite linear;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 }
 
 @keyframes l5 {
@@ -126,16 +164,151 @@ defineProps({
 }
 
 .content {
-  text-align: center;
-  font-weight: bold;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  color: white;
+}
+
+.layout-container {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding: 12px;
+  box-sizing: border-box;
+}
+
+.codeBox {
+  width: 70px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-shrink: 0;
+  border-right: 2px solid var(--color-line);
+  padding-right: 12px;
+  margin-right: 12px;
+  position: relative;
+}
+
+.codeText {
+  font-size: 32px;
+  font-weight: 900;
   font-style: italic;
 }
 
-.code {
-  font-size: 36px;
+.metaBox {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  overflow: hidden;
 }
 
-.pickBan {
-  font-size: 24px;
+.titleArtist {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 4px;
+}
+
+.artist {
+  font-size: 13px;
+  font-weight: 600;
+  color: #ddd;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.title {
+  font-size: 20px;
+  font-weight: bold;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.mapper {
+  font-size: 11px;
+  color: #bbb;
+  margin-bottom: 10px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.statsRow {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.statBadge {
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 4px;
+  padding: 2px 6px;
+  font-size: 12px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.statLable {
+  font-size: 9px;
+  color: #ccc;
+  font-weight: 500;
+}
+
+.statBadge.stars {
+  background: rgba(255, 204, 34, 0.2);
+  color: #ffcc22;
+}
+
+.statBadge.stars .statLable {
+  color: #ffcc22;
+}
+
+/* Win Badge */
+.winBadge {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  font-size: 10px;
+  font-weight: 800;
+  padding: 3px 8px;
+  border-radius: 4px;
+  letter-spacing: 0.5px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+}
+
+.winBadge.red {
+  background-color: var(--color-red-translucent);
+  border: 1px solid var(--color-red);
+  color: #fff;
+}
+
+.winBadge.blue {
+  background-color: var(--color-blue-translucent);
+  border: 1px solid var(--color-blue);
+  color: #fff;
+}
+
+/* Ensure metadata elements have right padding to avoid overlap with the badge */
+.titleArtist {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 4px;
+  padding-right: 80px;
+}
+
+.mapper {
+  font-size: 11px;
+  color: #bbb;
+  margin-bottom: 10px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  padding-right: 80px;
 }
 </style>

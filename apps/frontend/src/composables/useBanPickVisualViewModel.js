@@ -109,6 +109,7 @@ export function useBanPickVisualViewModel() {
         visibility,
         mapSetId: mappoolData?.mapset_id || null,
         pickBan: item.pick, // 0 for Ban, 1 for Pick
+        mapData: mappoolData,
       };
     });
 
